@@ -1,90 +1,90 @@
 <div class="wrap">
   <div class="hero">
-    <h1 class="heading">练习统计</h1>
-    <p>听力、阅读、写作三个综合题库的复习进度。每次作答的对错、用时和日期时间都存在本地 SQLite 数据库里。</p>
+    <h1 class="heading">Practice statistics</h1>
+    <p>Review progress across the Listening, Reading and Writing question banks. The correctness, time taken and date and time of every answer are kept in the local SQLite database.</p>
   </div>
 
   @if (loading()) {
-    <div class="loading">正在读取统计数据…</div>
+    <div class="loading">Loading statistics…</div>
   } @else if (error()) {
     <div class="errbar">{{ error() }}</div>
     <div class="summary-actions">
-      <button class="smallbtn" type="button" (click)="home()">返回首页</button>
+      <button class="smallbtn" type="button" (click)="home()">Back to home</button>
     </div>
   } @else {
   @if (overview(); as data) {
 
     <div class="deckcard" [style.--c]="'var(--accent)'">
       <div class="deckcard-head">
-        <span class="name">全部类别</span>
+        <span class="name">All categories</span>
         <span class="sub">
           @if (data.totals.last_reviewed_at) {
-            最近练习：{{ formatDateTime(data.totals.last_reviewed_at) }}
+            Last practised: {{ formatDateTime(data.totals.last_reviewed_at) }}
           } @else {
-            还没有练习记录
+            No practice records yet
           }
         </span>
       </div>
       <div class="statgrid">
         <div class="stat">
-          <div class="k">已答题目</div>
+          <div class="k">Answered</div>
           <div class="v">{{ data.totals.answered_questions }}<small> / {{ data.totals.total_questions }}</small></div>
         </div>
         <div class="stat">
-          <div class="k">总成功率</div>
+          <div class="k">Overall success rate</div>
           <div class="v">{{ formatPercent(data.totals.success_rate) }}</div>
         </div>
         <div class="stat">
-          <div class="k">总平均用时</div>
+          <div class="k">Overall avg. time</div>
           <div class="v">{{ formatDuration(data.totals.avg_ms) }}</div>
         </div>
         <div class="stat">
-          <div class="k">作答次数</div>
+          <div class="k">Answers</div>
           <div class="v">{{ data.totals.attempts }}</div>
         </div>
         <div class="stat">
-          <div class="k">练习次数</div>
+          <div class="k">Sessions</div>
           <div class="v">{{ data.totals.session_count }}</div>
         </div>
       </div>
       <div class="metricbar">
         <span [style.width.%]="data.totals.coverage * 100"></span>
       </div>
-      <div class="metricnote">题库覆盖率 {{ formatPercent(data.totals.coverage) }}</div>
+      <div class="metricnote">Bank coverage {{ formatPercent(data.totals.coverage) }}</div>
       <div class="deckcard-actions">
-        <button class="smallbtn" type="button" (click)="home()">返回首页</button>
+        <button class="smallbtn" type="button" (click)="home()">Back to home</button>
       </div>
     </div>
 
-    <div class="sectiontitle">按类别</div>
+    <div class="sectiontitle">By category</div>
     @for (category of order; track category) {
       @if (statsFor(category); as stats) {
         <div class="deckcard" [style.--c]="meta[category].color">
           <div class="deckcard-head">
             <span class="name">{{ meta[category].label }}</span>
             <span class="sub">
-              {{ stats.answered_questions }} / {{ stats.total_questions }} 题已答
+              {{ stats.answered_questions }} / {{ stats.total_questions }} questions answered
               @if (stats.last_reviewed_at) {
-                · 最近 {{ formatDateTime(stats.last_reviewed_at) }}
+                · last {{ formatDateTime(stats.last_reviewed_at) }}
               }
             </span>
           </div>
 
           <div class="statgrid">
             <div class="stat">
-              <div class="k">成功率</div>
+              <div class="k">Success rate</div>
               <div class="v">{{ formatPercent(stats.success_rate) }}</div>
             </div>
             <div class="stat">
-              <div class="k">平均用时</div>
+              <div class="k">Avg. time</div>
               <div class="v">{{ formatDuration(stats.avg_ms) }}</div>
             </div>
             <div class="stat">
-              <div class="k">未答题目</div>
+              <div class="k">Unanswered</div>
               <div class="v">{{ stats.unanswered_questions }}</div>
             </div>
             <div class="stat">
-              <div class="k">作答次数</div>
+              <div class="k">Answers</div>
               <div class="v">{{ stats.attempts }}</div>
             </div>
           </div>
@@ -92,18 +92,18 @@
           <div class="metricbar">
             <span [style.width.%]="stats.coverage * 100"></span>
           </div>
-          <div class="metricnote">覆盖率 {{ formatPercent(stats.coverage) }}</div>
+          <div class="metricnote">Coverage {{ formatPercent(stats.coverage) }}</div>
 
           <div class="deckcard-actions">
-            <button class="primarybtn" type="button" (click)="practice(category)">开始练习</button>
-            <button class="smallbtn" type="button" (click)="openStats(category)">详细统计</button>
+            <button class="primarybtn" type="button" (click)="practice(category)">Start practice</button>
+            <button class="smallbtn" type="button" (click)="openStats(category)">Detailed stats</button>
           </div>
         </div>
       }
     }
 
     <div class="footnote">
-      成功率 = 答对 /（答对 + 答错）；写作“看图造句”为自评题，不计入成功率。平均用时只统计有对错的题目。
+      Success rate = correct / (correct + wrong). The guided writing items (write a sentence from a picture) are self-assessed and do not count towards the success rate. Average time covers only questions with a right/wrong outcome.
     </div>
   }
   }

@@ -1,5 +1,5 @@
 @if (unit().speak) {
-  <button class="playbtn" type="button" (click)="play()">🔊 播放听力</button>
+  <button class="playbtn" type="button" (click)="play()">🔊 Play audio</button>
 } @else {
   <p class="passage">{{ unit().passage }}</p>
 }
@@ -23,12 +23,12 @@
   <div class="feedback">
     <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
       @if (isCorrect()) {
-        ✓ 回答正确
+        ✓ Correct
       } @else {
-        ✗ 回答错误 · 正确答案：{{solutionLetter()}}
+        ✗ Incorrect · answer: {{solutionLetter()}}
       }</div>
     @if (unit().speak) {
-      <div class="transcript-label">听力原文</div>
+      <div class="transcript-label">Transcript</div>
       <div class="transcript">{{ unit().passage }}</div>
     }
   </div>

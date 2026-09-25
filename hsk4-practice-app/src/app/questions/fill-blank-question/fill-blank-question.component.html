@@ -17,9 +17,9 @@
   <div class="feedback">
     <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
       @if (isCorrect()) {
-        ✓ 回答正确
+        ✓ Correct
       } @else {
-        ✗ 回答错误 · 正确答案：{{unit().answer}}
+        ✗ Incorrect · answer: {{unit().answer}}
       }</div>
   </div>
 }

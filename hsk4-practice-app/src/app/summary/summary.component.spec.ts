@@ -48,16 +48,16 @@ describe('SummaryComponent', () => {
     }
     fixture.detectChanges();
 
-    expect(text('.tag')).toBe('H41001 · 阅读 · 完成');
+    expect(text('.tag')).toBe('H41001 · Reading · complete');
     expect(text('.big')).toBe('30 / 40');
-    expect(text('.sub')).toBe('正确率 75%');
+    expect(text('.sub')).toBe('Success rate 75%');
   });
 
   it('treats an unanswered section as 100%', async () => {
     await render('H41001', 'reading');
 
     expect(text('.big')).toBe('0 / 0');
-    expect(text('.sub')).toBe('正确率 100%');
+    expect(text('.sub')).toBe('Success rate 100%');
   });
 
   it('hides the open-question note for sections without open items', async () => {
@@ -68,14 +68,14 @@ describe('SummaryComponent', () => {
 
   it('reports the open-question completion count for writing', async () => {
     await render('H41001', 'writing');
-    expect(text('.summary-open')).toContain('已完成 0 / 5 题');
+    expect(text('.summary-open')).toContain('0 / 5 done');
 
     quizState.recordAnswer(undefined);
     quizState.recordAnswer(undefined);
     fixture.detectChanges();
 
-    expect(text('.summary-open')).toContain('已完成 2 / 5 题');
-    expect(text('.summary-open')).toContain('不计入正确率');
+    expect(text('.summary-open')).toContain('2 / 5 done');
+    expect(text('.summary-open')).toContain('not counted in the success rate');
   });
 
   it('retry restarts the same section and navigates back to the quiz', async () => {

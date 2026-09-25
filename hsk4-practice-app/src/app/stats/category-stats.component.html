@@ -1,18 +1,19 @@
 <div class="wrap">
   <div class="hero">
-    <h1 class="heading">{{ meta().label }} · 统计</h1>
+    <h1 class="heading">{{ meta().label }} · Statistics</h1>
     <p>
-      来自 H41001–H41003 三套样卷的 {{ total() }} 道{{ meta().label }}题，复习记录保存在本地数据库中。
+      {{ total() }} {{ meta().label }} questions from the three sample papers H41001–H41003, with
+      review records kept in the local database.
     </p>
   </div>
 
   @if (loading()) {
-    <div class="loading">正在读取统计数据…</div>
+    <div class="loading">Loading statistics…</div>
   } @else if (error()) {
     <div class="errbar">{{ error() }}</div>
     <div class="summary-actions">
-      <button class="smallbtn" type="button" (click)="home()">返回首页</button>
-      <button class="primarybtn" type="button" (click)="practice()">开始练习</button>
+      <button class="smallbtn" type="button" (click)="home()">Back to home</button>
+      <button class="primarybtn" type="button" (click)="practice()">Start practice</button>
     </div>
   } @else {
   @if (page(); as data) {
@@ -23,38 +24,38 @@
         <span class="name">{{ meta().label }}</span>
         <span class="sub">
           @if (data.stats.last_reviewed_at) {
-            最近练习：{{ formatDateTime(data.stats.last_reviewed_at) }}
+            Last practised: {{ formatDateTime(data.stats.last_reviewed_at) }}
           } @else {
-            还没有练习记录
+            No practice records yet
           }
         </span>
       </div>
 
       <div class="statgrid">
         <div class="stat">
-          <div class="k">已答题目</div>
+          <div class="k">Answered</div>
           <div class="v">
             {{ data.stats.answered_questions }}<small> / {{ data.stats.total_questions }}</small>
           </div>
         </div>
         <div class="stat">
-          <div class="k">未答题目</div>
+          <div class="k">Unanswered</div>
           <div class="v">{{ data.stats.unanswered_questions }}</div>
         </div>
         <div class="stat">
-          <div class="k">成功率</div>
+          <div class="k">Success rate</div>
           <div class="v">{{ formatPercent(data.stats.success_rate) }}</div>
         </div>
         <div class="stat">
-          <div class="k">平均用时</div>
+          <div class="k">Avg. time</div>
           <div class="v">{{ formatDuration(data.stats.avg_ms) }}</div>
         </div>
         <div class="stat">
-          <div class="k">作答次数</div>
+          <div class="k">Answers</div>
           <div class="v">{{ data.stats.attempts }}</div>
         </div>
         <div class="stat">
-          <div class="k">练习次数</div>
+          <div class="k">Sessions</div>
           <div class="v">{{ data.stats.session_count }}</div>
         </div>
       </div>
@@ -63,32 +64,32 @@
         <span [style.width.%]="data.stats.coverage * 100"></span>
       </div>
       <div class="metricnote">
-        题库覆盖率 {{ formatPercent(data.stats.coverage) }}（{{ data.stats.answered_questions }} /
-        {{ data.stats.total_questions }} 题已作答）
+        Bank coverage {{ formatPercent(data.stats.coverage) }} ({{ data.stats.answered_questions }} /
+        {{ data.stats.total_questions }} questions answered)
         @if (data.stats.self_assessed) {
-          · 另有 {{ data.stats.self_assessed }} 次写作自评不计入成功率
+          · plus {{ data.stats.self_assessed }} self-assessed writing items not counted in the success rate
         }
       </div>
 
       <div class="deckcard-actions">
-        <button class="primarybtn" type="button" (click)="practice()">继续练习</button>
-        <button class="smallbtn" type="button" (click)="allStats()">全部类别</button>
-        <button class="smallbtn" type="button" (click)="home()">返回首页</button>
+        <button class="primarybtn" type="button" (click)="practice()">Keep practising</button>
+        <button class="smallbtn" type="button" (click)="allStats()">All categories</button>
+        <button class="smallbtn" type="button" (click)="home()">Back to home</button>
       </div>
     </div>
 
     <!-- ---------- By question type ---------- -->
-    <div class="sectiontitle">按题型</div>
+    <div class="sectiontitle">By question type</div>
     <div class="tablewrap">
       <table class="dtable kinds">
         <thead>
           <tr>
-            <th>题型</th>
-            <th class="num">题量</th>
-            <th class="num">已答</th>
-            <th class="num">覆盖率</th>
-            <th class="num">成功率</th>
-            <th class="num">平均用时</th>
+            <th>Type</th>
+            <th class="num">Questions</th>
+            <th class="num">Answered</th>
+            <th class="num">Coverage</th>
+            <th class="num">Success rate</th>
+            <th class="num">Avg. time</th>
           </tr>
         </thead>
         <tbody>
@@ -108,17 +109,17 @@
 
     <!-- ---------- Weakest questions ---------- -->
     @if (weakest().length) {
-      <div class="sectiontitle">最需要复习的题目（成功率低于 90%）</div>
+      <div class="sectiontitle">Questions most in need of review (success rate below 90%)</div>
       <div class="tablewrap">
         <table class="dtable weakest">
           <thead>
             <tr>
-              <th>试卷</th>
-              <th class="qtext">题目</th>
-              <th class="num">成功率</th>
-              <th class="num">作答</th>
-              <th class="num">平均用时</th>
-              <th class="num">最近</th>
+              <th>Paper</th>
+              <th class="qtext">Question</th>
+              <th class="num">Success rate</th>
+              <th class="num">Answers</th>
+              <th class="num">Avg. time</th>
+              <th class="num">Last</th>
             </tr>
           </thead>
           <tbody>
@@ -138,19 +139,19 @@
     }
 
     <!-- ---------- Per-question history ---------- -->
-    <div class="sectiontitle">每道题的复习数据</div>
+    <div class="sectiontitle">Review data for every question</div>
     <div class="chiprow">
       <button class="chip" type="button" [class.on]="filter() === 'all'" (click)="setFilter('all')">
-        全部 {{ counts().all }}
+        All {{ counts().all }}
       </button>
       <button class="chip" type="button" [class.on]="filter() === 'unseen'" (click)="setFilter('unseen')">
-        未作答 {{ counts().unseen }}
+        Unanswered {{ counts().unseen }}
       </button>
       <button class="chip" type="button" [class.on]="filter() === 'weak'" (click)="setFilter('weak')">
-        成功率&lt;60% {{ counts().weak }}
+        Success rate &lt;60% {{ counts().weak }}
       </button>
       <button class="chip" type="button" [class.on]="filter() === 'wrong'" (click)="setFilter('wrong')">
-        从没答对 {{ counts().wrong }}
+        Never correct {{ counts().wrong }}
       </button>
     </div>
 
@@ -158,16 +159,16 @@
       <table class="dtable questions">
         <thead>
           <tr>
-            <th>试卷</th>
-            <th class="num">题号</th>
-            <th>题型</th>
-            <th class="qtext">题目</th>
-            <th class="num">作答</th>
-            <th class="num">对 / 错</th>
-            <th class="num">成功率</th>
-            <th class="num">平均用时</th>
-            <th class="num">连对</th>
-            <th class="num">最近作答</th>
+            <th>Paper</th>
+            <th class="num">No.</th>
+            <th>Type</th>
+            <th class="qtext">Question</th>
+            <th class="num">Answers</th>
+            <th class="num">Right / wrong</th>
+            <th class="num">Success rate</th>
+            <th class="num">Avg. time</th>
+            <th class="num">Streak</th>
+            <th class="num">Last answered</th>
           </tr>
         </thead>
         <tbody>
@@ -201,22 +202,23 @@
       </table>
     </div>
     <div class="metricnote" style="margin-top:8px;">
-      “连对”是当前连续答对的次数，决定智能复习把这道题排到哪里：连对越多，间隔越长（1 → 2 → 4 → 8 → 16 → 32 → 60 天）。
+      “Streak” is the current run of correct answers, which decides where smart review puts the
+      question: the longer the streak, the longer the gap (1 → 2 → 4 → 8 → 16 → 32 → 60 days).
     </div>
 
     <!-- ---------- Recent sessions ---------- -->
-    <div class="sectiontitle">最近的练习</div>
+    <div class="sectiontitle">Recent sessions</div>
     @if (data.recent_sessions.length) {
       <div class="tablewrap">
         <table class="dtable sessions">
           <thead>
             <tr>
-              <th>时间</th>
-              <th>方式</th>
-              <th class="num">作答</th>
-              <th class="num">对 / 错</th>
-              <th class="num">成功率</th>
-              <th class="num">平均用时</th>
+              <th>When</th>
+              <th>Mode</th>
+              <th class="num">Answers</th>
+              <th class="num">Right / wrong</th>
+              <th class="num">Success rate</th>
+              <th class="num">Avg. time</th>
               <th></th>
             </tr>
           </thead>
@@ -232,7 +234,7 @@
                 <td class="num">{{ formatPercent(session.success_rate) }}</td>
                 <td class="num">{{ formatDuration(session.avg_ms) }}</td>
                 <td class="num">
-                  <button class="linkbtn" type="button" (click)="openSession(session)">详情</button>
+                  <button class="linkbtn" type="button" (click)="openSession(session)">Details</button>
                 </td>
               </tr>
             }
@@ -240,11 +242,13 @@
         </table>
       </div>
     } @else {
-      <div class="loading">还没有练习记录。</div>
+      <div class="loading">No practice records yet.</div>
     }
 
     <div class="footnote">
-      成功率 = 答对 /（答对 + 答错）；写作“看图造句”是自评题，只计入“已答题目”，不计入成功率。平均用时只统计有对错的题目。
+      Success rate = correct / (correct + wrong). The guided writing items are self-assessed: they
+      count as answered but not towards the success rate. Average time covers only questions with a
+      right/wrong outcome.
     </div>
   }
   }

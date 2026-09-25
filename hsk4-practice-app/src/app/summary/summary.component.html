@@ -2,15 +2,15 @@
   <div class="summary-card" [style.--c]="meta().color">
     <div class="tag" [style.color]="meta().color" style="margin-bottom:14px;">{{ tag() }}</div>
     <div class="big">{{ quizState.correct() }} / {{ quizState.scoreable() }}</div>
-    <div class="sub">正确率 {{ percentage() }}%</div>
+    <div class="sub">Success rate {{ percentage() }}%</div>
     @if (quizState.openTotal() > 0) {
       <div class="summary-open">
-        写作开放题（看图造句）已完成 {{ quizState.openDone() }} / {{ quizState.openTotal() }} 题 — 已对照参考答案自评，不计入正确率。
+        Guided writing (write a sentence from a picture): {{ quizState.openDone() }} / {{ quizState.openTotal() }} done — self-assessed against the model answer, so not counted in the success rate.
       </div>
     }
     <div class="summary-actions">
-      <button class="smallbtn" type="button" (click)="retry()">重做一遍</button>
-      <button class="primarybtn" type="button" (click)="home()">返回首页</button>
+      <button class="smallbtn" type="button" (click)="retry()">Try again</button>
+      <button class="primarybtn" type="button" (click)="home()">Back to home</button>
     </div>
   </div>
 </div>

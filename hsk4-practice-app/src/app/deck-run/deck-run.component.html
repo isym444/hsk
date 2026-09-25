@@ -2,10 +2,11 @@
 @if (deck.phase() === 'idle' || deck.phase() === 'error') {
   <div class="wrap">
     <div class="hero">
-      <h1 class="heading">{{ meta().label }} · 综合练习</h1>
+      <h1 class="heading">{{ meta().label }} · Combined practice</h1>
       <p>
-        把 H41001–H41003 三套样卷的{{ meta().label }}题目合并成一个题库，共
-        <b>{{ total() }}</b> 题，打乱或按掌握程度练习。想练多少练多少，随时点“结束练习”看本次成绩。
+        All {{ meta().label }} questions from the three sample papers H41001–H41003 are merged into
+        one bank of <b>{{ total() }}</b> questions, shuffled or ordered by how well you know them.
+        Practise as much as you like, and press “End session” at any time to see your score.
       </p>
     </div>
 
@@ -13,7 +14,7 @@
       <div class="errbar">
         {{ message }}
         <div style="margin-top:8px;">
-          <button class="smallbtn" type="button" (click)="retry()">重试</button>
+          <button class="smallbtn" type="button" (click)="retry()">Retry</button>
         </div>
       </div>
     }
@@ -21,30 +22,30 @@
     <div class="deckcard" [style.--c]="meta().color">
       <div class="deckcard-head">
         <span class="name">{{ meta().label }}</span>
-        <span class="sub">题库来源：{{ papers().join(' · ') }}</span>
+        <span class="sub">Source papers: {{ papers().join(' · ') }}</span>
       </div>
 
       @if (deck.preview(); as preview) {
         <div class="statgrid">
           <div class="stat">
-            <div class="k">题库总量</div>
-            <div class="v">{{ preview.total_questions }}<small> 题</small></div>
+            <div class="k">Questions in bank</div>
+            <div class="v">{{ preview.total_questions }}</div>
           </div>
           <div class="stat">
-            <div class="k">已练过</div>
-            <div class="v">{{ preview.answered }}<small> 题</small></div>
+            <div class="k">Practised</div>
+            <div class="v">{{ preview.answered }}</div>
           </div>
           <div class="stat">
-            <div class="k">还没做过</div>
-            <div class="v">{{ preview.unseen }}<small> 题</small></div>
+            <div class="k">Not seen yet</div>
+            <div class="v">{{ preview.unseen }}</div>
           </div>
           <div class="stat">
-            <div class="k">正确率偏低</div>
-            <div class="v">{{ preview.weak }}<small> 题</small></div>
+            <div class="k">Low success rate</div>
+            <div class="v">{{ preview.weak }}</div>
           </div>
           <div class="stat">
-            <div class="k">该复习了</div>
-            <div class="v">{{ preview.due }}<small> 题</small></div>
+            <div class="k">Due for review</div>
+            <div class="v">{{ preview.due }}</div>
           </div>
         </div>
 
@@ -52,15 +53,15 @@
           <span [style.width.%]="preview.total_questions ? (preview.answered / preview.total_questions) * 100 : 0"></span>
         </div>
         <div class="metricnote">
-          已覆盖 {{ preview.answered }} / {{ preview.total_questions }} 题（{{
+          Covered {{ preview.answered }} / {{ preview.total_questions }} questions ({{
             formatPercent(preview.total_questions ? preview.answered / preview.total_questions : 0)
-          }}）
+          }})
         </div>
       } @else {
-        <div class="loading">正在读取题库统计…</div>
+        <div class="loading">Loading bank stats…</div>
       }
 
-      <div class="sectiontitle">练习方式</div>
+      <div class="sectiontitle">Practice mode</div>
       <div class="moderow">
         @for (mode of modes; track mode) {
           <button
@@ -72,9 +73,9 @@
             <span class="mt">{{ modeLabels[mode] }}</span>
             <span class="md">
               @if (mode === 'smart') {
-                按正确率和遗忘曲线排序，答得差、久没练的先出现
+                Ordered by success rate and forgetting curve — questions you get wrong, and ones you have not seen for a while, come first
               } @else {
-                每次完全打乱顺序，适合模拟考试
+                Fully shuffled every time — good for exam simulation
               }
             </span>
           </button>
@@ -83,14 +84,15 @@
 
       <div class="deckcard-actions">
         <button class="primarybtn" type="button" [disabled]="starting()" (click)="start()">
-          {{ starting() ? '正在开始…' : '开始练习' }}
+          {{ starting() ? 'Starting…' : 'Start practice' }}
         </button>
-        <button class="smallbtn" type="button" (click)="statsLink()">查看统计</button>
+        <button class="smallbtn" type="button" (click)="statsLink()">View stats</button>
       </div>
     </div>
 
     <div class="footnote">
-      复习记录（对错、用时、日期时间）会保存到本地 SQLite 数据库，用于统计页和智能复习排序。
+      Practice records (right/wrong, time taken, date and time) are saved to the local SQLite
+      database and used for the stats pages and the smart-review ordering.
     </div>
   </div>
 }
@@ -100,19 +102,19 @@
   <div id="quiz">
     <div class="qz-top">
       <div class="qz-topinner">
-        <button class="backbtn" type="button" (click)="back()">← 返回</button>
+        <button class="backbtn" type="button" (click)="back()">← Back</button>
         <div class="qz-label">
-          <b>{{ meta().label }} · 综合练习</b> · <span>{{ progressLabel() }}</span>
+          <b>{{ meta().label }} · Combined practice</b> · <span>{{ progressLabel() }}</span>
         </div>
         <div class="qz-score">
           <span class="g">✓{{ deck.tally().correct }}</span>
           <span class="b">✗{{ deck.tally().incorrect }}</span>
           @if (deck.tally().selfAssessed) {
-            <span class="s">自评{{ deck.tally().selfAssessed }}</span>
+            <span class="s">Self {{ deck.tally().selfAssessed }}</span>
           }
         </div>
         <button class="endbtn" type="button" [disabled]="deck.phase() === 'finishing'" (click)="endSession()">
-          {{ deck.phase() === 'finishing' ? '正在结束…' : '结束练习' }}
+          {{ deck.phase() === 'finishing' ? 'Finishing…' : 'End session' }}
         </button>
       </div>
       <div class="progress">
@@ -126,19 +128,19 @@
       }
 
       <div class="sessionline">
-        <span>本题用时 <b>{{ formatDuration(deck.elapsedMs()) }}</b></span>
+        <span>Time on this question <b>{{ formatDuration(deck.elapsedMs()) }}</b></span>
         @if (deck.averageMs() !== null) {
-          <span class="muted">本次平均 <b>{{ formatDuration(deck.averageMs()) }}</b></span>
+          <span class="muted">Session average <b>{{ formatDuration(deck.averageMs()) }}</b></span>
         }
         @if (deck.current(); as question) {
-          <span class="muted">{{ question.paper }} · 第 {{ question.number }} 题</span>
+          <span class="muted">{{ question.paper }} · question {{ question.number }}</span>
         }
       </div>
 
       @if (deck.currentUnit(); as unit) {
         <div class="card" [style.--c]="meta().color">
           <div class="tag">
-            {{ meta().label }} · {{ deck.current()?.paper }} · 第 {{ unit.n }} 题
+            {{ meta().label }} · {{ deck.current()?.paper }} · question {{ unit.n }}
           </div>
 
           @switch (unit.kind) {
@@ -177,25 +179,25 @@
           @if (deck.answered()) {
             <div class="nextrow">
               <span class="nextnote">
-                本题用了 {{ formatDuration(deck.elapsedMs()) }}
+                This question took {{ formatDuration(deck.elapsedMs()) }}
                 @switch (deck.lastOutcome()) {
                   @case ('correct') {
-                    <span class="pill good">答对</span>
+                    <span class="pill good">Correct</span>
                   }
                   @case ('incorrect') {
-                    <span class="pill bad">答错</span>
+                    <span class="pill bad">Wrong</span>
                   }
                   @case ('self_assessed') {
-                    <span class="pill self">已自评</span>
+                    <span class="pill self">Self-assessed</span>
                   }
                 }
               </span>
-              <button class="primarybtn" type="button" (click)="next()">下一题</button>
+              <button class="primarybtn" type="button" (click)="next()">Next question</button>
             </div>
           }
         </div>
       } @else {
-        <div class="loading">正在准备题目…</div>
+        <div class="loading">Preparing questions…</div>
       }
     </div>
   </div>

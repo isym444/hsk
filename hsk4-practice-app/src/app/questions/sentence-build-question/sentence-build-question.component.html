@@ -1,8 +1,8 @@
-<p class="question">用下面的词语组成一句话：</p>
+<p class="question">Put the words below into a sentence:</p>
 
 <div class="answerstrip">
   @if (chosen().length === 0) {
-    <span class="placeholder">依次点击下方词语，组成句子</span>
+    <span class="placeholder">Tap the words below in order to build a sentence</span>
   } @else {
     @for (word of chosen(); track $index) {
       <span class="atile">{{ word }}</span>
@@ -23,7 +23,7 @@
 
 <div class="rowbtns">
   <button class="smallbtn" type="button" [disabled]="finished() || chosen().length === 0" (click)="undo()">
-    撤销上一个
+    Undo last
   </button>
 </div>
 
@@ -31,13 +31,13 @@
   <div class="feedback">
     <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
       @if (isCorrect()) {
-        ✓ 语序正确
+        ✓ Correct word order
       } @else {
-        ✗ 语序不对
+        ✗ Word order is wrong
       }
     </div>
     @if (!isCorrect()) {
-      <div class="transcript-label">参考答案</div>
+      <div class="transcript-label">Model answer</div>
       <div class="transcript">{{ referenceAnswer() }}</div>
     }
   </div>

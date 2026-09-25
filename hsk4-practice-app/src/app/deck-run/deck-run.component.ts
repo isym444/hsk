@@ -180,5 +180,5 @@ export class DeckRunComponent implements OnInit {
   /* Display helpers                                                    */
   /* ------------------------------------------------------------------ */
 
-  readonly progressLabel = computed(() => `本次已答 ${this.deck.tally().answered} 题`);
+  readonly progressLabel = computed(() => `Answered this session: ${this.deck.tally().answered}`);
 }

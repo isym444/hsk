@@ -334,7 +334,7 @@ describe('DeckStateService', () => {
     const first = service.answer(true);
     http.expectOne('/api/sessions/session-1/reviews').error(new ProgressEvent('error'));
     await first;
-    expect(service.error()).toContain('已暂存');
+    expect(service.error()).toContain('held');
 
     const advanced = service.next();
     await tick();

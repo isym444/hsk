@@ -17,7 +17,8 @@ function el<T extends HTMLElement>(root: unknown, selector: string): T {
 
 /**
  * Walks a whole section through the shell the way a user does: pick the right
- * answer every time, press 下一题, and confirm the shell lands on /summary.
+ * answer every time, press "Next question", and confirm the shell lands on
+ * /summary.
  */
 describe('QuizShellComponent', () => {
   let fixture: ComponentFixture<QuizShellComponent>;
@@ -69,11 +70,11 @@ describe('QuizShellComponent', () => {
   it('renders the listening chrome and first true/false item', async () => {
     await open('H41001', 'listening');
 
-    expect(text('.qz-label')).toContain('H41001 · 听力');
-    expect(text('.qz-label')).toContain('第 1 / 45 题');
+    expect(text('.qz-label')).toContain('H41001 · Listening');
+    expect(text('.qz-label')).toContain('Question 1 / 45');
     expect(text('.qz-score')).toContain('✓0');
     expect(text('.qz-score')).toContain('✗0');
-    expect(text('.tag')).toBe('听力 · 第 1 题');
+    expect(text('.tag')).toBe('Listening · question 1');
     expect(fixture.nativeElement.querySelector('app-true-false-question')).toBeTruthy();
     expect(nextButton()).toBeFalsy();
   });
@@ -88,7 +89,7 @@ describe('QuizShellComponent', () => {
     expect(text('.qz-score')).toContain('✓1');
     expect(text('.qz-score')).toContain('✗0');
     expect(nextButton()).toBeTruthy();
-    expect(nextButton().textContent?.trim()).toBe('下一题');
+    expect(nextButton().textContent?.trim()).toBe('Next question');
   });
 
   it('records a wrong answer against the running score', async () => {
@@ -111,11 +112,11 @@ describe('QuizShellComponent', () => {
     nextButton().click();
     fixture.detectChanges();
 
-    expect(text('.qz-label')).toContain('第 2 / 45 题');
-    expect(text('.tag')).toBe('听力 · 第 2 题');
+    expect(text('.qz-label')).toContain('Question 2 / 45');
+    expect(text('.tag')).toBe('Listening · question 2');
   });
 
-  it('speaks the listening transcript when 播放听力 is pressed', async () => {
+  it('speaks the listening transcript when Play audio is pressed', async () => {
     await open('H41001', 'listening');
 
     el<HTMLButtonElement>(fixture.nativeElement, '.playbtn').click();
@@ -134,7 +135,7 @@ describe('QuizShellComponent', () => {
     expect(router.url).toBe('/');
   });
 
-  it('labels the last question 查看成绩 and navigates to the summary', async () => {
+  it('labels the last question See results and navigates to the summary', async () => {
     await open('H41001', 'writing');
     const total = quizState.total(); // 15
 
@@ -145,13 +146,13 @@ describe('QuizShellComponent', () => {
     }
     fixture.detectChanges();
 
-    expect(text('.qz-label')).toContain(`第 ${total} / ${total} 题`);
-    expect(text('.tag')).toContain('第 100 题');
+    expect(text('.qz-label')).toContain(`Question ${total} / ${total}`);
+    expect(text('.tag')).toContain('question 100');
 
     el<HTMLButtonElement>(fixture.nativeElement, '.rowbtns .smallbtn').click();
     fixture.detectChanges();
 
-    expect(nextButton()?.textContent?.trim()).toBe('查看成绩');
+    expect(nextButton()?.textContent?.trim()).toBe('See results');
 
     nextButton().click();
     await fixture.whenStable();

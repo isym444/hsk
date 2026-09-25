@@ -51,7 +51,7 @@ describe('SentenceOrderQuestionComponent', () => {
     fixture.detectChanges();
 
     expect(perms()[3].classList).toContain('correct');
-    expect(fixture.nativeElement.querySelector('.fbline.good')?.textContent).toContain('回答正确');
+    expect(fixture.nativeElement.querySelector('.fbline.good')?.textContent).toContain('Correct');
     expect(perms().every((b) => b.disabled)).toBeTrue();
   });
 
@@ -62,7 +62,7 @@ describe('SentenceOrderQuestionComponent', () => {
     expect(perms()[0].classList).toContain('wrong');
     expect(perms()[3].classList).toContain('correct');
     expect(fixture.nativeElement.querySelector('.fbline.bad')?.textContent).toContain(
-      '正确顺序：B → C → A',
+      'correct order: B → C → A',
     );
     expect(component.hasAnswered()).toBeTrue();
   });

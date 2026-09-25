@@ -41,13 +41,13 @@ describe('OpenWritingQuestionComponent', () => {
   });
 
   it('shows the prompt, the target word and an empty textarea', () => {
-    expect(fixture.nativeElement.querySelector('.question')?.textContent).toContain('用这个词写一句话');
+    expect(fixture.nativeElement.querySelector('.question')?.textContent).toContain('Write a sentence using this word');
     expect(fixture.nativeElement.querySelector('.wordpill')?.textContent?.trim()).toBe('日记');
-    expect(textarea().placeholder).toBe('在这里输入你的句子…');
+    expect(textarea().placeholder).toBe('Type your sentence here…');
     expect(textarea().disabled).toBeFalse();
   });
 
-  it('hides the model answer until 查看参考答案 is pressed', () => {
+  it('hides the model answer until "Show model answer" is pressed', () => {
     expect(fixture.nativeElement.querySelector('.model')).toBeFalsy();
     expect(component.hasRevealed()).toBeFalse();
 
@@ -66,7 +66,7 @@ describe('OpenWritingQuestionComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.fbline.good')?.textContent).toContain(
-      '你的句子里用到了「日记」',
+      'Your sentence uses 「日记」',
     );
   });
 
@@ -76,7 +76,7 @@ describe('OpenWritingQuestionComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.fbline.good')?.textContent).toContain(
-      '提示：可以对照参考答案',
+      'Tip: compare with the model answer',
     );
   });
 

@@ -120,7 +120,7 @@ describe('question inventory (deck identity)', () => {
       ['writing', 45],
     ]);
     expect(catalogue.categories.find((c) => c.key === 'writing')?.scoreable).toBe(30);
-    expect(catalogue.categories.find((c) => c.key === 'listening')?.label).toBe('听力');
+    expect(catalogue.categories.find((c) => c.key === 'listening')?.label).toBe('Listening');
   });
 
   it('classifies scoreable items the same way for every paper', () => {

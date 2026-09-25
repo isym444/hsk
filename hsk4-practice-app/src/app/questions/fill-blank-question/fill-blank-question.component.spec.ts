@@ -45,7 +45,7 @@ describe('FillBlankQuestionComponent', () => {
     fixture.detectChanges();
 
     expect(chips()[4].classList).toContain('correct');
-    expect(fixture.nativeElement.querySelector('.fbline.good')?.textContent).toContain('回答正确');
+    expect(fixture.nativeElement.querySelector('.fbline.good')?.textContent).toContain('Correct');
     expect(chips().every((c) => c.disabled)).toBeTrue();
   });
 
@@ -55,7 +55,7 @@ describe('FillBlankQuestionComponent', () => {
 
     expect(chips()[0].classList).toContain('wrong');
     expect(chips()[4].classList).toContain('correct');
-    expect(fixture.nativeElement.querySelector('.fbline.bad')?.textContent).toContain('正确答案：顺便');
+    expect(fixture.nativeElement.querySelector('.fbline.bad')?.textContent).toContain('answer: 顺便');
   });
 
   it('emits answered once with the verdict', () => {

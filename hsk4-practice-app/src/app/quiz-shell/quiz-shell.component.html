@@ -1,7 +1,7 @@
 <div id="quiz">
   <div class="qz-top">
     <div class="qz-topinner">
-      <button class="backbtn" type="button" (click)="back()">← 返回</button>
+      <button class="backbtn" type="button" (click)="back()">← Back</button>
       <div class="qz-label"><b>{{ title() }}</b> · <span>{{ progressLabel() }}</span></div>
       <div class="qz-score">
         <span class="g">✓{{ quizState.correct() }}</span>
@@ -23,7 +23,7 @@
   <div class="wrap" id="qzBody">
     @if (quizState.currentUnit(); as unit) {
       <div class="card" [style.--c]="meta().color">
-        <div class="tag">{{ meta().label }} · 第 {{ unit.n }} 题</div>
+        <div class="tag">{{ meta().label }} · question {{ unit.n }}</div>
 
         @switch (unit.kind) {
           @case ('tf') {

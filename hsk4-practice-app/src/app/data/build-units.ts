@@ -138,9 +138,9 @@ export function questionKeyOf(testId: TestId, sectionKey: SectionKey, unit: Unit
 }
 
 /**
- * Open writing items (看图造句) are self-assessed against a model answer, so
- * they are counted as "answered" but excluded from success rate — the same
- * rule the original quiz applied.
+ * Open writing items (guided writing: write a sentence from a picture) are
+ * self-assessed against a model answer, so they are counted as "answered" but
+ * excluded from success rate — the same rule the original quiz applied.
  */
 export function isScoreable(unit: Unit): boolean {
   return unit.kind !== 'open';

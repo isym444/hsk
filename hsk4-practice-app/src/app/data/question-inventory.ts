@@ -59,12 +59,12 @@ export function labelForQuestionKey(key: string): string {
 
 /** Distribution of the flat "kind" taxonomy, for the stats page. */
 export const KIND_LABELS: Record<string, string | undefined> = {
-  tf: '判断对错',
-  mc: '单项选择',
-  fill: '选词填空',
-  order: '句子排序',
-  build: '完成句子',
-  open: '看图造句',
+  tf: 'True / false',
+  mc: 'Multiple choice',
+  fill: 'Fill in the blank',
+  order: 'Sentence order',
+  build: 'Sentence building',
+  open: 'Guided writing',
 };
 
 /** Paper metadata for stats tables. */

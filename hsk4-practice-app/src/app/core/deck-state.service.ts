@@ -129,7 +129,7 @@ export class DeckStateService {
       this.preview.set(await firstValueFrom(this.api.preview(category)));
     } catch {
       this.fail(
-        `无法连接复习服务。请先启动后端：cd backend && ./.venv/bin/uvicorn app.main:app --port 8000`,
+        `Cannot reach the review service. Start the backend first: cd backend && ./.venv/bin/uvicorn app.main:app --port 8000`,
       );
     }
   }
@@ -147,7 +147,7 @@ export class DeckStateService {
       this.phase.set('running');
       this.beginQuestion();
     } catch {
-      this.fail('无法开始练习：复习服务没有响应。请确认后端已启动，然后重试。');
+      this.fail('Cannot start practice: the review service is not responding. Check that the backend is running and try again.');
     }
   }
 
@@ -218,7 +218,7 @@ export class DeckStateService {
       this.phase.set('idle');
       return summary;
     } catch {
-      this.fail('无法结束本次练习：复习服务没有响应。');
+      this.fail('Cannot end this session: the review service is not responding.');
       return null;
     }
   }
@@ -304,7 +304,7 @@ export class DeckStateService {
     } catch {
       this.pending.push(review);
       this.error.set(
-        `没能保存到数据库（服务未响应），已暂存 ${this.pending.length} 题，恢复后会自动补传。`,
+        `Could not save to the database (service not responding). ${this.pending.length} answers are held and will be re-sent automatically once it is back.`,
       );
     }
   }

@@ -21,7 +21,7 @@ export class SummaryComponent {
   });
 
   readonly tag = computed(
-    () => `${this.quizState.testId()} · ${this.meta().label} · 完成`,
+    () => `${this.quizState.testId()} · ${this.meta().label} · complete`,
   );
 
   readonly percentage = computed(() => {

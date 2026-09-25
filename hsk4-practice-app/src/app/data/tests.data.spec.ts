@@ -17,11 +17,11 @@ describe('data layer parity with hsk4-practice.html', () => {
     expect(TESTS).toEqual(FIXTURE_TESTS);
   });
 
-  it('keeps the original section meta map', () => {
+  it('keeps the section meta map, with English UI labels', () => {
     expect(SECTION_META).toEqual({
-      listening: { label: '听力', color: 'var(--listen)', speak: true },
-      reading: { label: '阅读', color: 'var(--read)', speak: false },
-      writing: { label: '写作', color: 'var(--write)', speak: false },
+      listening: { label: 'Listening', color: 'var(--listen)', speak: true },
+      reading: { label: 'Reading', color: 'var(--read)', speak: false },
+      writing: { label: 'Writing', color: 'var(--write)', speak: false },
     });
     expect(SECTION_ORDER).toEqual(['listening', 'reading', 'writing']);
   });

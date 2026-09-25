@@ -66,7 +66,7 @@ describe('TrueFalseQuestionComponent', () => {
     expect(buttons()[0].classList).toContain('correct');
     expect(buttons()[0].disabled).toBeTrue();
     expect(buttons()[1].disabled).toBeTrue();
-    expect(fixture.nativeElement.querySelector('.fbline.good')?.textContent).toContain('回答正确');
+    expect(fixture.nativeElement.querySelector('.fbline.good')?.textContent).toContain('Correct');
   });
 
   it('marks a wrong pick red and still reveals the right one', () => {
@@ -75,7 +75,7 @@ describe('TrueFalseQuestionComponent', () => {
 
     expect(buttons()[1].classList).toContain('wrong');
     expect(buttons()[0].classList).toContain('correct');
-    expect(fixture.nativeElement.querySelector('.fbline.bad')?.textContent).toContain('正确答案：对');
+    expect(fixture.nativeElement.querySelector('.fbline.bad')?.textContent).toContain('answer: 对');
   });
 
   it('shows the transcript once answered', () => {
@@ -84,7 +84,7 @@ describe('TrueFalseQuestionComponent', () => {
     buttons()[0].click();
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.transcript-label')?.textContent).toBe('听力原文');
+    expect(fixture.nativeElement.querySelector('.transcript-label')?.textContent).toBe('Transcript');
     expect(fixture.nativeElement.querySelector('.transcript')?.textContent).toContain('树林');
   });
 
@@ -123,7 +123,7 @@ describe('TrueFalseQuestionComponent', () => {
     buttons()[0].click();
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.fbline.bad')?.textContent).toContain('正确答案：错');
+    expect(fixture.nativeElement.querySelector('.fbline.bad')?.textContent).toContain('answer: 错');
     expect(buttons()[1].classList).toContain('correct');
   });
 });

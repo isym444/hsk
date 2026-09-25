@@ -4,7 +4,7 @@ import { SECTION_META } from '../data/section-meta';
 import { SectionKey } from '../data/models';
 import { CATEGORY_ORDER, KIND_LABELS } from '../data/question-inventory';
 import { ReviewApiService, SessionSummary } from '../core/review-api.service';
-import { OUTCOME_LABELS, formatDateTime, formatDuration, formatPercent } from '../core/format';
+import { DECK_MODE_LABELS, OUTCOME_LABELS, formatDateTime, formatDuration, formatPercent } from '../core/format';
 
 /**
  * End-of-session stats: the numbers for the practice run the learner just
@@ -41,9 +41,10 @@ export class DeckSummaryComponent implements OnInit {
 
   readonly meta = computed(() => SECTION_META[this.category()]);
 
-  readonly modeLabel = computed(() =>
-    this.summary()?.mode === 'smart' ? '智能复习' : '随机练习',
-  );
+  readonly modeLabel = computed(() => {
+    const mode = this.summary()?.mode;
+    return (mode ? DECK_MODE_LABELS[mode] : undefined) ?? mode ?? '';
+  });
 
   /** How the session compared with the same category's earlier history. */
   readonly priorDelta = computed<number | null>(() => {
@@ -80,7 +81,7 @@ export class DeckSummaryComponent implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-        this.error.set('找不到这次练习的记录（可能已被删除，或后端没有启动）。');
+        this.error.set('Could not find this practice session (it may have been deleted, or the backend is not running).');
       },
     });
   }

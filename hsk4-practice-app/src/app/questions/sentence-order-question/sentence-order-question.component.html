@@ -4,7 +4,7 @@
   }
 </div>
 
-<p class="question">请选出正确的顺序：</p>
+<p class="question">Choose the correct order:</p>
 
 <div class="permgrid">
   @for (permutation of permutations; track permutation; let i = $index) {
@@ -21,9 +21,9 @@
   <div class="feedback">
     <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
       @if (isCorrect()) {
-        ✓ 回答正确
+        ✓ Correct
       } @else {
-        ✗ 回答错误 · 正确顺序：{{ solutionArrow() }}
+        ✗ Incorrect · correct order: {{ solutionArrow() }}
       }</div>
   </div>
 }

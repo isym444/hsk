@@ -76,7 +76,7 @@ export class QuizShellComponent {
   );
 
   readonly progressLabel = () =>
-    `第 ${this.quizState.idx() + 1} / ${this.quizState.total()} 题`;
+    `Question ${this.quizState.idx() + 1} / ${this.quizState.total()}`;
 
   readonly progressWidth = () => {
     const total = this.quizState.total();
@@ -86,10 +86,10 @@ export class QuizShellComponent {
   readonly wrongCount = () => this.quizState.scoreable() - this.quizState.correct();
 
   readonly nextLabel = () =>
-    this.quizState.idx() < this.quizState.total() - 1 ? '下一题' : '查看成绩';
+    this.quizState.idx() < this.quizState.total() - 1 ? 'Next question' : 'See results';
 
   constructor() {
-    // Keep the session in sync with the URL. This covers /summary's 重做一遍
+    // Keep the session in sync with the URL. This covers /summary's "Try again"
     // and section-to-section navigation, where the shell is reused and the
     // state service still holds the previous section's session.
     //

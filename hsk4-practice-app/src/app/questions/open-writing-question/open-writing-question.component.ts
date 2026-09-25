@@ -13,7 +13,7 @@ export class OpenWritingQuestionComponent {
   readonly unit = input.required<OpenUnit>();
   readonly answered = output<AnswerEvent>();
 
-  /** True once 查看参考答案 has been pressed. */
+  /** True once "Show model answer" has been pressed. */
   readonly revealed = signal(false);
 
   /** Same flag, named for the shell's next-button condition. */
@@ -25,11 +25,11 @@ export class OpenWritingQuestionComponent {
   readonly usedTargetWord = computed(() => this.draft().includes(this.unit().word));
 
   readonly prompt = computed(
-    () => `你的句子里用到了「${this.unit().word}」`,
+    () => `Your sentence uses 「${this.unit().word}」`,
   );
 
   readonly hint = computed(
-    () => `提示：可以对照参考答案，看看怎么用「${this.unit().word}」造句`,
+    () => `Tip: compare with the model answer to see how 「${this.unit().word}」 is used in a sentence`,
   );
 
   onInput(value: string): void {

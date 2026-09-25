@@ -59,13 +59,13 @@ describe('HomeComponent', () => {
     const cards = Array.from(element().querySelectorAll<HTMLElement>('.deckcard'));
     expect(cards.length).toBe(3);
     expect(cards.map((card) => card.querySelector('.name')?.textContent?.trim())).toEqual([
-      '听力',
-      '阅读',
-      '写作',
+      'Listening',
+      'Reading',
+      'Writing',
     ]);
-    expect(cards[0].textContent).toContain('三套样卷合计 135 题');
-    expect(cards[1].textContent).toContain('三套样卷合计 120 题');
-    expect(cards[2].textContent).toContain('三套样卷合计 45 题');
+    expect(cards[0].textContent).toContain('135 questions across all three sample papers');
+    expect(cards[1].textContent).toContain('120 questions across all three sample papers');
+    expect(cards[2].textContent).toContain('45 questions across all three sample papers');
   });
 
   it('shows live progress from the review database on each deck card', () => {
@@ -73,9 +73,9 @@ describe('HomeComponent', () => {
     const stats = Array.from(reading.querySelectorAll<HTMLElement>('.stat')).map((stat) =>
       stat.textContent?.replace(/\s+/g, ''),
     );
-    expect(stats[0]).toContain('已答题目6/120');
-    expect(stats[1]).toContain('成功率50%');
-    expect(reading.querySelector<HTMLElement>('.metricnote')?.textContent).toContain('覆盖率 5.0%');
+    expect(stats[0]).toContain('Answered6/120');
+    expect(stats[1]).toContain('Successrate50%');
+    expect(reading.querySelector<HTMLElement>('.metricnote')?.textContent).toContain('Coverage 5.0%');
   });
 
   it('navigates into an aggregated deck', async () => {
@@ -119,14 +119,14 @@ describe('HomeComponent', () => {
     ]);
   });
 
-  it('shows nine section buttons with the original labels and counts', () => {
+  it('shows nine section buttons with the section labels and counts', () => {
     expandPaperList();
     const buttons = Array.from(element().querySelectorAll<HTMLButtonElement>('.secbtn'));
     expect(buttons.length).toBe(9);
     expect(buttons.slice(0, 3).map((b) => b.textContent?.replace(/\s+/g, ''))).toEqual([
-      '听力45题',
-      '阅读40题',
-      '写作15题',
+      'Listening45questions',
+      'Reading40questions',
+      'Writing15questions',
     ]);
   });
 
@@ -152,13 +152,13 @@ describe('HomeComponent', () => {
     expect(quizState.idx()).toBe(0);
   });
 
-  it('keeps the original footnote copy', () => {
+  it('keeps the footnote copy', () => {
     const footnote = element().querySelector('.footnote')?.textContent ?? '';
-    expect(footnote).toContain('国家汉办');
-    expect(footnote).toContain('浏览器自带的语音朗读');
+    expect(footnote).toContain('Hanban');
+    expect(footnote).toContain("browser's built-in speech synthesis");
   });
 
   it('renders the hero copy for the aggregated decks', () => {
-    expect(element().querySelector('.hero h1')?.textContent?.trim()).toBe('HSK 四级 · 综合题库');
+    expect(element().querySelector('.hero h1')?.textContent?.trim()).toBe('HSK 4 · Combined question bank');
   });
 });

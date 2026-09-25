@@ -19,7 +19,7 @@ export class SpeechService {
   speak(text: string): void {
     try {
       if (!this.supported) {
-        alert('这个浏览器不支持语音朗读，可在回答后查看文字原文。');
+        alert('This browser does not support speech synthesis. You can read the transcript after answering.');
         return;
       }
       window.speechSynthesis.cancel();

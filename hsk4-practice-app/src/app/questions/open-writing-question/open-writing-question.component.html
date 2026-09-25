@@ -1,17 +1,17 @@
-<p class="question">用这个词写一句话（原题配有图片，这里省略）：</p>
+<p class="question">Write a sentence using this word (the original item came with a picture, omitted here):</p>
 
 <div class="wordpill">{{unit().word}}</div>
 
 <textarea
   class="opentext"
-  placeholder="在这里输入你的句子…"
+  placeholder="Type your sentence here…"
   [disabled]="revealed()"
   (input)="onInput($any($event.target).value)"
 ></textarea>
 
 <div class="rowbtns">
   <button class="smallbtn" type="button" [disabled]="revealed()" (click)="reveal()">
-    查看参考答案
+    Show model answer
   </button>
 </div>
 
@@ -25,7 +25,7 @@
       }
     </div>
     <div class="model">
-      <div class="lbl">参考答案</div>{{ unit().model }}
+      <div class="lbl">Model answer</div>{{ unit().model }}
     </div>
   </div>
 }

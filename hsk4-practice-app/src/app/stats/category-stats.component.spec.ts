@@ -81,21 +81,21 @@ describe('CategoryStatsComponent', () => {
   it('shows how many questions have been answered out of the category total', async () => {
     await open();
 
-    expect(text('.hero h1')).toBe('阅读 · 统计');
-    expect(text('.deckcard-head')).toContain('阅读');
-    expect(flat('.deckcard .statgrid')).toContain('已答题目2/120');
-    expect(flat('.deckcard .statgrid')).toContain('未答题目118');
+    expect(text('.hero h1')).toBe('Reading · Statistics');
+    expect(text('.deckcard-head')).toContain('Reading');
+    expect(flat('.deckcard .statgrid')).toContain('Answered2/120');
+    expect(flat('.deckcard .statgrid')).toContain('Unanswered118');
   });
 
   it('shows the success rate, average response time and attempt counts', async () => {
     await open();
 
     const stats = flat('.deckcard .statgrid');
-    expect(stats).toContain('成功率67%');
-    expect(stats).toContain('平均用时3.0秒');
-    expect(stats).toContain('作答次数3');
-    expect(stats).toContain('练习次数1');
-    expect(text('.metricnote')).toContain('题库覆盖率 1.7%');
+    expect(stats).toContain('Successrate67%');
+    expect(stats).toContain('Avg.time3.0s');
+    expect(stats).toContain('Answers3');
+    expect(stats).toContain('Sessions1');
+    expect(text('.metricnote')).toContain('Bank coverage 1.7%');
   });
 
   it('breaks the category down by question type', async () => {
@@ -103,9 +103,9 @@ describe('CategoryStatsComponent', () => {
 
     const kindRows = rows('.kinds');
     expect(kindRows.length).toBe(2);
-    expect(rowText(kindRows[0])).toContain('选词填空');
+    expect(rowText(kindRows[0])).toContain('Fill in the blank');
     expect(rowText(kindRows[0])).toContain('100%');
-    expect(rowText(kindRows[1])).toContain('单项选择');
+    expect(rowText(kindRows[1])).toContain('Multiple choice');
     expect(rowText(kindRows[1])).toContain('—');
   });
 
@@ -138,21 +138,21 @@ describe('CategoryStatsComponent', () => {
     await open();
     expect(rows('.questions').length).toBe(3);
 
-    chip('未作答').click();
+    chip('Unanswered').click();
     fixture.detectChanges();
     expect(rows('.questions').length).toBe(1);
     expect(rowText(rows('.questions')[0])).toContain('★ 刷牙时');
 
-    chip('成功率<60%').click();
+    chip('Success rate <60%').click();
     fixture.detectChanges();
     expect(rows('.questions').length).toBe(2);
 
-    chip('从没答对').click();
+    chip('Never correct').click();
     fixture.detectChanges();
     expect(rows('.questions').length).toBe(1);
     expect(rowText(rows('.questions')[0])).toContain('H41002');
 
-    chip('全部').click();
+    chip('All').click();
     fixture.detectChanges();
     expect(rows('.questions').length).toBe(3);
   });
@@ -162,7 +162,7 @@ describe('CategoryStatsComponent', () => {
 
     const sessionRows = rows('.sessions');
     expect(sessionRows.length).toBe(1);
-    expect(rowText(sessionRows[0])).toContain('智能复习');
+    expect(rowText(sessionRows[0])).toContain('Smart review');
     expect(rowText(sessionRows[0])).toContain('67%');
 
     sessionRows[0].querySelector<HTMLButtonElement>('.linkbtn')?.click();
@@ -212,8 +212,8 @@ describe('CategoryStatsComponent', () => {
       recent_sessions: [],
     });
 
-    expect(flat('.deckcard .statgrid')).toContain('成功率—');
-    expect(text('.deckcard-head')).toContain('还没有练习记录');
-    expect(text('.loading')).toContain('还没有练习记录');
+    expect(flat('.deckcard .statgrid')).toContain('Successrate—');
+    expect(text('.deckcard-head')).toContain('No practice records yet');
+    expect(text('.loading')).toContain('No practice records yet');
   });
 });

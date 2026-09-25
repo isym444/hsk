@@ -9,19 +9,19 @@
   "categories": [
     {
       "key": "listening",
-      "label": "听力",
+      "label": "Listening",
       "total": 135,
       "scoreable": 135
     },
     {
       "key": "reading",
-      "label": "阅读",
+      "label": "Reading",
       "total": 120,
       "scoreable": 120
     },
     {
       "key": "writing",
-      "label": "写作",
+      "label": "Writing",
       "total": 45,
       "scoreable": 30
     }
@@ -3028,5 +3028,5 @@
       "label": "讨论"
     }
   ],
-  "generated_at": "2026-09-25T11:06:52.448Z"
+  "generated_at": "2026-09-25T12:50:38.328Z"
 }

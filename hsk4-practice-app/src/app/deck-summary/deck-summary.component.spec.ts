@@ -77,28 +77,28 @@ describe('DeckSummaryComponent', () => {
   it('shows the session score and success rate', async () => {
     await open();
 
-    expect(text('.tag')).toBe('本次练习 · 阅读 · 智能复习');
+    expect(text('.tag')).toBe('This session · Reading · Smart review');
     expect(text('.big')).toBe('2 / 3');
-    expect(text('.sub')).toContain('正确率 67%');
+    expect(text('.sub')).toContain('Success rate 67%');
   });
 
   it('compares the session with the category history', async () => {
     await open();
 
     // 2/3 this session versus 40% before it.
-    expect(text('.delta')).toContain('提高 27%');
-    expect(text('.delta')).toContain('历史 40%');
+    expect(text('.delta')).toContain('up 27%');
+    expect(text('.delta')).toContain('history 40%');
   });
 
   it('shows answered, timing and duration for the session', async () => {
     await open();
 
     const stats = flat('.statgrid');
-    expect(stats).toContain('本次作答3题');
-    expect(stats).toContain('答对/答错2/1');
-    expect(stats).toContain('平均用时4.0秒');
-    expect(stats).toContain('练习时长5分0秒');
-    expect(stats).toContain('总答题时间12.0秒');
+    expect(stats).toContain('Answeredthissession3');
+    expect(stats).toContain('Correct/wrong2/1');
+    expect(stats).toContain('Avg.time4.0s');
+    expect(stats).toContain('Sessionlength5min0s');
+    expect(stats).toContain('Totalansweringtime12.0s');
   });
 
   it('lists every question answered in the session, in order', async () => {
@@ -107,20 +107,20 @@ describe('DeckSummaryComponent', () => {
     const rows = Array.from(element().querySelectorAll<HTMLTableRowElement>('.items tbody tr'));
     expect(rows.length).toBe(3);
     expect(rowText(rows[0])).toContain('H41001');
-    expect(rowText(rows[0])).toContain('选词填空');
-    expect(rowText(rows[0])).toContain('答对');
-    expect(rowText(rows[1])).toContain('答错');
-    expect(rowText(rows[1])).toContain('8.0 秒');
-    expect(text('.footnote')).toContain('本次最慢的一题');
+    expect(rowText(rows[0])).toContain('Fill in the blank');
+    expect(rowText(rows[0])).toContain('Correct');
+    expect(rowText(rows[1])).toContain('Wrong');
+    expect(rowText(rows[1])).toContain('8.0 s');
+    expect(text('.footnote')).toContain('Slowest question this session');
   });
 
   it('shows the category totals alongside the session', async () => {
     await open();
 
     const stats = allFlat('.statgrid');
-    expect(stats).toContain('已练题目8/120');
-    expect(stats).toContain('累计正确率55%');
-    expect(stats).toContain('累计作答次数11');
+    expect(stats).toContain('Questionspractised8/120');
+    expect(stats).toContain('Overallsuccessrate55%');
+    expect(stats).toContain('Totalanswers11');
   });
 
   it('explains a first-ever session with no history to compare', async () => {
@@ -133,8 +133,8 @@ describe('DeckSummaryComponent', () => {
       },
     );
 
-    expect(text('.tag')).toBe('本次练习 · 写作 · 随机练习');
-    expect(text('.delta')).toContain('这是写作的第一次练习');
+    expect(text('.tag')).toBe('This session · Writing · Random practice');
+    expect(text('.delta')).toContain('This is your first Writing practice');
   });
 
   it('handles an empty session without dividing by zero', async () => {
@@ -143,15 +143,15 @@ describe('DeckSummaryComponent', () => {
       { answered: 0, correct: 0, incorrect: 0, success_rate: null, items: [] },
     );
 
-    expect(text('.big')).toBe('0 题');
-    expect(text('.sub')).toContain('这次没有作答记录');
+    expect(text('.big')).toBe('0 questions');
+    expect(text('.sub')).toContain('No answers were recorded this time');
   });
 
   it('offers to keep practising', async () => {
     await open();
 
     Array.from(element().querySelectorAll<HTMLButtonElement>('.summary-actions button'))
-      .find((button) => button.textContent?.includes('继续练习'))
+      .find((button) => button.textContent?.includes('Keep practising'))
       ?.click();
 
     expect(navigate).toHaveBeenCalledWith(['/deck', 'reading']);
@@ -161,7 +161,7 @@ describe('DeckSummaryComponent', () => {
     await open();
 
     Array.from(element().querySelectorAll<HTMLButtonElement>('.summary-actions button'))
-      .find((button) => button.textContent?.includes('统计'))
+      .find((button) => button.textContent?.includes('View Reading stats'))
       ?.click();
 
     expect(navigate).toHaveBeenCalledWith(['/stats', 'reading']);
@@ -173,6 +173,6 @@ describe('DeckSummaryComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(text('.errbar')).toContain('找不到这次练习的记录');
+    expect(text('.errbar')).toContain('Could not find this practice session');
   });
 });

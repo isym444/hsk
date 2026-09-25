@@ -117,7 +117,7 @@ export class CategoryStatsComponent implements OnInit {
       error: () => {
         this.loading.set(false);
         this.error.set(
-          '无法读取统计数据。请确认后端已启动：cd backend && ./.venv/bin/uvicorn app.main:app --port 8000',
+          'Could not load the statistics. Check that the backend is running: cd backend && ./.venv/bin/uvicorn app.main:app --port 8000',
         );
       },
     });

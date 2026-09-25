@@ -35,8 +35,8 @@ async function settleFixture(fixture: ComponentFixture<unknown>): Promise<void> 
 
 /**
  * Drives the aggregated deck runner the way a learner does: pick a mode, start,
- * answer, press 下一题, and end the session whenever — then check that the
- * session's own summary page is where you land.
+ * answer, press "Next question", and end the session whenever — then check that
+ * the session's own summary page is where you land.
  */
 describe('DeckRunComponent', () => {
   let fixture: ComponentFixture<DeckRunComponent>;
@@ -126,7 +126,7 @@ describe('DeckRunComponent', () => {
     category = 'listening',
   ): Promise<void> {
     const modeButton = Array.from(element().querySelectorAll<HTMLButtonElement>('.modebtn')).find(
-      (candidate) => candidate.textContent?.includes(mode === 'smart' ? '智能复习' : '随机练习'),
+      (candidate) => candidate.textContent?.includes(mode === 'smart' ? 'Smart review' : 'Random practice'),
     );
     modeButton?.click();
     fixture.detectChanges();
@@ -180,13 +180,13 @@ describe('DeckRunComponent', () => {
   it('shows the aggregated deck for the category before starting', async () => {
     await open();
 
-    expect(text('.hero h1')).toBe('听力 · 综合练习');
+    expect(text('.hero h1')).toBe('Listening · Combined practice');
     expect(text('.hero p')).toContain('H41001–H41003');
     expect(text('.hero p')).toContain('135');
-    expect(text('.deckcard-head')).toContain('题库来源：H41001 · H41002 · H41003');
-    expect(flat('.statgrid')).toContain('题库总量135题');
-    expect(flat('.statgrid')).toContain('还没做过114题');
-    expect(flat('.statgrid')).toContain('该复习了1题');
+    expect(text('.deckcard-head')).toContain('Source papers: H41001 · H41002 · H41003');
+    expect(flat('.statgrid')).toContain('Questionsinbank135');
+    expect(flat('.statgrid')).toContain('Notseenyet114');
+    expect(flat('.statgrid')).toContain('Dueforreview1');
   });
 
   it('defaults to smart mode and can switch to random', async () => {
@@ -205,9 +205,9 @@ describe('DeckRunComponent', () => {
     await open();
     await startSession('random');
 
-    expect(text('.qz-label')).toContain('听力 · 综合练习');
-    expect(text('.qz-label')).toContain('本次已答 0 题');
-    expect(text('.tag')).toContain('第 1 题');
+    expect(text('.qz-label')).toContain('Listening · Combined practice');
+    expect(text('.qz-label')).toContain('Answered this session: 0');
+    expect(text('.tag')).toContain('question 1');
     expect(element().querySelector('app-true-false-question')).toBeTruthy();
     // The next button only appears once the question has been judged.
     expect(element().querySelector('.nextrow')).toBeNull();
@@ -220,12 +220,12 @@ describe('DeckRunComponent', () => {
 
     expect(text('.qz-score')).toContain('✓1');
     expect(text('.qz-score')).toContain('✗0');
-    expect(text('.nextnote')).toContain('答对');
+    expect(text('.nextnote')).toContain('Correct');
 
     await next();
 
-    expect(text('.tag')).toContain('第 2 题');
-    expect(text('.qz-label')).toContain('本次已答 1 题');
+    expect(text('.tag')).toContain('question 2');
+    expect(text('.qz-label')).toContain('Answered this session: 1');
     expect(element().querySelector('.nextrow')).toBeNull();
   });
 
@@ -235,10 +235,10 @@ describe('DeckRunComponent', () => {
     await answer(false);
 
     expect(text('.qz-score')).toContain('✗1');
-    expect(text('.sessionline')).toContain('本次平均');
+    expect(text('.sessionline')).toContain('Session average');
   });
 
-  it('ends the session on 结束练习 and opens that session summary', async () => {
+  it('ends the session on "End session" and opens that session summary', async () => {
     await open();
     await startSession();
     await answer(true);
@@ -292,13 +292,13 @@ describe('DeckRunComponent', () => {
     await settle();
 
     expect(element().querySelector('.errbar')).toBeNull();
-    expect(text('.hero h1')).toBe('写作 · 综合练习');
+    expect(text('.hero h1')).toBe('Writing · Combined practice');
   });
 
   it('links to the category stats page', async () => {
     await open();
     const statsButton = Array.from(element().querySelectorAll<HTMLButtonElement>('.smallbtn')).find(
-      (button) => button.textContent?.includes('查看统计'),
+      (button) => button.textContent?.includes('View stats'),
     );
     statsButton?.click();
 

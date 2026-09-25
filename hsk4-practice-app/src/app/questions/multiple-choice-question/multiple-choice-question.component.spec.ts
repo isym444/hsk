@@ -89,7 +89,7 @@ describe('MultipleChoiceQuestionComponent', () => {
 
     expect(options()[3].classList).toContain('wrong');
     expect(options()[0].classList).toContain('correct');
-    expect(fixture.nativeElement.querySelector('.fbline.bad')?.textContent).toContain('正确答案：A');
+    expect(fixture.nativeElement.querySelector('.fbline.bad')?.textContent).toContain('answer: A');
     expect(component.hasAnswered()).toBeTrue();
   });
 
@@ -118,7 +118,7 @@ describe('MultipleChoiceQuestionComponent', () => {
     options()[0].click();
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.fbline.bad')?.textContent).toContain('正确答案：C');
+    expect(fixture.nativeElement.querySelector('.fbline.bad')?.textContent).toContain('answer: C');
     expect(options()[2].classList).toContain('correct');
     expect(options()[0].classList).toContain('wrong');
   });

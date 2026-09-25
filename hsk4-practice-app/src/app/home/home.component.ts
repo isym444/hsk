@@ -24,7 +24,7 @@ interface HomeTestRow {
 /**
  * Home screen: the aggregated skill decks (all three papers combined) come
  * first, with their live progress from the review database. The original
- * three-papers-by-three-sections grid is kept below as "按试卷练习".
+ * three-papers-by-three-sections grid is kept below as "Practice by paper".
  */
 @Component({
   selector: 'app-home',

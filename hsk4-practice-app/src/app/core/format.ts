@@ -25,7 +25,7 @@ export function localIsoWithOffset(date: Date): string {
   );
 }
 
-/** Human-readable duration: `850 毫秒`, `4.2 秒`, `1 分 12 秒`. */
+/** Human-readable duration: `850 ms`, `4.2 s`, `1 min 12 s`. */
 export function formatDuration(ms: number | null | undefined): string {
   if (ms === null || ms === undefined || !Number.isFinite(ms)) {
     return '—';
@@ -34,20 +34,20 @@ export function formatDuration(ms: number | null | undefined): string {
     return '—';
   }
   if (ms < 1000) {
-    return `${Math.round(ms)} 毫秒`;
+    return `${Math.round(ms)} ms`;
   }
   const seconds = ms / 1000;
   if (seconds < 60) {
-    return `${seconds.toFixed(1)} 秒`;
+    return `${seconds.toFixed(1)} s`;
   }
   const minutes = Math.floor(seconds / 60);
-  return `${minutes} 分 ${Math.round(seconds % 60)} 秒`;
+  return `${minutes} min ${Math.round(seconds % 60)} s`;
 }
 
 /** Seconds with one decimal, for the live per-question timer. */
 export function formatElapsed(ms: number): string {
   const seconds = Math.max(ms, 0) / 1000;
-  return seconds < 10 ? `${seconds.toFixed(1)} 秒` : `${Math.round(seconds)} 秒`;
+  return seconds < 10 ? `${seconds.toFixed(1)} s` : `${Math.round(seconds)} s`;
 }
 
 /** A 0..1 rate as a percentage, or an em dash when there is no data yet. */
@@ -85,18 +85,18 @@ export function formatRelative(iso: string | null | undefined, now: number = Dat
   }
   const minutes = Math.floor((now - time) / 60_000);
   if (minutes < 1) {
-    return '刚刚';
+    return 'just now';
   }
   if (minutes < 60) {
-    return `${minutes} 分钟前`;
+    return `${minutes} min ago`;
   }
   const hours = Math.floor(minutes / 60);
   if (hours < 24) {
-    return `${hours} 小时前`;
+    return `${hours} h ago`;
   }
   const days = Math.floor(hours / 24);
   if (days < 30) {
-    return `${days} 天前`;
+    return `${days} d ago`;
   }
   return formatDateTime(iso);
 }
@@ -107,9 +107,9 @@ export function formatInterval(days: number | null | undefined): string {
     return '—';
   }
   if (days < 1) {
-    return `${Math.max(Math.round(days * 24), 1)} 小时`;
+    return `${Math.max(Math.round(days * 24), 1)} h`;
   }
-  return `${Math.round(days)} 天`;
+  return `${Math.round(days)} d`;
 }
 
 /** How many consecutive correct answers map to what review spacing. */
@@ -118,7 +118,7 @@ export const REVIEW_INTERVALS_DAYS = [1, 2, 4, 8, 16, 32, 60] as const;
 /**
  * The scheduler's interval for a question, derived from its current correct
  * streak. Mirrors `review_interval_days` in `backend/app/scheduling.py`; the
- * stats page shows it as "间隔".
+ * stats page shows it as the "Streak" column.
  */
 export function intervalDaysForStreak(streak: number): number {
   const index = Math.min(Math.max(streak, 0), REVIEW_INTERVALS_DAYS.length - 1);
@@ -130,13 +130,13 @@ export function intervalDaysForStreak(streak: number): number {
  * undefined because these are string-indexed lookups that can miss.
  */
 export const DECK_MODE_LABELS: Record<string, string | undefined> = {
-  random: '随机练习',
-  smart: '智能复习',
+  random: 'Random practice',
+  smart: 'Smart review',
 };
 
 /** Review outcomes, with the labels used in lists. */
 export const OUTCOME_LABELS: Record<string, string | undefined> = {
-  correct: '答对',
-  incorrect: '答错',
-  self_assessed: '自评',
+  correct: 'Correct',
+  incorrect: 'Wrong',
+  self_assessed: 'Self-assessed',
 };

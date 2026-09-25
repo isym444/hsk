@@ -13,11 +13,11 @@ import {
 describe('format helpers', () => {
   describe('formatDuration', () => {
     it('renders sub-second, second and minute scales', () => {
-      expect(formatDuration(850)).toBe('850 毫秒');
-      expect(formatDuration(4200)).toBe('4.2 秒');
-      expect(formatDuration(60000)).toBe('1 分 0 秒');
-      expect(formatDuration(72000)).toBe('1 分 12 秒');
-      expect(formatDuration(125000)).toBe('2 分 5 秒');
+      expect(formatDuration(850)).toBe('850 ms');
+      expect(formatDuration(4200)).toBe('4.2 s');
+      expect(formatDuration(60000)).toBe('1 min 0 s');
+      expect(formatDuration(72000)).toBe('1 min 12 s');
+      expect(formatDuration(125000)).toBe('2 min 5 s');
     });
 
     it('renders an em dash for missing or impossible values', () => {
@@ -30,10 +30,10 @@ describe('format helpers', () => {
 
   describe('formatElapsed', () => {
     it('keeps one decimal below ten seconds and rounds above', () => {
-      expect(formatElapsed(0)).toBe('0.0 秒');
-      expect(formatElapsed(4200)).toBe('4.2 秒');
-      expect(formatElapsed(9999)).toBe('10.0 秒');
-      expect(formatElapsed(12500)).toBe('13 秒');
+      expect(formatElapsed(0)).toBe('0.0 s');
+      expect(formatElapsed(4200)).toBe('4.2 s');
+      expect(formatElapsed(9999)).toBe('10.0 s');
+      expect(formatElapsed(12500)).toBe('13 s');
     });
   });
 
@@ -72,10 +72,10 @@ describe('format helpers', () => {
     const now = Date.parse('2026-09-25T12:00:00.000Z');
 
     it('scales from seconds to days', () => {
-      expect(formatRelative('2026-09-25T11:59:30.000Z', now)).toBe('刚刚');
-      expect(formatRelative('2026-09-25T11:30:00.000Z', now)).toBe('30 分钟前');
-      expect(formatRelative('2026-09-25T09:00:00.000Z', now)).toBe('3 小时前');
-      expect(formatRelative('2026-09-22T12:00:00.000Z', now)).toBe('3 天前');
+      expect(formatRelative('2026-09-25T11:59:30.000Z', now)).toBe('just now');
+      expect(formatRelative('2026-09-25T11:30:00.000Z', now)).toBe('30 min ago');
+      expect(formatRelative('2026-09-25T09:00:00.000Z', now)).toBe('3 h ago');
+      expect(formatRelative('2026-09-22T12:00:00.000Z', now)).toBe('3 d ago');
     });
 
     it('falls back to a date once it is a month old', () => {
@@ -121,10 +121,10 @@ describe('format helpers', () => {
   });
 
   it('labels every deck mode and review outcome', () => {
-    expect(DECK_MODE_LABELS['random']).toBe('随机练习');
-    expect(DECK_MODE_LABELS['smart']).toBe('智能复习');
-    expect(OUTCOME_LABELS['correct']).toBe('答对');
-    expect(OUTCOME_LABELS['incorrect']).toBe('答错');
-    expect(OUTCOME_LABELS['self_assessed']).toBe('自评');
+    expect(DECK_MODE_LABELS['random']).toBe('Random practice');
+    expect(DECK_MODE_LABELS['smart']).toBe('Smart review');
+    expect(OUTCOME_LABELS['correct']).toBe('Correct');
+    expect(OUTCOME_LABELS['incorrect']).toBe('Wrong');
+    expect(OUTCOME_LABELS['self_assessed']).toBe('Self-assessed');
   });
 });
