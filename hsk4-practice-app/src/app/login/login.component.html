@@ -1,0 +1,97 @@
+<div class="wrap">
+  <div class="hero">
+    <h1 class="heading">HSK 4 · Sign in</h1>
+    <p>
+      Your practice history and review schedule live in your own account, so the app needs to know
+      who you are before it can show any decks or statistics.
+    </p>
+  </div>
+
+  @if (!isConfigured) {
+    <div class="card notice">
+      <div class="tag">Not configured</div>
+      <p>
+        This build has no Supabase project attached, so sign-in is unavailable. Set
+        <code>supabaseUrl</code> and <code>supabaseAnonKey</code> in <code>config.json</code>.
+      </p>
+      <p class="fine">
+        Deploying it yourself? <code>deploy/README.md</code> covers the project, the redirect URLs
+        and the environment variables.
+      </p>
+    </div>
+  } @else if (sent()) {
+    <div class="card">
+      <div class="tag">Check your email</div>
+      <p>
+        If <b>{{ email() }}</b> has an account here, a link to choose a new password is on its way.
+        Open it in this browser and you will come back to a form for the new password.
+      </p>
+      <p class="fine">
+        Supabase only sends one email per address per minute. Nothing after a few minutes? Check the
+        spam folder.
+      </p>
+      <div class="actions">
+        <button class="smallbtn" type="button" (click)="backToSignIn()">Back to sign in</button>
+      </div>
+    </div>
+  } @else {
+    <form class="card" (submit)="submit($event)">
+      <div class="tag">{{ mode() === 'reset' ? 'Reset password' : 'Email and password' }}</div>
+
+      <label class="field">
+        <span class="fieldlabel">Email</span>
+        <input
+          type="email"
+          name="email"
+          inputmode="email"
+          autocomplete="username"
+          autocapitalize="off"
+          spellcheck="false"
+          placeholder="you@example.com"
+          [value]="email()"
+          (input)="onEmailInput($event)"
+          [attr.aria-invalid]="error() ? 'true' : null"
+        />
+      </label>
+
+      @if (mode() === 'signin') {
+        <label class="field">
+          <span class="fieldlabel">Password</span>
+          <input
+            type="password"
+            name="password"
+            autocomplete="current-password"
+            [value]="password()"
+            (input)="onPasswordInput($event)"
+            [attr.aria-invalid]="error() ? 'true' : null"
+          />
+        </label>
+      }
+
+      @if (error()) {
+        <p class="error" role="alert">{{ error() }}</p>
+      }
+
+      <div class="actions">
+        <button class="primarybtn" type="submit" [disabled]="!canSubmit">
+          @if (mode() === 'reset') {
+            {{ busy() ? 'Sending…' : 'Email me a reset link' }}
+          } @else {
+            {{ busy() ? 'Signing in…' : 'Sign in' }}
+          }
+        </button>
+
+        @if (mode() === 'reset') {
+          <button class="linkbtn" type="button" (click)="backToSignIn()">Back to sign in</button>
+        } @else {
+          <button class="linkbtn" type="button" (click)="askForReset()">Forgot password?</button>
+        }
+      </div>
+    </form>
+  }
+
+  <p class="footnote">
+    Accounts are created in the Supabase dashboard rather than here, so there is nothing to sign up
+    for — if you need one, ask whoever runs this deployment.
+  </p>
+</div>

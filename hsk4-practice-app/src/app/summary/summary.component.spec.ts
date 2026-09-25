@@ -3,6 +3,7 @@ import { Router, provideRouter } from '@angular/router';
 import { SummaryComponent } from './summary.component';
 import { QuizStateService } from '../core/quiz-state.service';
 import { routes } from '../app.routes';
+import { authStubProviders } from '../testing/auth-stub';
 import { provideZoneChangeDetection } from '@angular/core';
 
 /** Typed non-null lookup, so specs stay readable without `!` everywhere. */
@@ -22,7 +23,7 @@ describe('SummaryComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [SummaryComponent],
-      providers: [provideZoneChangeDetection(), provideRouter(routes)],
+      providers: [provideZoneChangeDetection(), provideRouter(routes), ...authStubProviders()],
     });
     quizState = TestBed.inject(QuizStateService);
     quizState.reset();

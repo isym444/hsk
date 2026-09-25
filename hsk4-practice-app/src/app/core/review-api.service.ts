@@ -1,15 +1,18 @@
 /**
  * Typed client for the FastAPI review backend (`backend/app`).
  *
- * All calls are same-origin under `/api`: during development `ng serve`
- * proxies them to the API (see `proxy.conf.json`), and in a production build
- * the API itself serves the bundle, so no base URL configuration is needed.
+ * Calls are same-origin under `/api` by default: during development `ng serve`
+ * proxies them to the API (see `proxy.conf.json`), and in the Docker stack the
+ * API itself serves the bundle. A static host with no proxy (Render) points the
+ * client at the deployed API instead, via `config.json` and
+ * `RuntimeConfigService`.
  */
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SectionKey } from '../data/models';
+import { RuntimeConfigService } from './runtime-config.service';
 
 export type DeckMode = 'random' | 'smart';
 export type Outcome = 'correct' | 'incorrect' | 'self_assessed';
@@ -143,6 +146,13 @@ export interface Health {
   status: string;
   database: string;
   questions: number;
+}
+
+/** Who the caller is, and how much history they have. Requires a token. */
+export interface Me {
+  user_id: string;
+  email: string | null;
+  role: string | null;
   reviews: number;
   sessions: number;
 }
@@ -150,10 +160,21 @@ export interface Health {
 @Injectable({ providedIn: 'root' })
 export class ReviewApiService {
   private readonly http = inject(HttpClient);
-  private readonly base = '/api';
+  private readonly runtimeConfig = inject(RuntimeConfigService);
 
+  /** `/api` by default; an absolute URL when `config.json` overrides it. */
+  private get base(): string {
+    return this.runtimeConfig.apiBase;
+  }
+
+  /** Public liveness probe — carries no per-user data. */
   health(): Observable<Health> {
     return this.http.get<Health>(`${this.base}/health`);
+  }
+
+  /** The signed-in account, with its own row counts. */
+  me(): Observable<Me> {
+    return this.http.get<Me>(`${this.base}/me`);
   }
 
   overview(): Observable<StatsOverview> {

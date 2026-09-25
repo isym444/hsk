@@ -1,1 +1,8 @@
 <router-outlet />
+
+@if (auth.signedIn()) {
+  <div class="account">
+    <span class="who" [title]="auth.email() || ''">{{ auth.email() }}</span>
+    <button class="signout" type="button" (click)="signOut()">Sign out</button>
+  </div>
+}

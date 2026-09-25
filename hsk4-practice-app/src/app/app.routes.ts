@@ -6,25 +6,43 @@ import { DeckRunComponent } from './deck-run/deck-run.component';
 import { DeckSummaryComponent } from './deck-summary/deck-summary.component';
 import { CategoryStatsComponent } from './stats/category-stats.component';
 import { StatsIndexComponent } from './stats/stats-index.component';
+import { LoginComponent } from './login/login.component';
+import { ResetPasswordComponent } from './login/reset-password.component';
 import { activeSessionGuard } from './core/active-session.guard';
+import { authGuard } from './core/auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  /* The only public pages. */
+  { path: 'login', component: LoginComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
 
-  /* Aggregated decks: every paper's questions for one skill, in one queue. */
-  { path: 'deck/:category', component: DeckRunComponent },
-  { path: 'deck/:category/summary/:sessionId', component: DeckSummaryComponent },
-
-  /* Review statistics. */
-  { path: 'stats', component: StatsIndexComponent },
-  { path: 'stats/:category', component: CategoryStatsComponent },
-
-  /* Original per-paper practice, kept as the secondary flow. */
-  { path: 'quiz/:testId/:section', component: QuizShellComponent },
+  /*
+   * Everything else needs a session. One parent route carries the guard, so a
+   * new page cannot accidentally ship unprotected — and the guard is a real
+   * boundary only for the UI: the API checks the token itself.
+   */
   {
-    path: 'summary/:testId/:section',
-    component: SummaryComponent,
-    canActivate: [activeSessionGuard],
+    path: '',
+    canActivate: [authGuard],
+    children: [
+      { path: '', component: HomeComponent },
+
+      /* Aggregated decks: every paper's questions for one skill, in one queue. */
+      { path: 'deck/:category', component: DeckRunComponent },
+      { path: 'deck/:category/summary/:sessionId', component: DeckSummaryComponent },
+
+      /* Review statistics. */
+      { path: 'stats', component: StatsIndexComponent },
+      { path: 'stats/:category', component: CategoryStatsComponent },
+
+      /* Original per-paper practice, kept as the secondary flow. */
+      { path: 'quiz/:testId/:section', component: QuizShellComponent },
+      {
+        path: 'summary/:testId/:section',
+        component: SummaryComponent,
+        canActivate: [activeSessionGuard],
+      },
+    ],
   },
 
   { path: '**', redirectTo: '' },

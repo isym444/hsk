@@ -1,36 +1,46 @@
-"""Stats endpoints: the per-category stats page and the cross-category overview."""
+"""Stats endpoints: the per-category stats page and the cross-category overview.
+
+Both are scoped to the signed-in caller — the questions are shared, the review
+history is not.
+"""
 
 from __future__ import annotations
-
-import sqlite3
 
 from fastapi import APIRouter, Depends, Query
 
 from .. import stats
+from ..auth import Principal, current_user
+from ..db import DbConnection
 from ..deps import get_db
 from ..schemas import Category, CategoryStatsPage, QuestionStats, StatsOverview
 
-router = APIRouter(prefix="/api", tags=["stats"])
+router = APIRouter(prefix="/api", tags=["stats"], dependencies=[Depends(current_user)])
 
 
 @router.get("/categories", response_model=StatsOverview)
-def categories_overview(conn: sqlite3.Connection = Depends(get_db)) -> StatsOverview:
+def categories_overview(
+    user: Principal = Depends(current_user),
+    conn: DbConnection = Depends(get_db),
+) -> StatsOverview:
     """Every category's headline stats plus a combined total (the home screen)."""
-    return StatsOverview(**stats.overview(conn))
+    return StatsOverview(**stats.overview(conn, user.user_id))
 
 
 @router.get("/stats/{category}", response_model=CategoryStatsPage)
 def category_page(
     category: Category,
     sessions: int = Query(default=10, ge=0, le=50),
-    conn: sqlite3.Connection = Depends(get_db),
+    user: Principal = Depends(current_user),
+    conn: DbConnection = Depends(get_db),
 ) -> CategoryStatsPage:
     """One category's stats page: headline numbers, per-kind split, every
     question's history, and the most recent sessions."""
-    rows = stats.per_question_rows(conn, category)
+    rows = stats.per_question_rows(conn, category, user.user_id)
     return CategoryStatsPage(
-        stats=stats.category_stats(conn, category),
+        stats=stats.category_stats(conn, category, user.user_id),
         by_kind=stats.kind_breakdown(rows),
         questions=[QuestionStats(**row) for row in rows],
-        recent_sessions=stats.recent_sessions(conn, category=category, limit=sessions),
+        recent_sessions=stats.recent_sessions(
+            conn, user.user_id, category=category, limit=sessions
+        ),
     )

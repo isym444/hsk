@@ -3,6 +3,7 @@ import { Router, provideRouter } from '@angular/router';
 import { provideZoneChangeDetection } from '@angular/core';
 import { QuizStateService } from './quiz-state.service';
 import { routes } from '../app.routes';
+import { authStubProviders } from '../testing/auth-stub';
 
 /**
  * A page refresh drops the in-memory session, so /summary must bounce home —
@@ -14,7 +15,7 @@ describe('activeSessionGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideZoneChangeDetection(), provideRouter(routes)],
+      providers: [provideZoneChangeDetection(), provideRouter(routes), ...authStubProviders()],
     });
     router = TestBed.inject(Router);
     quizState = TestBed.inject(QuizStateService);

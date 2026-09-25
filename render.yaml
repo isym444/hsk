@@ -1,0 +1,53 @@
+# Render Blueprint — the Angular UI as a free static site.
+#
+# The API is NOT here: it runs on the Hostinger VPS behind Traefik
+# (see deploy/). This service only serves the built bundle and points it at
+# https://ftapi.isym.uk/api through config.json.
+#
+# Usage: Render Dashboard -> New -> Blueprint -> pick this repo. Or create a
+# Static Site by hand with the same three values (root directory, build
+# command, publish directory) — see deploy/README.md.
+
+services:
+  - type: web
+    name: hsk4-practice
+    runtime: static
+    rootDir: hsk4-practice-app
+    # `build:render` writes public/config.json from HSK_API_BASE, then builds.
+    buildCommand: npm ci && npm run build:render
+    staticPublishPath: dist/hsk4-practice-app/browser
+
+    envVars:
+      # Read at build time by scripts/write-runtime-config.mjs, which writes
+      # them into the bundle's config.json.
+      #
+      # HSK_API_BASE must match the Traefik host rule in
+      # deploy/docker-compose.yml.
+      - key: HSK_API_BASE
+        value: https://ftapi.isym.uk/api
+      # Supabase project URL and its publishable (or legacy anon) key. The key
+      # is public by design — it ships in every Supabase web app and grants
+      # nothing on its own; the backend decides who may use the API.
+      - key: HSK_SUPABASE_URL
+        sync: false
+      - key: HSK_SUPABASE_ANON_KEY
+        sync: false
+
+    # Angular uses real routes (/stats/reading, /deck/writing/summary/<id>), so
+    # a deep link or refresh must fall back to index.html. Render serves a real
+    # file when one exists and only rewrites otherwise, so hashed assets and
+    # /audio/*.mp3 are unaffected.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+    headers:
+      # Both must be revalidated: index.html points at hashed asset names, and
+      # config.json decides which API the bundle talks to.
+      - path: /index.html
+        name: Cache-Control
+        value: no-store
+      - path: /config.json
+        name: Cache-Control
+        value: no-store

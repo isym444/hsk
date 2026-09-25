@@ -1,3 +1,10 @@
 fastapi>=0.141,<1.0
 uvicorn[standard]>=0.54,<1.0
 pydantic>=2.13,<3.0
+# Production database (Supabase/PostgreSQL). `binary` ships prebuilt libpq
+# wheels so the slim image needs no system PostgreSQL client; `pool` adds the
+# connection pool the API reuses across requests.
+psycopg[binary,pool]>=3.2,<4.0
+# Supabase access-token verification. `crypto` pulls in `cryptography`, which is
+# what verifies the ES256/RS256 signatures of the signing-keys system.
+PyJWT[crypto]>=2.10,<3.0

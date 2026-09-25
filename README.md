@@ -6,7 +6,8 @@ Three ways to work through the HSK4 sample papers, plus review statistics:
 | --- | --- |
 | `hsk4-practice.html` | The original single-file quiz app. Untouched reference/fallback. |
 | `hsk4-practice-app/` | The Angular app: aggregated practice decks, stats pages, and the original per-paper quiz. |
-| `backend/` | FastAPI + SQLite: the review database, statistics, and deck ordering. |
+| `backend/` | FastAPI + SQL: the review database, statistics, and deck ordering. SQLite locally, PostgreSQL (Supabase) in production. |
+| `deploy/` | How the API runs on the Hostinger VPS behind Traefik. Start with [`deploy/README.md`](deploy/README.md). |
 | `docs/superpowers/specs/` | Design documents. |
 
 ## What the app does
@@ -29,24 +30,46 @@ Three ways to work through the HSK4 sample papers, plus review statistics:
 - **Real exam audio.** The listening questions play the official recordings,
   cut into one clip per question, instead of the browser reading the transcript
   aloud.
-- **A real SQLite database.** Every answer is stored with its outcome
+- **A real SQL database.** Every answer is stored with its outcome
   (correct / incorrect / self-assessed), elapsed milliseconds, the UTC
-  timestamp, and the browser's own local time.
+  timestamp, and the browser's own local time. SQLite locally, PostgreSQL
+  (Supabase) when `HSK_DATABASE_URL` is set.
+- **Sign in with an email and password.** Supabase Auth handles sign-in, and
+  each account gets its own history and review schedule. The API verifies every
+  request's token, so nothing is readable without an account. Accounts are
+  created in the Supabase dashboard, and a forgotten password is reset by email.
 
 ## Running it
+
+The app needs a Supabase project (database *and* sign-in). Point both halves at
+it once:
 
 ```bash
 # once
 cd backend && python3 -m venv .venv && ./.venv/bin/pip install -r requirements-dev.txt
 
-# terminal 1: API on :8000
-cd backend && ./.venv/bin/uvicorn app.main:app --reload --port 8000
+# tell the frontend which project to sign in against (the anon key is public)
+cd hsk4-practice-app
+HSK_SUPABASE_URL=https://<project-ref>.supabase.co \
+HSK_SUPABASE_ANON_KEY=sb_publishable_... \
+  node scripts/write-runtime-config.mjs
+```
+
+```bash
+# terminal 1: API on :8000, verifying tokens from that project
+cd backend
+HSK_SUPABASE_URL=https://<project-ref>.supabase.co \
+HSK_SUPABASE_JWT_SECRET=<legacy JWT secret> \
+HSK_ALLOWED_EMAILS=you@example.com \
+  ./.venv/bin/uvicorn app.main:app --reload --port 8000
 
 # terminal 2: frontend on :4200, /api proxied to :8000
 cd hsk4-practice-app && npm install && npm start
 ```
 
-Then open <http://localhost:4200>.
+Then open <http://localhost:4200> and sign in with the account you created. `deploy/README.md`
+step 1 walks through creating the project; without it every API call answers
+`503`.
 
 To run the whole thing from a single process instead:
 
@@ -107,9 +130,29 @@ docker compose cp api:/data/hsk_reviews.sqlite3 ./hsk_reviews.sqlite3
 ## Tests
 
 ```bash
-cd backend && ./.venv/bin/python -m pytest -q          # 64 tests
-cd hsk4-practice-app && npm test                       # 211 tests
+cd backend && ./.venv/bin/python -m pytest -q          # 115 tests (SQLite)
+cd hsk4-practice-app && npm test                       # 277 tests
 ```
+
+The backend suite also runs against PostgreSQL, which is what CI does:
+
+```bash
+cd backend && HSK_TEST_DATABASE_URL='postgresql://postgres:postgres@127.0.0.1:55432/hsk' \
+  ./.venv/bin/python -m pytest -q
+```
+
+## Deploying
+
+The deployed shape is: the Angular bundle as a free **Render static site**, the
+API in **Docker on the Hostinger VPS** behind the Traefik you already run,
+**Supabase Auth** for sign-in, and all review history in
+**Supabase Postgres**. A push to `main` builds and publishes the API image to
+GHCR via GitHub Actions.
+
+[`deploy/README.md`](deploy/README.md) is the step-by-step runbook (Supabase
+project, Traefik network check, GHCR login, Render setup, DNS, troubleshooting).
+The two committed config files are [`deploy/docker-compose.yml`](deploy/docker-compose.yml)
+and [`render.yaml`](render.yaml).
 
 See [`hsk4-practice-app/README.md`](hsk4-practice-app/README.md) and
 [`backend/README.md`](backend/README.md) for details, and

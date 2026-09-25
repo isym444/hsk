@@ -1,0 +1,60 @@
+# The HSK4 review API on the Hostinger VPS, routed by the Traefik instance that
+# is already running there. Same shape as the existing net-worth-api service:
+# an image from GHCR, no published ports, Traefik labels do the routing.
+#
+#   cd deploy
+#   cp .env.example .env      # then fill in HSK_DATABASE_URL and friends
+#   docker compose pull
+#   docker compose up -d
+#
+# See deploy/README.md for the full runbook (Supabase, GHCR login, DNS).
+#
+# ---------------------------------------------------------------------------
+# ONE THING TO CHECK FIRST — the network below.
+#
+# Traefik only routes to containers it shares a Docker network with. This file
+# attaches the service to an *external* network named by TRAEFIK_NETWORK. If
+# your Traefik instead shares the default network of its own compose project,
+# delete the `networks:` block at the bottom and the two lines under the
+# service. deploy/README.md has the command that tells you which case you are in.
+# ---------------------------------------------------------------------------
+
+name: hsk4-practice
+
+services:
+  api:
+    image: ghcr.io/isym444/hsk4-practice-api:latest
+    # Re-pull on every `up`, so a deploy is `docker compose pull && up -d`.
+    pull_policy: always
+    restart: unless-stopped
+
+    # HSK_DATABASE_URL (Supabase), HSK_CORS_ORIGINS, pool sizes.
+    env_file:
+      - .env
+
+    environment:
+      traefik.enable: "true"
+
+      # Route every request for the hostname to this container.
+      traefik.http.routers.hsk4-api.rule: "Host(`ftapi.isym.uk`)"
+      traefik.http.routers.hsk4-api.entrypoints: "websecure"
+      traefik.http.routers.hsk4-api.tls.certresolver: "letsencrypt"
+
+      # uvicorn listens here (Dockerfile EXPOSE 8000).
+      traefik.http.services.hsk4-api.loadbalancer.server.port: "8000"
+
+    # Keeps a chatty container from filling a small VPS disk.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true
+    # Override in .env if your shared network has another name.
+    name: ${TRAEFIK_NETWORK:-traefik}

@@ -1,0 +1,38 @@
+/* ---------- Login and password reset ---------- */
+/* .hero, .card, .tag, .primarybtn, .smallbtn and .footnote are global. */
+.card{margin-top:0;}
+.field{display:block;}
+.field + .field{margin-top:14px;}
+.fieldlabel{display:block; font-size:14px; color:var(--ink-soft); margin-bottom:8px;}
+.field input{
+  width:100%; box-sizing:border-box;
+  border:1px solid var(--line); background:var(--bg); color:var(--ink);
+  border-radius:8px; padding:12px 14px; font:inherit; font-size:16px;
+}
+.field input:focus{
+  outline:none; border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.field input[aria-invalid="true"]{border-color:var(--bad);}
+
+.actions{margin-top:18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap;}
+
+.linkbtn{
+  border:none; background:none; color:var(--ink-soft); font:inherit; font-size:13.5px;
+  cursor:pointer; padding:4px 0; text-decoration:underline; text-underline-offset:2px;
+}
+.linkbtn:hover{color:var(--accent);}
+
+.error{
+  margin:14px 0 0; padding:10px 12px; border-radius:8px;
+  background:var(--bad-bg); color:var(--bad); font-size:14px;
+}
+
+.notice{border-left-color:var(--write);}
+.fine{margin:12px 0 0; font-size:13px; color:var(--ink-soft); line-height:1.6;}
+.card p{margin:0 0 10px; font-size:15px; line-height:1.7;}
+.card p:last-child{margin-bottom:0;}
+
+/* Shown under the confirm field when the two entries differ. */
+.hint{margin:8px 0 0; font-size:13px; color:var(--ink-soft);}
+.hint.bad{color:var(--bad);}

@@ -4,6 +4,7 @@ import { QuizShellComponent } from './quiz-shell.component';
 import { QuizStateService } from '../core/quiz-state.service';
 import { AudioService } from '../core/audio.service';
 import { routes } from '../app.routes';
+import { authStubProviders } from '../testing/auth-stub';
 import { provideZoneChangeDetection } from '@angular/core';
 
 /** Typed non-null lookup, so specs stay readable without `!` everywhere. */
@@ -33,6 +34,7 @@ describe('QuizShellComponent', () => {
       providers: [
         provideZoneChangeDetection(),
         provideRouter(routes),
+        ...authStubProviders(),
         {
           provide: AudioService,
           useValue: {

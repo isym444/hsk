@@ -1,7 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-/** Shell-less root: the routed page components own their own wrappers. */
+import { AuthService } from './core/auth.service';
+
+/**
+ * Shell-less root: the routed page components own their own wrappers.
+ *
+ * The one thing it does own is the account chip, because signing out has to be
+ * reachable from every practice and stats page without repeating it in each.
+ */
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -9,4 +16,10 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent {}
+export class AppComponent {
+  readonly auth = inject(AuthService);
+
+  signOut(): void {
+    void this.auth.signOut();
+  }
+}

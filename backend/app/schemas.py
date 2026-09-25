@@ -186,9 +186,23 @@ class SessionFinished(BaseModel):
 
 
 class HealthResponse(BaseModel):
+    """Public liveness/readiness. Deliberately carries no per-user data.
+
+    The Docker health check calls this without a token, so it has to stay
+    unauthenticated; the question count is already public in the app bundle.
+    """
+
     status: str
     database: str
     questions: int
+
+
+class MeResponse(BaseModel):
+    """The signed-in caller, plus their own row counts."""
+
+    user_id: str
+    email: str | None = None
+    role: str | None = None
     reviews: int
     sessions: int
 

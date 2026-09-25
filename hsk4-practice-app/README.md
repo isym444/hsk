@@ -11,9 +11,10 @@ Angular app for HSK4 practice, with two ways to study:
    sample paper's section at a time, in the paper's own order. Still available
    behind the "按试卷练习" expander on the home screen.
 
-Progress is stored in a local SQLite database by the FastAPI backend in
-[`../backend`](../backend), which also serves the stats pages and orders the
-smart decks.
+Progress is stored by the FastAPI backend in [`../backend`](../backend) — SQLite
+locally, Supabase Postgres when deployed — which also serves the stats pages and
+orders the smart decks. Sign-in is handled by Supabase Auth, so every account
+sees only its own history.
 
 The original single-file app is kept at `../hsk4-practice.html` as a reference
 and fallback; it is untouched.
@@ -53,10 +54,50 @@ service, and falls back to `index.html` for real routes such as
 `/stats/reading`. `.dockerignore` keeps the host's 1.2 GB of `node_modules` and
 `.angular` cache out of the build context.
 
+## Configuration and sign-in
+
+`public/config.json` carries three values, read once at startup by
+`core/runtime-config.service.ts` before the router runs:
+
+| Key | Meaning |
+| --- | --- |
+| `apiBase` | prefix for every API call — `/api` by default |
+| `supabaseUrl` | the Supabase project, e.g. `https://abcdefghijklm.supabase.co` |
+| `supabaseAnonKey` | the publishable (or legacy anon) key; public by design |
+
+The committed defaults are same-origin `/api` with no Supabase project, which is
+what `ng serve`'s proxy, the nginx image and the API serving its own bundle all
+want for the API — but sign-in needs a real project even locally:
+
+```bash
+HSK_SUPABASE_URL=https://<project-ref>.supabase.co \
+HSK_SUPABASE_ANON_KEY=sb_publishable_... \
+  node scripts/write-runtime-config.mjs
+
+npm start
+```
+
+`scripts/write-runtime-config.mjs` is what `npm run build:render` runs first
+(with `HSK_API_BASE` too) so the Render static site can point at an API on
+another origin. With none of the `HSK_*` variables set it is a no-op and the
+committed defaults stand, so it is safe to run anywhere. If `config.json` is
+missing or unreadable at runtime the service keeps the defaults rather than
+failing to boot.
+
+Sign-in is email + password, handled by `core/auth.service.ts`. Accounts are
+created in the Supabase dashboard rather than in the app, so there is no
+registration form; a forgotten password is reset by email, and the link lands on
+`/reset-password` (`login/reset-password.component.ts`), which signs the visitor
+in just long enough to choose a new one. `core/auth.interceptor.ts` attaches the
+access token to every request to `apiBase`, and `core/auth.guard.ts` keeps every
+page but `/login` and `/reset-password` behind a session. If the backend refuses
+the account (the allow-list), the interceptor signs the user out and the login
+page explains why.
+
 Other commands:
 
 ```bash
-npm test          # 211 unit + component tests (headless Chrome)
+npm test          # 277 unit + component tests (headless Chrome)
 npm run api       # convenience: start the backend from here
 npm run catalogue # regenerate backend/data/catalogue.json from the data layer
 ```

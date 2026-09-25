@@ -2,17 +2,16 @@
 
 from __future__ import annotations
 
-import sqlite3
 from typing import Iterator
 
 from fastapi import Request
 
-from .db import Database
+from .db import DbConnection, PostgresDatabase
 
 
-def get_db(request: Request) -> Iterator[sqlite3.Connection]:
-    """One short-lived connection per request."""
-    database: Database = request.app.state.db
+def get_db(request: Request) -> Iterator[DbConnection]:
+    """One connection per request (pooled when the backend is PostgreSQL)."""
+    database: PostgresDatabase = request.app.state.db
     conn = database.connect()
     try:
         yield conn
@@ -20,5 +19,5 @@ def get_db(request: Request) -> Iterator[sqlite3.Connection]:
         conn.close()
 
 
-def get_database(request: Request) -> Database:
+def get_database(request: Request) -> PostgresDatabase:
     return request.app.state.db

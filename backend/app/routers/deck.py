@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
-import sqlite3
-
 from fastapi import APIRouter, Depends, Query
 
 from .. import scheduling, stats
+from ..auth import Principal, current_user
+from ..db import DbConnection
 from ..deps import get_db
 from ..schemas import Category, DeckResponse, Mode
 
-router = APIRouter(prefix="/api", tags=["deck"])
+router = APIRouter(prefix="/api", tags=["deck"], dependencies=[Depends(current_user)])
 
 
 @router.get("/deck/{category}", response_model=DeckResponse)
@@ -23,9 +23,10 @@ def get_deck(
         description="Comma-separated question keys to leave out (e.g. the tail of the "
         "current queue, so a refilled deck does not repeat itself immediately).",
     ),
-    conn: sqlite3.Connection = Depends(get_db),
+    user: Principal = Depends(current_user),
+    conn: DbConnection = Depends(get_db),
 ) -> DeckResponse:
-    rows = stats.per_question_rows(conn, category)
+    rows = stats.per_question_rows(conn, category, user.user_id)
 
     # The scheduler needs real datetimes; the response model only wants the ISO
     # strings, and Pydantic ignores the extra key.
@@ -49,7 +50,7 @@ def get_deck(
         mode=mode,
         count=len(ordered),
         total_questions=len(rows),
-        answered_questions=len(stats.question_history(conn, category)),
+        answered_questions=len(stats.question_history(conn, category, user.user_id)),
         generated_at=stats.iso(stats.utc_now()),
         questions=ordered,
     )
@@ -58,10 +59,11 @@ def get_deck(
 @router.get("/deck/{category}/preview")
 def deck_preview(
     category: Category,
-    conn: sqlite3.Connection = Depends(get_db),
+    user: Principal = Depends(current_user),
+    conn: DbConnection = Depends(get_db),
 ) -> dict:
     """Counts for the start panel, before a session exists."""
-    rows = stats.per_question_rows(conn, category)
+    rows = stats.per_question_rows(conn, category, user.user_id)
     now = stats.utc_now()
 
     unseen = 0

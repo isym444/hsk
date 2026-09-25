@@ -1,8 +1,9 @@
 # syntax=docker/dockerfile:1
 #
-# The review API. Serves /api from FastAPI and keeps the SQLite review database
-# on a volume; in the compose stack nginx serves the Angular bundle and proxies
-# /api here, so this image does not need the frontend at all.
+# The review API. Serves /api from FastAPI. In the deployed stack the review
+# database is Supabase (PostgreSQL) reached over the network via
+# HSK_DATABASE_URL, so the container is stateless; the /data volume and
+# HSK_DB_PATH remain for the SQLite fallback (local/compose-only runs).
 
 FROM python:3.13-slim
 
@@ -30,6 +31,7 @@ COPY --chown=app:app scripts ./scripts
 COPY --chown=app:app data ./data
 
 ENV HSK_DB_PATH=/data/hsk_reviews.sqlite3
+# Set HSK_DATABASE_URL (Supabase session-pooler DSN) to use PostgreSQL instead.
 
 USER app
 

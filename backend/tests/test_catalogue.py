@@ -93,8 +93,13 @@ def test_health_reports_a_seeded_database(client: TestClient) -> None:
     body = client.get("/api/health").json()
     assert body["status"] == "ok"
     assert body["questions"] == EXPECTED_QUESTIONS
-    assert body["reviews"] == 0
-    assert body["sessions"] == 0
+    # Per-user counts are no longer public; /api/me carries them behind a token.
+    assert "reviews" not in body
+    assert "sessions" not in body
+
+    me = client.get("/api/me").json()
+    assert me["reviews"] == 0
+    assert me["sessions"] == 0
 
 
 def test_reseeding_is_idempotent(tmp_path: Path) -> None:

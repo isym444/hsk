@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from fastapi.testclient import TestClient
 
@@ -61,7 +61,12 @@ def test_reviews_are_stamped_in_utc_and_keep_the_client_local_time(
     stamped = response.json()["answered_at"]
     assert stamped.endswith("Z")
     parsed = datetime.fromisoformat(stamped.replace("Z", "+00:00"))
-    assert before <= parsed <= after, "the review is stamped when the server receives it"
+    # `iso()` truncates to whole milliseconds, so the stamp can land up to a
+    # millisecond below `before`; without the tolerance this test is timing-flaky.
+    tolerance = timedelta(milliseconds=1)
+    assert (
+        before - tolerance <= parsed <= after + tolerance
+    ), "the review is stamped when the server receives it"
 
     summary = client.get(f"/api/sessions/{session_id}").json()
     item = summary["items"][0]
@@ -208,7 +213,7 @@ def test_deleting_a_session_discards_its_reviews(client: TestClient, session_id:
     stats = client.get("/api/stats/reading").json()["stats"]
     assert stats["attempts"] == 0
     assert stats["answered_questions"] == 0
-    assert client.get("/api/health").json()["reviews"] == 0
+    assert client.get("/api/me").json()["reviews"] == 0
 
 
 def test_a_session_survives_a_refresh(client: TestClient, session_id: str) -> None:

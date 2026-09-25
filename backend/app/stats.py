@@ -14,10 +14,11 @@ session summary and the spaced-repetition scheduler can never disagree:
 
 from __future__ import annotations
 
-import sqlite3
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, Mapping
+
+from .db import DbConnection
 
 
 def utc_now() -> datetime:
@@ -75,16 +76,18 @@ class QuestionHistory:
         return self.scored_ms / self.scored if self.scored else None
 
 
-def question_history(conn: sqlite3.Connection, category: str) -> dict[str, QuestionHistory]:
-    """Rolls up every review in a category, keyed by question."""
+def question_history(
+    conn: DbConnection, category: str, user_id: str
+) -> dict[str, QuestionHistory]:
+    """Rolls up one user's reviews in a category, keyed by question."""
     rows = conn.execute(
         """
         SELECT question_key, outcome, elapsed_ms, answered_at
         FROM reviews
-        WHERE category = ?
+        WHERE user_id = ? AND category = ?
         ORDER BY question_key, answered_at, id
         """,
-        (category,),
+        (user_id, category),
     ).fetchall()
 
     history: dict[str, QuestionHistory] = {}
@@ -119,7 +122,7 @@ def question_history(conn: sqlite3.Connection, category: str) -> dict[str, Quest
     return history
 
 
-def _question_totals(conn: sqlite3.Connection, category: str | None = None) -> dict[str, int]:
+def _question_totals(conn: DbConnection, category: str | None = None) -> dict[str, int]:
     sql = "SELECT COUNT(*) AS total, COALESCE(SUM(scoreable), 0) AS scoreable FROM questions WHERE active = 1"
     params: tuple[Any, ...] = ()
     if category is not None:
@@ -129,10 +132,10 @@ def _question_totals(conn: sqlite3.Connection, category: str | None = None) -> d
     return {"total": row["total"], "scoreable": row["scoreable"]}
 
 
-def category_stats(conn: sqlite3.Connection, category: str) -> dict[str, Any]:
-    """Everything the per-category stats page header needs."""
+def category_stats(conn: DbConnection, category: str, user_id: str) -> dict[str, Any]:
+    """Everything the per-category stats page header needs, for one user."""
     totals = _question_totals(conn, category)
-    history = question_history(conn, category)
+    history = question_history(conn, category, user_id)
 
     answered = len(history)
     answered_scoreable = sum(1 for h in history.values() if h.scored > 0)
@@ -170,22 +173,23 @@ def category_stats(conn: sqlite3.Connection, category: str) -> dict[str, Any]:
         "first_reviewed_at": iso(first_activity) if first_activity else None,
         "last_reviewed_at": iso(last_activity) if last_activity else None,
         "session_count": conn.execute(
-            "SELECT COUNT(*) AS n FROM sessions WHERE category = ?", (category,)
+            "SELECT COUNT(*) AS n FROM sessions WHERE user_id = ? AND category = ?",
+            (user_id, category),
         ).fetchone()["n"],
     }
 
 
-def all_category_stats(conn: sqlite3.Connection) -> list[dict[str, Any]]:
+def all_category_stats(conn: DbConnection, user_id: str) -> list[dict[str, Any]]:
     return [
-        category_stats(conn, row["category"])
+        category_stats(conn, row["category"], user_id)
         for row in conn.execute(
             "SELECT DISTINCT category FROM questions WHERE active = 1 ORDER BY category"
         ).fetchall()
     ]
 
 
-def per_question_rows(conn: sqlite3.Connection, category: str) -> list[dict[str, Any]]:
-    """One row per question in the category, reviewed or not."""
+def per_question_rows(conn: DbConnection, category: str, user_id: str) -> list[dict[str, Any]]:
+    """One row per question in the category, reviewed or not, for one user."""
     questions = conn.execute(
         """
         SELECT question_key, paper, category, kind, number, part, scoreable, label
@@ -195,7 +199,7 @@ def per_question_rows(conn: sqlite3.Connection, category: str) -> list[dict[str,
         """,
         (category,),
     ).fetchall()
-    history = question_history(conn, category)
+    history = question_history(conn, category, user_id)
 
     rows: list[dict[str, Any]] = []
     for question in questions:
@@ -264,7 +268,7 @@ def kind_breakdown(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return out
 
 
-def session_row_to_dict(row: sqlite3.Row) -> dict[str, Any]:
+def session_row_to_dict(row: Mapping[str, Any]) -> dict[str, Any]:
     scored = row["correct"] + row["incorrect"]
     return {
         "id": row["id"],
@@ -283,26 +287,28 @@ def session_row_to_dict(row: sqlite3.Row) -> dict[str, Any]:
 
 
 def recent_sessions(
-    conn: sqlite3.Connection, category: str | None = None, limit: int = 10
+    conn: DbConnection, user_id: str, category: str | None = None, limit: int = 10
 ) -> list[dict[str, Any]]:
     sql = """
         SELECT id, category, mode, started_at, ended_at, answered, correct,
                incorrect, self_assessed, total_ms
         FROM sessions
-        WHERE answered > 0
+        WHERE answered > 0 AND user_id = ?
     """
-    params: list[Any] = []
+    params: list[Any] = [user_id]
     if category is not None:
         sql += " AND category = ?"
         params.append(category)
-    sql += " ORDER BY started_at DESC, rowid DESC LIMIT ?"
+    # `id` only breaks ties between sessions that started in the same
+    # millisecond — `rowid` has no portable PostgreSQL equivalent.
+    sql += " ORDER BY started_at DESC, id DESC LIMIT ?"
     params.append(limit)
     return [session_row_to_dict(row) for row in conn.execute(sql, params).fetchall()]
 
 
-def overview(conn: sqlite3.Connection) -> dict[str, Any]:
+def overview(conn: DbConnection, user_id: str) -> dict[str, Any]:
     """Per-category stats plus a combined total, for the home page."""
-    categories = all_category_stats(conn)
+    categories = all_category_stats(conn, user_id)
 
     scored = sum(c["correct"] + c["incorrect"] for c in categories)
     scored_ms = sum(c["total_review_ms"] for c in categories)
@@ -345,18 +351,21 @@ def overview(conn: sqlite3.Connection) -> dict[str, Any]:
 # --------------------------------------------------------------------------- #
 # Sessions
 # --------------------------------------------------------------------------- #
-def get_session_row(conn: sqlite3.Connection, session_id: str) -> sqlite3.Row | None:
+def get_session_row(
+    conn: DbConnection, session_id: str, user_id: str
+) -> Mapping[str, Any] | None:
+    """One session, but only if it belongs to this user."""
     return conn.execute(
         """
         SELECT id, category, mode, started_at, ended_at, tz_offset_minutes,
                answered, correct, incorrect, self_assessed, total_ms
-        FROM sessions WHERE id = ?
+        FROM sessions WHERE id = ? AND user_id = ?
         """,
-        (session_id,),
+        (session_id, user_id),
     ).fetchone()
 
 
-def session_items(conn: sqlite3.Connection, session_id: str) -> list[dict[str, Any]]:
+def session_items(conn: DbConnection, session_id: str, user_id: str) -> list[dict[str, Any]]:
     """Every review recorded in a session, in the order it was answered."""
     rows = conn.execute(
         """
@@ -365,10 +374,10 @@ def session_items(conn: sqlite3.Connection, session_id: str) -> list[dict[str, A
                q.label, q.paper, q.kind, q.number, q.part, q.scoreable
         FROM reviews r
         LEFT JOIN questions q ON q.question_key = r.question_key
-        WHERE r.session_id = ?
+        WHERE r.session_id = ? AND r.user_id = ?
         ORDER BY r.id
         """,
-        (session_id,),
+        (session_id, user_id),
     ).fetchall()
     return [
         {
@@ -388,19 +397,22 @@ def session_items(conn: sqlite3.Connection, session_id: str) -> list[dict[str, A
     ]
 
 
-def prior_stats(conn: sqlite3.Connection, category: str, session_id: str) -> dict[str, Any]:
-    """Lifetime category stats with this session's reviews removed."""
+def prior_stats(
+    conn: DbConnection, category: str, session_id: str, user_id: str
+) -> dict[str, Any]:
+    """This user's lifetime category stats with this session's reviews removed."""
     row = conn.execute(
         """
-        SELECT COALESCE(SUM(outcome = 'correct'), 0)   AS correct,
-               COALESCE(SUM(outcome = 'incorrect'), 0) AS incorrect,
+        SELECT COUNT(*) FILTER (WHERE outcome = 'correct')   AS correct,
+               COUNT(*) FILTER (WHERE outcome = 'incorrect') AS incorrect,
                COALESCE(SUM(CASE WHEN outcome IN ('correct', 'incorrect')
                                  THEN elapsed_ms ELSE 0 END), 0) AS scored_ms,
                COUNT(*) AS attempts
         FROM reviews
-        WHERE category = ? AND (session_id IS NULL OR session_id != ?)
+        WHERE user_id = ? AND category = ?
+          AND (session_id IS NULL OR session_id <> ?)
         """,
-        (category, session_id),
+        (user_id, category, session_id),
     ).fetchone()
     scored = row["correct"] + row["incorrect"]
     return {
@@ -410,8 +422,10 @@ def prior_stats(conn: sqlite3.Connection, category: str, session_id: str) -> dic
     }
 
 
-def build_session_summary(conn: sqlite3.Connection, session_id: str) -> dict[str, Any] | None:
-    row = get_session_row(conn, session_id)
+def build_session_summary(
+    conn: DbConnection, session_id: str, user_id: str
+) -> dict[str, Any] | None:
+    row = get_session_row(conn, session_id, user_id)
     if row is None:
         return None
 
@@ -421,7 +435,7 @@ def build_session_summary(conn: sqlite3.Connection, session_id: str) -> dict[str
 
     summary = session_row_to_dict(row)
     summary["duration_ms"] = max(duration_ms, 0)
-    summary["items"] = session_items(conn, session_id)
-    summary["prior"] = prior_stats(conn, row["category"], session_id)
-    summary["category_stats"] = category_stats(conn, row["category"])
+    summary["items"] = session_items(conn, session_id, user_id)
+    summary["prior"] = prior_stats(conn, row["category"], session_id, user_id)
+    summary["category_stats"] = category_stats(conn, row["category"], user_id)
     return summary

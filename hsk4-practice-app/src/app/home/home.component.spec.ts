@@ -6,6 +6,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { HomeComponent } from './home.component';
 import { QuizStateService } from '../core/quiz-state.service';
 import { routes } from '../app.routes';
+import { authStubProviders } from '../testing/auth-stub';
 import { overviewFixture } from '../testing/fixtures/stats';
 
 describe('HomeComponent', () => {
@@ -20,6 +21,7 @@ describe('HomeComponent', () => {
       providers: [
         provideZoneChangeDetection(),
         provideRouter(routes),
+        ...authStubProviders(),
         provideHttpClient(),
         provideHttpClientTesting(),
       ],

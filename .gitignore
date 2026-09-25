@@ -1,0 +1,20 @@
+# Secrets and local-only state that must never be committed.
+
+# Deployment environment (Supabase DSN with the database password).
+deploy/.env
+
+# Local scratch used when building images; not part of the app.
+backend/.docker-config/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+backend/.pytest_cache/
+
+# Live SQLite review databases (an empty one is recreated on first run).
+backend/data/*.sqlite3
+backend/data/*.sqlite3-wal
+backend/data/*.sqlite3-shm
+
+.DS_Store
