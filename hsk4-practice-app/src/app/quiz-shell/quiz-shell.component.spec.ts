@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { QuizShellComponent } from './quiz-shell.component';
 import { QuizStateService } from '../core/quiz-state.service';
-import { SpeechService } from '../core/speech.service';
+import { AudioService } from '../core/audio.service';
 import { routes } from '../app.routes';
 import { provideZoneChangeDetection } from '@angular/core';
 
@@ -34,12 +34,14 @@ describe('QuizShellComponent', () => {
         provideZoneChangeDetection(),
         provideRouter(routes),
         {
-          provide: SpeechService,
+          provide: AudioService,
           useValue: {
-            supported: true,
-            speak: (text: string) => spoken.push(text),
-            cancel: () => {
-              spoken.push('__cancel__');
+            activeUrl: () => null,
+            playing: () => false,
+            failed: () => false,
+            playQuestion: (paper: string, n: number) => spoken.push(`${paper}:${n}`),
+            stop: () => {
+              spoken.push('__stop__');
             },
           },
         },
@@ -116,22 +118,21 @@ describe('QuizShellComponent', () => {
     expect(text('.tag')).toBe('Listening · question 2');
   });
 
-  it('speaks the listening transcript when Play audio is pressed', async () => {
+  it('plays the real recording when Play audio is pressed', async () => {
     await open('H41001', 'listening');
 
     el<HTMLButtonElement>(fixture.nativeElement, '.playbtn').click();
 
-    expect(spoken.length).toBe(1);
-    expect(spoken[0].length).toBeGreaterThan(0);
+    expect(spoken).toEqual(['H41001:1']);
   });
 
-  it('cancels speech and returns home from the back button', async () => {
+  it('stops audio and returns home from the back button', async () => {
     await open('H41001', 'listening');
 
     el<HTMLButtonElement>(fixture.nativeElement, '.backbtn').click();
     await fixture.whenStable();
 
-    expect(spoken).toContain('__cancel__');
+    expect(spoken).toContain('__stop__');
     expect(router.url).toBe('/');
   });
 

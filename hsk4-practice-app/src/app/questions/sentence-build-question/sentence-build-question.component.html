@@ -1,7 +1,11 @@
 <p class="question">Put the words below into a sentence:</p>
 
 <div class="answerstrip">
-  @if (chosen().length === 0) {
+  @if (review()) {
+    @for (word of referenceWords(); track $index) {
+      <span class="atile">{{ word }}</span>
+    }
+  } @else if (chosen().length === 0) {
     <span class="placeholder">Tap the words below in order to build a sentence</span>
   } @else {
     @for (word of chosen(); track $index) {
@@ -15,19 +19,26 @@
     <button
       class="tile"
       type="button"
-      [disabled]="disabledTiles().has(tile.pos)"
+      [disabled]="review() || disabledTiles().has(tile.pos)"
       (click)="pick(tile)"
     >{{ tile.word }}</button>
   }
 </div>
 
-<div class="rowbtns">
-  <button class="smallbtn" type="button" [disabled]="finished() || chosen().length === 0" (click)="undo()">
-    Undo last
-  </button>
-</div>
+@if (!review()) {
+  <div class="rowbtns">
+    <button class="smallbtn" type="button" [disabled]="finished() || chosen().length === 0" (click)="undo()">
+      Undo last
+    </button>
+  </div>
+}
 
-@if (finished()) {
+@if (review()) {
+  <div class="feedback">
+    <div class="fbline good">Model answer</div>
+    <div class="transcript">{{ referenceAnswer() }}</div>
+  </div>
+} @else if (finished()) {
   <div class="feedback">
     <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
       @if (isCorrect()) {

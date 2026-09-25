@@ -206,4 +206,33 @@ describe('SentenceBuildQuestionComponent', () => {
 
     expect(emitted).toEqual([{ correct: true }]);
   });
+
+  it('reviews the item read-only with the model answer shown', () => {
+    setUp({ kind: 'build', n: 87, words: ['我', '打算'], orders: [['我', '打算']] });
+    fixture.componentRef.setInput('review', true);
+    fixture.detectChanges();
+
+    expect(stripWords()).toEqual(['我', '打算']);
+    expect(fixture.nativeElement.querySelector('.rowbtns')).toBeFalsy();
+    expect(
+      Array.from(
+        (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('.tile'),
+      ).every((button) => button.disabled),
+    ).toBeTrue();
+    expect(fixture.nativeElement.querySelector('.transcript')?.textContent).toContain('我打算。');
+  });
+
+  it('emits nothing while reviewing', () => {
+    setUp({ kind: 'build', n: 87, words: ['我', '打算'], orders: [['我', '打算']] });
+    const emitted: { correct?: boolean }[] = [];
+    component.answered.subscribe((event) => emitted.push(event));
+    fixture.componentRef.setInput('review', true);
+    fixture.detectChanges();
+
+    tileButton('我').click();
+    fixture.detectChanges();
+
+    expect(emitted).toEqual([]);
+    expect(component.finished()).toBeFalse();
+  });
 });

@@ -175,4 +175,111 @@ describe('DeckSummaryComponent', () => {
 
     expect(text('.errbar')).toContain('Could not find this practice session');
   });
+
+  it('reopens a session question for review with the answer revealed', async () => {
+    await open();
+
+    const rows = Array.from(element().querySelectorAll<HTMLTableRowElement>('.items tbody tr'));
+    rows[0].querySelector<HTMLButtonElement>('.linkbtn')?.click();
+    fixture.detectChanges();
+
+    const sheet = element().querySelector('.review-sheet');
+    expect(sheet).toBeTruthy();
+    expect(text('.review-head')).toContain('H41001 · Fill in the blank · question 46');
+    expect(text('.review-head')).toContain('Correct');
+    expect(text('.review-head')).toContain('Answered in 2.0 s');
+    expect(sheet?.querySelector('app-fill-blank-question')).toBeTruthy();
+    expect(sheet?.querySelector('.bankchip.correct')).toBeTruthy();
+    expect(text('.review-card .fbline')).toContain('Correct answer');
+    expect(text('.review-nav .metricnote')).toBe('1 of 3');
+  });
+
+  it('opens the review by clicking anywhere on the row', async () => {
+    await open();
+
+    element().querySelector<HTMLTableRowElement>('.items tbody tr')?.click();
+    fixture.detectChanges();
+
+    expect(element().querySelector('.review-sheet')).toBeTruthy();
+  });
+
+  it('steps through the session questions and stops at the ends', async () => {
+    await open();
+    element().querySelector<HTMLTableRowElement>('.items tbody tr')?.click();
+    fixture.detectChanges();
+
+    const nav = () =>
+      Array.from(element().querySelectorAll<HTMLButtonElement>('.review-nav button'));
+    expect(nav()[0].disabled).toBeTrue();
+    expect(nav()[1].disabled).toBeFalse();
+
+    nav()[1].click();
+    fixture.detectChanges();
+
+    expect(text('.review-head')).toContain('H41001 · Multiple choice · question 66');
+    expect(text('.review-nav .metricnote')).toBe('2 of 3');
+
+    nav()[1].click();
+    fixture.detectChanges();
+
+    expect(text('.review-nav .metricnote')).toBe('3 of 3');
+    expect(nav()[1].disabled).toBeTrue();
+    expect(nav()[0].disabled).toBeFalse();
+
+    nav()[0].click();
+    fixture.detectChanges();
+
+    expect(text('.review-nav .metricnote')).toBe('2 of 3');
+  });
+
+  it('closes the review overlay with Close', async () => {
+    await open();
+    element().querySelector<HTMLTableRowElement>('.items tbody tr')?.click();
+    fixture.detectChanges();
+
+    Array.from(element().querySelectorAll<HTMLButtonElement>('.review-head button'))
+      .find((button) => button.textContent?.includes('Close'))
+      ?.click();
+    fixture.detectChanges();
+
+    expect(element().querySelector('.review-sheet')).toBeNull();
+  });
+
+  it('closes the review overlay on Escape', async () => {
+    await open();
+    element().querySelector<HTMLTableRowElement>('.items tbody tr')?.click();
+    fixture.detectChanges();
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    fixture.detectChanges();
+
+    expect(element().querySelector('.review-sheet')).toBeNull();
+  });
+
+  it('explains when a reviewed question is no longer in the bank', async () => {
+    await open(
+      { category: 'reading', sessionId: 'session-9' },
+      {
+        items: [
+          {
+            question_key: 'H41001:reading:fill:9999',
+            label: 'Removed question',
+            paper: 'H41001',
+            number: 9999,
+            kind: 'fill',
+            part: 1,
+            scoreable: true,
+            outcome: 'incorrect',
+            elapsed_ms: 1000,
+            answered_at: '2026-09-25T09:56:00.000Z',
+            answered_at_local: null,
+          },
+        ],
+      },
+    );
+    element().querySelector<HTMLTableRowElement>('.items tbody tr')?.click();
+    fixture.detectChanges();
+
+    expect(text('.review-sheet')).toContain('no longer in the Reading bank');
+  });
 });

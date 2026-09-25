@@ -20,6 +20,13 @@ interface Tile {
 })
 export class SentenceBuildQuestionComponent {
   readonly unit = input.required<BuildUnit>();
+
+  /**
+   * Read-only review rendering: the model answer is shown, the tiles cannot be
+   * used and nothing is emitted. Used by the session summary.
+   */
+  readonly review = input(false);
+
   readonly answered = output<AnswerEvent>();
 
   /** Question number the cached pool belongs to. */
@@ -41,6 +48,9 @@ export class SentenceBuildQuestionComponent {
 
   readonly referenceAnswer = computed(() => this.unit().orders[0].join('') + '。');
 
+  /** The reference sentence split into tiles, for the review answer strip. */
+  readonly referenceWords = computed(() => this.unit().orders[0]);
+
   /** A pool tile is disabled exactly while it sits in the strip. */
   readonly disabledTiles = computed(() => new Set(this.used()));
 
@@ -61,7 +71,7 @@ export class SentenceBuildQuestionComponent {
   }
 
   pick(tile: Tile): void {
-    if (this.finished() || this.disabledTiles().has(tile.pos)) {
+    if (this.review() || this.finished() || this.disabledTiles().has(tile.pos)) {
       return;
     }
     this.used.update((used) => [...used, tile.pos]);
@@ -78,7 +88,7 @@ export class SentenceBuildQuestionComponent {
    */
   undo(): void {
     const chosen = this.chosen();
-    if (this.finished() || chosen.length === 0) {
+    if (this.review() || this.finished() || chosen.length === 0) {
       return;
     }
     const remaining = chosen.slice(0, -1);

@@ -77,4 +77,27 @@ describe('SentenceOrderQuestionComponent', () => {
 
     expect(emitted).toEqual([{ correct: true }]);
   });
+
+  it('reviews the item read-only with the correct order highlighted', () => {
+    fixture.componentRef.setInput('review', true);
+    fixture.detectChanges();
+
+    expect(perms()[3].classList).toContain('correct');
+    expect(perms().every((button) => button.disabled)).toBeTrue();
+    expect(fixture.nativeElement.querySelector('.fbline.good')?.textContent).toContain(
+      'Correct order: B → C → A',
+    );
+  });
+
+  it('emits nothing while reviewing', () => {
+    const emitted: { correct?: boolean }[] = [];
+    component.answered.subscribe((event) => emitted.push(event));
+    fixture.componentRef.setInput('review', true);
+    fixture.detectChanges();
+
+    perms()[0].click();
+    fixture.detectChanges();
+
+    expect(emitted).toEqual([]);
+  });
 });

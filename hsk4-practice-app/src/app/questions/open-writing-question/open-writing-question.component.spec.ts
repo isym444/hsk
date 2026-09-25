@@ -90,4 +90,26 @@ describe('OpenWritingQuestionComponent', () => {
 
     expect(emitted).toEqual([{ correct: undefined }]);
   });
+
+  it('reviews the item read-only with the model answer shown', () => {
+    fixture.componentRef.setInput('review', true);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.opentext')).toBeFalsy();
+    expect(fixture.nativeElement.querySelector('.rowbtns')).toBeFalsy();
+    expect(fixture.nativeElement.querySelector('.fbline.good')?.textContent).toContain('Model answer');
+    expect(fixture.nativeElement.querySelector('.model')?.textContent).toContain('她每天都坚持写日记。');
+  });
+
+  it('emits nothing while reviewing', () => {
+    const emitted: { correct?: boolean }[] = [];
+    component.answered.subscribe((event) => emitted.push(event));
+    fixture.componentRef.setInput('review', true);
+    fixture.detectChanges();
+
+    component.reveal();
+    fixture.detectChanges();
+
+    expect(emitted).toEqual([]);
+  });
 });

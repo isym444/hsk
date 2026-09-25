@@ -2,20 +2,27 @@
 
 <div class="wordpill">{{unit().word}}</div>
 
-<textarea
-  class="opentext"
-  placeholder="Type your sentence here…"
-  [disabled]="revealed()"
-  (input)="onInput($any($event.target).value)"
-></textarea>
+@if (!review()) {
+  <textarea
+    class="opentext"
+    placeholder="Type your sentence here…"
+    [disabled]="revealed()"
+    (input)="onInput($any($event.target).value)"
+  ></textarea>
 
-<div class="rowbtns">
-  <button class="smallbtn" type="button" [disabled]="revealed()" (click)="reveal()">
-    Show model answer
-  </button>
-</div>
+  <div class="rowbtns">
+    <button class="smallbtn" type="button" [disabled]="revealed()" (click)="reveal()">
+      Show model answer
+    </button>
+  </div>
+}
 
-@if (revealed()) {
+@if (review()) {
+  <div class="feedback">
+    <div class="fbline good">Model answer</div>
+    <div class="model">{{ unit().model }}</div>
+  </div>
+} @else if (revealed()) {
   <div class="feedback">
     <div class="fbline good">
       @if (usedTargetWord()) {

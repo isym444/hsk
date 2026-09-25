@@ -1,0 +1,180 @@
+/**
+ * Metadata for the real-voice listening clips under `public/audio/`.
+ *
+ * Each of the 45 listening questions per paper has one clip, cut from the
+ * official HSK4 listening recording (H41001/H41002/H41003.mp3). The clip holds
+ * the spoken question number, the passage and the question itself - the
+ * answer pauses between questions are trimmed off.
+ *
+ * Generated from the extraction manifest; see `npm run catalogue`-style flow
+ * described in the app README.
+ */
+
+import { TestId } from './models';
+
+export interface AudioClip {
+  readonly paper: TestId;
+  readonly n: number;
+  readonly part: number;
+  readonly file: string;
+  /** Length in seconds, used for the button's readout. */
+  readonly duration: number;
+}
+
+/** URL the Angular dev server and nginx both serve the clips from. */
+export function clipFileUrl(file: string): string {
+  return `audio/${file}`;
+}
+
+/** Convenience wrapper for an `AudioClip`. */
+export function clipUrl(clip: AudioClip): string {
+  return clipFileUrl(clip.file);
+}
+
+export const AUDIO_CLIPS: readonly AudioClip[] = [
+  { paper: 'H41001', n: 1, part: 1, file: 'H41001_q01.mp3', duration: 13.8 },
+  { paper: 'H41001', n: 2, part: 1, file: 'H41001_q02.mp3', duration: 16.8 },
+  { paper: 'H41001', n: 3, part: 1, file: 'H41001_q03.mp3', duration: 16.8 },
+  { paper: 'H41001', n: 4, part: 1, file: 'H41001_q04.mp3', duration: 21.3 },
+  { paper: 'H41001', n: 5, part: 1, file: 'H41001_q05.mp3', duration: 19.1 },
+  { paper: 'H41001', n: 6, part: 1, file: 'H41001_q06.mp3', duration: 19.1 },
+  { paper: 'H41001', n: 7, part: 1, file: 'H41001_q07.mp3', duration: 17.0 },
+  { paper: 'H41001', n: 8, part: 1, file: 'H41001_q08.mp3', duration: 18.2 },
+  { paper: 'H41001', n: 9, part: 1, file: 'H41001_q09.mp3', duration: 16.2 },
+  { paper: 'H41001', n: 10, part: 1, file: 'H41001_q10.mp3', duration: 16.4 },
+  { paper: 'H41001', n: 11, part: 2, file: 'H41001_q11.mp3', duration: 14.5 },
+  { paper: 'H41001', n: 12, part: 2, file: 'H41001_q12.mp3', duration: 18.2 },
+  { paper: 'H41001', n: 13, part: 2, file: 'H41001_q13.mp3', duration: 18.6 },
+  { paper: 'H41001', n: 14, part: 2, file: 'H41001_q14.mp3', duration: 17.2 },
+  { paper: 'H41001', n: 15, part: 2, file: 'H41001_q15.mp3', duration: 18.6 },
+  { paper: 'H41001', n: 16, part: 2, file: 'H41001_q16.mp3', duration: 19.1 },
+  { paper: 'H41001', n: 17, part: 2, file: 'H41001_q17.mp3', duration: 19.6 },
+  { paper: 'H41001', n: 18, part: 2, file: 'H41001_q18.mp3', duration: 16.7 },
+  { paper: 'H41001', n: 19, part: 2, file: 'H41001_q19.mp3', duration: 17.4 },
+  { paper: 'H41001', n: 20, part: 2, file: 'H41001_q20.mp3', duration: 21.5 },
+  { paper: 'H41001', n: 21, part: 2, file: 'H41001_q21.mp3', duration: 24.0 },
+  { paper: 'H41001', n: 22, part: 2, file: 'H41001_q22.mp3', duration: 17.4 },
+  { paper: 'H41001', n: 23, part: 2, file: 'H41001_q23.mp3', duration: 16.6 },
+  { paper: 'H41001', n: 24, part: 2, file: 'H41001_q24.mp3', duration: 21.6 },
+  { paper: 'H41001', n: 25, part: 2, file: 'H41001_q25.mp3', duration: 17.7 },
+  { paper: 'H41001', n: 26, part: 3, file: 'H41001_q26.mp3', duration: 23.4 },
+  { paper: 'H41001', n: 27, part: 3, file: 'H41001_q27.mp3', duration: 28.3 },
+  { paper: 'H41001', n: 28, part: 3, file: 'H41001_q28.mp3', duration: 26.3 },
+  { paper: 'H41001', n: 29, part: 3, file: 'H41001_q29.mp3', duration: 24.7 },
+  { paper: 'H41001', n: 30, part: 3, file: 'H41001_q30.mp3', duration: 22.9 },
+  { paper: 'H41001', n: 31, part: 3, file: 'H41001_q31.mp3', duration: 25.9 },
+  { paper: 'H41001', n: 32, part: 3, file: 'H41001_q32.mp3', duration: 23.3 },
+  { paper: 'H41001', n: 33, part: 3, file: 'H41001_q33.mp3', duration: 24.1 },
+  { paper: 'H41001', n: 34, part: 3, file: 'H41001_q34.mp3', duration: 25.7 },
+  { paper: 'H41001', n: 35, part: 3, file: 'H41001_q35.mp3', duration: 30.5 },
+  { paper: 'H41001', n: 36, part: 4, file: 'H41001_q36.mp3', duration: 41.5 },
+  { paper: 'H41001', n: 37, part: 4, file: 'H41001_q37.mp3', duration: 42.7 },
+  { paper: 'H41001', n: 38, part: 4, file: 'H41001_q38.mp3', duration: 34.7 },
+  { paper: 'H41001', n: 39, part: 4, file: 'H41001_q39.mp3', duration: 34.2 },
+  { paper: 'H41001', n: 40, part: 4, file: 'H41001_q40.mp3', duration: 35.8 },
+  { paper: 'H41001', n: 41, part: 4, file: 'H41001_q41.mp3', duration: 37.6 },
+  { paper: 'H41001', n: 42, part: 4, file: 'H41001_q42.mp3', duration: 45.6 },
+  { paper: 'H41001', n: 43, part: 4, file: 'H41001_q43.mp3', duration: 46.2 },
+  { paper: 'H41001', n: 44, part: 4, file: 'H41001_q44.mp3', duration: 36.5 },
+  { paper: 'H41001', n: 45, part: 4, file: 'H41001_q45.mp3', duration: 36.8 },
+  { paper: 'H41002', n: 1, part: 1, file: 'H41002_q01.mp3', duration: 11.6 },
+  { paper: 'H41002', n: 2, part: 1, file: 'H41002_q02.mp3', duration: 16.6 },
+  { paper: 'H41002', n: 3, part: 1, file: 'H41002_q03.mp3', duration: 18.3 },
+  { paper: 'H41002', n: 4, part: 1, file: 'H41002_q04.mp3', duration: 14.6 },
+  { paper: 'H41002', n: 5, part: 1, file: 'H41002_q05.mp3', duration: 15.1 },
+  { paper: 'H41002', n: 6, part: 1, file: 'H41002_q06.mp3', duration: 20.3 },
+  { paper: 'H41002', n: 7, part: 1, file: 'H41002_q07.mp3', duration: 15.3 },
+  { paper: 'H41002', n: 8, part: 1, file: 'H41002_q08.mp3', duration: 18.1 },
+  { paper: 'H41002', n: 9, part: 1, file: 'H41002_q09.mp3', duration: 18.1 },
+  { paper: 'H41002', n: 10, part: 1, file: 'H41002_q10.mp3', duration: 16.3 },
+  { paper: 'H41002', n: 11, part: 2, file: 'H41002_q11.mp3', duration: 16.2 },
+  { paper: 'H41002', n: 12, part: 2, file: 'H41002_q12.mp3', duration: 21.1 },
+  { paper: 'H41002', n: 13, part: 2, file: 'H41002_q13.mp3', duration: 17.3 },
+  { paper: 'H41002', n: 14, part: 2, file: 'H41002_q14.mp3', duration: 16.9 },
+  { paper: 'H41002', n: 15, part: 2, file: 'H41002_q15.mp3', duration: 19.8 },
+  { paper: 'H41002', n: 16, part: 2, file: 'H41002_q16.mp3', duration: 18.3 },
+  { paper: 'H41002', n: 17, part: 2, file: 'H41002_q17.mp3', duration: 21.1 },
+  { paper: 'H41002', n: 18, part: 2, file: 'H41002_q18.mp3', duration: 16.4 },
+  { paper: 'H41002', n: 19, part: 2, file: 'H41002_q19.mp3', duration: 19.5 },
+  { paper: 'H41002', n: 20, part: 2, file: 'H41002_q20.mp3', duration: 20.4 },
+  { paper: 'H41002', n: 21, part: 2, file: 'H41002_q21.mp3', duration: 17.0 },
+  { paper: 'H41002', n: 22, part: 2, file: 'H41002_q22.mp3', duration: 17.2 },
+  { paper: 'H41002', n: 23, part: 2, file: 'H41002_q23.mp3', duration: 18.5 },
+  { paper: 'H41002', n: 24, part: 2, file: 'H41002_q24.mp3', duration: 20.6 },
+  { paper: 'H41002', n: 25, part: 2, file: 'H41002_q25.mp3', duration: 20.0 },
+  { paper: 'H41002', n: 26, part: 3, file: 'H41002_q26.mp3', duration: 31.3 },
+  { paper: 'H41002', n: 27, part: 3, file: 'H41002_q27.mp3', duration: 29.6 },
+  { paper: 'H41002', n: 28, part: 3, file: 'H41002_q28.mp3', duration: 34.2 },
+  { paper: 'H41002', n: 29, part: 3, file: 'H41002_q29.mp3', duration: 29.1 },
+  { paper: 'H41002', n: 30, part: 3, file: 'H41002_q30.mp3', duration: 24.8 },
+  { paper: 'H41002', n: 31, part: 3, file: 'H41002_q31.mp3', duration: 27.7 },
+  { paper: 'H41002', n: 32, part: 3, file: 'H41002_q32.mp3', duration: 29.7 },
+  { paper: 'H41002', n: 33, part: 3, file: 'H41002_q33.mp3', duration: 24.6 },
+  { paper: 'H41002', n: 34, part: 3, file: 'H41002_q34.mp3', duration: 30.9 },
+  { paper: 'H41002', n: 35, part: 3, file: 'H41002_q35.mp3', duration: 30.0 },
+  { paper: 'H41002', n: 36, part: 4, file: 'H41002_q36.mp3', duration: 38.9 },
+  { paper: 'H41002', n: 37, part: 4, file: 'H41002_q37.mp3', duration: 40.0 },
+  { paper: 'H41002', n: 38, part: 4, file: 'H41002_q38.mp3', duration: 44.4 },
+  { paper: 'H41002', n: 39, part: 4, file: 'H41002_q39.mp3', duration: 43.8 },
+  { paper: 'H41002', n: 40, part: 4, file: 'H41002_q40.mp3', duration: 40.1 },
+  { paper: 'H41002', n: 41, part: 4, file: 'H41002_q41.mp3', duration: 40.1 },
+  { paper: 'H41002', n: 42, part: 4, file: 'H41002_q42.mp3', duration: 41.7 },
+  { paper: 'H41002', n: 43, part: 4, file: 'H41002_q43.mp3', duration: 41.8 },
+  { paper: 'H41002', n: 44, part: 4, file: 'H41002_q44.mp3', duration: 41.8 },
+  { paper: 'H41002', n: 45, part: 4, file: 'H41002_q45.mp3', duration: 39.6 },
+  { paper: 'H41003', n: 1, part: 1, file: 'H41003_q01.mp3', duration: 15.0 },
+  { paper: 'H41003', n: 2, part: 1, file: 'H41003_q02.mp3', duration: 16.4 },
+  { paper: 'H41003', n: 3, part: 1, file: 'H41003_q03.mp3', duration: 20.8 },
+  { paper: 'H41003', n: 4, part: 1, file: 'H41003_q04.mp3', duration: 15.7 },
+  { paper: 'H41003', n: 5, part: 1, file: 'H41003_q05.mp3', duration: 17.8 },
+  { paper: 'H41003', n: 6, part: 1, file: 'H41003_q06.mp3', duration: 18.6 },
+  { paper: 'H41003', n: 7, part: 1, file: 'H41003_q07.mp3', duration: 18.4 },
+  { paper: 'H41003', n: 8, part: 1, file: 'H41003_q08.mp3', duration: 19.4 },
+  { paper: 'H41003', n: 9, part: 1, file: 'H41003_q09.mp3', duration: 22.2 },
+  { paper: 'H41003', n: 10, part: 1, file: 'H41003_q10.mp3', duration: 16.9 },
+  { paper: 'H41003', n: 11, part: 2, file: 'H41003_q11.mp3', duration: 25.2 },
+  { paper: 'H41003', n: 12, part: 2, file: 'H41003_q12.mp3', duration: 20.4 },
+  { paper: 'H41003', n: 13, part: 2, file: 'H41003_q13.mp3', duration: 14.3 },
+  { paper: 'H41003', n: 14, part: 2, file: 'H41003_q14.mp3', duration: 26.1 },
+  { paper: 'H41003', n: 15, part: 2, file: 'H41003_q15.mp3', duration: 25.9 },
+  { paper: 'H41003', n: 16, part: 2, file: 'H41003_q16.mp3', duration: 21.8 },
+  { paper: 'H41003', n: 17, part: 2, file: 'H41003_q17.mp3', duration: 21.2 },
+  { paper: 'H41003', n: 18, part: 2, file: 'H41003_q18.mp3', duration: 24.6 },
+  { paper: 'H41003', n: 19, part: 2, file: 'H41003_q19.mp3', duration: 18.3 },
+  { paper: 'H41003', n: 20, part: 2, file: 'H41003_q20.mp3', duration: 22.9 },
+  { paper: 'H41003', n: 21, part: 2, file: 'H41003_q21.mp3', duration: 22.2 },
+  { paper: 'H41003', n: 22, part: 2, file: 'H41003_q22.mp3', duration: 18.5 },
+  { paper: 'H41003', n: 23, part: 2, file: 'H41003_q23.mp3', duration: 19.8 },
+  { paper: 'H41003', n: 24, part: 2, file: 'H41003_q24.mp3', duration: 23.1 },
+  { paper: 'H41003', n: 25, part: 2, file: 'H41003_q25.mp3', duration: 16.0 },
+  { paper: 'H41003', n: 26, part: 3, file: 'H41003_q26.mp3', duration: 25.7 },
+  { paper: 'H41003', n: 27, part: 3, file: 'H41003_q27.mp3', duration: 28.4 },
+  { paper: 'H41003', n: 28, part: 3, file: 'H41003_q28.mp3', duration: 26.2 },
+  { paper: 'H41003', n: 29, part: 3, file: 'H41003_q29.mp3', duration: 27.0 },
+  { paper: 'H41003', n: 30, part: 3, file: 'H41003_q30.mp3', duration: 21.9 },
+  { paper: 'H41003', n: 31, part: 3, file: 'H41003_q31.mp3', duration: 28.9 },
+  { paper: 'H41003', n: 32, part: 3, file: 'H41003_q32.mp3', duration: 27.0 },
+  { paper: 'H41003', n: 33, part: 3, file: 'H41003_q33.mp3', duration: 25.1 },
+  { paper: 'H41003', n: 34, part: 3, file: 'H41003_q34.mp3', duration: 28.1 },
+  { paper: 'H41003', n: 35, part: 3, file: 'H41003_q35.mp3', duration: 21.9 },
+  { paper: 'H41003', n: 36, part: 4, file: 'H41003_q36.mp3', duration: 54.9 },
+  { paper: 'H41003', n: 37, part: 4, file: 'H41003_q37.mp3', duration: 55.7 },
+  { paper: 'H41003', n: 38, part: 4, file: 'H41003_q38.mp3', duration: 38.9 },
+  { paper: 'H41003', n: 39, part: 4, file: 'H41003_q39.mp3', duration: 40.7 },
+  { paper: 'H41003', n: 40, part: 4, file: 'H41003_q40.mp3', duration: 39.5 },
+  { paper: 'H41003', n: 41, part: 4, file: 'H41003_q41.mp3', duration: 39.8 },
+  { paper: 'H41003', n: 42, part: 4, file: 'H41003_q42.mp3', duration: 36.9 },
+  { paper: 'H41003', n: 43, part: 4, file: 'H41003_q43.mp3', duration: 37.1 },
+  { paper: 'H41003', n: 44, part: 4, file: 'H41003_q44.mp3', duration: 40.2 },
+  { paper: 'H41003', n: 45, part: 4, file: 'H41003_q45.mp3', duration: 40.4 },
+];
+
+/** Lookup keyed by "<paper>:<question number>". */
+const BY_KEY = new Map<string, AudioClip>(
+  AUDIO_CLIPS.map((clip) => [`${clip.paper}:${clip.n}`, clip]),
+);
+
+/** The clip for one listening question, or undefined if it has no recording. */
+export function clipFor(paper: TestId, n: number): AudioClip | undefined {
+  return BY_KEY.get(`${paper}:${n}`);
+}

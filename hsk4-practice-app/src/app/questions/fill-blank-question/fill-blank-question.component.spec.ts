@@ -69,4 +69,27 @@ describe('FillBlankQuestionComponent', () => {
     expect(emitted).toEqual([{ correct: false }]);
     expect(component.hasAnswered()).toBeTrue();
   });
+
+  it('reviews the item read-only with the answer highlighted', () => {
+    fixture.componentRef.setInput('review', true);
+    fixture.detectChanges();
+
+    expect(chips()[4].classList).toContain('correct');
+    expect(chips().every((chip) => chip.disabled)).toBeTrue();
+    expect(fixture.nativeElement.querySelector('.fbline.good')?.textContent).toContain(
+      'Correct answer: 顺便',
+    );
+  });
+
+  it('emits nothing while reviewing', () => {
+    const emitted: { correct?: boolean }[] = [];
+    component.answered.subscribe((event) => emitted.push(event));
+    fixture.componentRef.setInput('review', true);
+    fixture.detectChanges();
+
+    chips()[0].click();
+    fixture.detectChanges();
+
+    expect(emitted).toEqual([]);
+  });
 });

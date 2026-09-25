@@ -20,6 +20,13 @@ const LETTERS = ['A', 'B', 'C'];
 })
 export class SentenceOrderQuestionComponent {
   readonly unit = input.required<OrderUnit>();
+
+  /**
+   * Read-only review rendering: the correct order is highlighted, nothing can
+   * be picked and nothing is emitted. Used by the session summary.
+   */
+  readonly review = input(false);
+
   readonly answered = output<AnswerEvent>();
 
   /** Index into `permutations`, or null while unanswered. */
@@ -43,7 +50,7 @@ export class SentenceOrderQuestionComponent {
   readonly solutionArrow = computed(() => this.unit().answer.split('').join(' → '));
 
   pick(index: number): void {
-    if (this.choice() !== null) {
+    if (this.review() || this.choice() !== null) {
       return;
     }
     this.choice.set(index);
@@ -55,6 +62,9 @@ export class SentenceOrderQuestionComponent {
   }
 
   permClass(index: number): string {
+    if (this.review()) {
+      return PERMUTATIONS[index] === this.unit().answer ? 'permbtn correct' : 'permbtn';
+    }
     const picked = this.choice();
     if (picked === null) {
       return 'permbtn';

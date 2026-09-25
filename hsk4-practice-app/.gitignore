@@ -30,6 +30,10 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 
+# Extraction cache: whisper model + per-block transcriptions (regenerable).
+# The generated clips in public/audio are committed; this is not.
+/scripts/.cache
+
 # Miscellaneous
 /.angular/cache
 .sass-cache/

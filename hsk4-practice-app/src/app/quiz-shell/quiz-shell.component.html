@@ -28,7 +28,7 @@
         @switch (unit.kind) {
           @case ('tf') {
             @for (question of [unit]; track question.n) {
-              <app-true-false-question [unit]="unit" (answered)="onAnswered($event)" />
+              <app-true-false-question [unit]="unit" [paper]="paper()" (answered)="onAnswered($event)" />
               @if (hasAnswered()) {
                 <div class="nextrow">
                   <button class="primarybtn" type="button" (click)="next()">{{ nextLabel() }}</button>
@@ -38,7 +38,7 @@
           }
           @case ('mc') {
             @for (question of [unit]; track question.n) {
-              <app-multiple-choice-question [unit]="unit" (answered)="onAnswered($event)" />
+              <app-multiple-choice-question [unit]="unit" [paper]="paper()" (answered)="onAnswered($event)" />
               @if (hasAnswered()) {
                 <div class="nextrow">
                   <button class="primarybtn" type="button" (click)="next()">{{ nextLabel() }}</button>

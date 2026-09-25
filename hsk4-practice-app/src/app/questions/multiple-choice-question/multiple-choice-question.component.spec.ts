@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MultipleChoiceQuestionComponent } from './multiple-choice-question.component';
 import { MultipleChoiceUnit } from '../../data/models';
-import { SpeechService } from '../../core/speech.service';
+import { AudioService } from '../../core/audio.service';
 
 /** Typed non-null lookup, so specs stay readable without `!` everywhere. */
 function el<T extends HTMLElement>(root: unknown, selector: string): T {
@@ -15,7 +15,7 @@ function el<T extends HTMLElement>(root: unknown, selector: string): T {
 describe('MultipleChoiceQuestionComponent', () => {
   let fixture: ComponentFixture<MultipleChoiceQuestionComponent>;
   let component: MultipleChoiceQuestionComponent;
-  let spoken: string[];
+  let played: { paper: string; n: number }[];
 
   const listeningUnit: MultipleChoiceUnit = {
     kind: 'mc',
@@ -34,18 +34,25 @@ describe('MultipleChoiceQuestionComponent', () => {
   }
 
   beforeEach(() => {
-    spoken = [];
+    played = [];
     TestBed.configureTestingModule({
       imports: [MultipleChoiceQuestionComponent],
       providers: [
         {
-          provide: SpeechService,
-          useValue: { supported: true, speak: (t: string) => spoken.push(t), cancel: () => {} },
+          provide: AudioService,
+          useValue: {
+            activeUrl: () => null,
+            playing: () => false,
+            failed: () => false,
+            playQuestion: (paper: string, n: number) => played.push({ paper, n }),
+            stop: () => {},
+          },
         },
       ],
     });
     fixture = TestBed.createComponent(MultipleChoiceQuestionComponent);
     fixture.componentRef.setInput('unit', listeningUnit);
+    fixture.componentRef.setInput('paper', 'H41001');
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -105,10 +112,10 @@ describe('MultipleChoiceQuestionComponent', () => {
     expect(fixture.nativeElement.querySelector('.transcript')).toBeFalsy();
   });
 
-  it('speaks the passage rather than the question', () => {
+  it('plays the official recording rather than reading the passage aloud', () => {
     el<HTMLButtonElement>(fixture.nativeElement, '.playbtn').click();
 
-    expect(spoken).toEqual([listeningUnit.passage]);
+    expect(played).toEqual([{ paper: 'H41001', n: listeningUnit.n }]);
   });
 
   it('uses the C letter in the solution for a C answer', () => {
@@ -121,5 +128,28 @@ describe('MultipleChoiceQuestionComponent', () => {
     expect(fixture.nativeElement.querySelector('.fbline.bad')?.textContent).toContain('answer: C');
     expect(options()[2].classList).toContain('correct');
     expect(options()[0].classList).toContain('wrong');
+  });
+
+  it('reviews the item read-only with the answer highlighted', () => {
+    fixture.componentRef.setInput('review', true);
+    fixture.detectChanges();
+
+    expect(options()[0].classList).toContain('correct');
+    expect(options().slice(1).every((button) => button.classList.contains('dim'))).toBeTrue();
+    expect(options().every((button) => button.disabled)).toBeTrue();
+    expect(fixture.nativeElement.querySelector('.fbline.good')?.textContent).toContain('Correct answer: A');
+  });
+
+  it('emits nothing while reviewing', () => {
+    const emitted: { correct?: boolean }[] = [];
+    component.answered.subscribe((event) => emitted.push(event));
+    fixture.componentRef.setInput('review', true);
+    fixture.detectChanges();
+
+    options()[3].click();
+    fixture.detectChanges();
+
+    expect(emitted).toEqual([]);
+    expect(component.hasAnswered()).toBeFalse();
   });
 });

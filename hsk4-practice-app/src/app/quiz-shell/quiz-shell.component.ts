@@ -6,7 +6,7 @@ import { SECTION_META, SectionMeta } from '../data/section-meta';
 import { isSectionKey, isTestId } from '../data/tests.data';
 import { SectionKey, TestId } from '../data/models';
 import { AnswerEvent } from '../questions/answer-event';
-import { SpeechService } from '../core/speech.service';
+import { AudioService } from '../core/audio.service';
 import { QuizStateService } from '../core/quiz-state.service';
 import { TrueFalseQuestionComponent } from '../questions/true-false-question/true-false-question.component';
 import { MultipleChoiceQuestionComponent } from '../questions/multiple-choice-question/multiple-choice-question.component';
@@ -38,7 +38,7 @@ export class QuizShellComponent {
   readonly quizState = inject(QuizStateService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly speech = inject(SpeechService);
+  private readonly audio = inject(AudioService);
 
   /** Set once the first (placeholder-params) effect run has been skipped. */
   private synced = false;
@@ -68,6 +68,9 @@ export class QuizShellComponent {
   readonly sectionKey = computed<SectionKey>(
     () => this.quizState.sectionKey() ?? this.params().sectionKey,
   );
+
+  /** The paper being practised, so listening questions can find their clip. */
+  readonly paper = computed<TestId>(() => this.quizState.testId() ?? this.params().testId);
 
   readonly meta = computed<SectionMeta>(() => SECTION_META[this.sectionKey()]);
 
@@ -109,7 +112,7 @@ export class QuizShellComponent {
   }
 
   back(): void {
-    this.speech.cancel();
+    this.audio.stop();
     void this.router.navigate(['/']);
   }
 

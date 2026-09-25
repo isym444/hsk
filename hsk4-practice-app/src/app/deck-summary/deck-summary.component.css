@@ -16,7 +16,36 @@
 .stat .v.up{color:var(--good);}
 .stat .v.down{color:var(--bad);}
 
+/* ---------- Question detail + review overlay ---------- */
+.dtable tr.reviewrow{cursor:pointer;}
+.dtable tr.reviewrow:hover{background:var(--bg);}
+.dtable tr.reviewrow:focus-within{background:var(--bg);}
+
+.linkbtn{
+  border:none; background:none; color:var(--c,var(--accent)); font:inherit; font-size:13px;
+  cursor:pointer; padding:0; text-decoration:underline;
+}
+.linkbtn:hover{opacity:.8;}
+
+.review-overlay{
+  position:fixed; inset:0; z-index:40; background:rgba(20,17,14,.45);
+  display:flex; justify-content:center; align-items:flex-start; padding:24px 16px; overflow-y:auto;
+}
+.review-sheet{
+  width:100%; max-width:640px; margin:auto 0; background:var(--surface);
+  border:1px solid var(--line); border-radius:var(--radius); padding:20px 20px 16px;
+  box-shadow:0 18px 50px rgba(0,0,0,.3);
+}
+.review-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
+.review-head .tag{margin-bottom:8px;}
+.review-meta{display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:12.5px; color:var(--ink-soft);}
+.review-card{margin-top:16px;}
+.review-nav{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:18px;}
+.review-nav .metricnote{text-align:center;}
+
 @media (max-width:480px){
   .summary-card{padding:26px 18px;}
   .summary-card .big{font-size:36px;}
+  .review-overlay{padding:12px;}
+  .review-sheet{padding:16px 14px 12px; border-radius:8px;}
 }

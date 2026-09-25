@@ -18,6 +18,13 @@ const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 })
 export class FillBlankQuestionComponent {
   readonly unit = input.required<FillBlankUnit>();
+
+  /**
+   * Read-only review rendering: the correct chip is highlighted, nothing can be
+   * picked and nothing is emitted. Used by the session summary.
+   */
+  readonly review = input(false);
+
   readonly answered = output<AnswerEvent>();
 
   /** Index of the chosen bank chip, or null while unanswered. */
@@ -36,7 +43,7 @@ export class FillBlankQuestionComponent {
   });
 
   pick(index: number): void {
-    if (this.choice() !== null) {
+    if (this.review() || this.choice() !== null) {
       return;
     }
     this.choice.set(index);
@@ -44,6 +51,9 @@ export class FillBlankQuestionComponent {
   }
 
   chipClass(index: number): string {
+    if (this.review()) {
+      return this.unit().bank[index] === this.unit().answer ? 'bankchip correct' : 'bankchip';
+    }
     const picked = this.choice();
     if (picked === null) {
       return 'bankchip';

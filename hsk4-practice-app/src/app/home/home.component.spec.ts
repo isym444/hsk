@@ -155,7 +155,7 @@ describe('HomeComponent', () => {
   it('keeps the footnote copy', () => {
     const footnote = element().querySelector('.footnote')?.textContent ?? '';
     expect(footnote).toContain('Hanban');
-    expect(footnote).toContain("browser's built-in speech synthesis");
+    expect(footnote).toContain('official HSK 4 recordings');
   });
 
   it('renders the hero copy for the aggregated decks', () => {

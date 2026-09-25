@@ -18,6 +18,13 @@
 .sessionline b{color:var(--ink); font-variant-numeric:tabular-nums; font-weight:600;}
 .sessionline .muted{color:var(--ink-soft);}
 
+/* The response timer is hidden by default; this is the quiet opt-in control. */
+.sessionline .timertoggle{
+  margin-left:auto; border:none; background:none; color:var(--ink-soft); font:inherit;
+  font-size:12.5px; cursor:pointer; padding:0; text-decoration:underline;
+}
+.sessionline .timertoggle:hover{color:var(--ink);}
+
 .nextrow{align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;}
 .nextnote{
   font-size:12.5px; color:var(--ink-soft); display:inline-flex; align-items:center; gap:8px;

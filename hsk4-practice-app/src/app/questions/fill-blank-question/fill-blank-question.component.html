@@ -5,7 +5,7 @@
     <button
       type="button"
       [class]="chipClass($index)"
-      [disabled]="choice() !== null"
+      [disabled]="review() || choice() !== null"
       (click)="pick($index)"
     >
       <span class="lt">{{ word.letter }}</span>{{ word.word }}
@@ -13,13 +13,17 @@
   }
 </div>
 
-@if (choice() !== null) {
+@if (review() || choice() !== null) {
   <div class="feedback">
-    <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
-      @if (isCorrect()) {
-        ✓ Correct
-      } @else {
-        ✗ Incorrect · answer: {{unit().answer}}
-      }</div>
+    @if (review()) {
+      <div class="fbline good">Correct answer: {{ unit().answer }}</div>
+    } @else {
+      <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
+        @if (isCorrect()) {
+          ✓ Correct
+        } @else {
+          ✗ Incorrect · answer: {{unit().answer}}
+        }</div>
+    }
   </div>
 }

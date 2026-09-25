@@ -11,6 +11,13 @@ import { AnswerEvent } from '../answer-event';
 })
 export class OpenWritingQuestionComponent {
   readonly unit = input.required<OpenUnit>();
+
+  /**
+   * Read-only review rendering: the model answer is shown straight away and the
+   * draft box is hidden. Used by the session summary.
+   */
+  readonly review = input(false);
+
   readonly answered = output<AnswerEvent>();
 
   /** True once "Show model answer" has been pressed. */
@@ -37,7 +44,7 @@ export class OpenWritingQuestionComponent {
   }
 
   reveal(): void {
-    if (this.revealed()) {
+    if (this.review() || this.revealed()) {
       return;
     }
     this.revealed.set(true);

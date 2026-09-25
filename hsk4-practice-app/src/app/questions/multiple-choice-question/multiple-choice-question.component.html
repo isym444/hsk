@@ -1,5 +1,13 @@
 @if (unit().speak) {
-  <button class="playbtn" type="button" (click)="play()">🔊 Play audio</button>
+  <button class="playbtn" type="button" (click)="play()" [class.playing]="isPlaying()">
+    {{ isPlaying() ? '🔊 Playing…' : '🔊 Play audio' }}
+    @if (clip(); as recording) {
+      <span class="clipmeta">· real voice {{ recording.duration }}s</span>
+    }
+  </button>
+  @if (audio.failed()) {
+    <div class="audiowarn">The recording for this question could not be played.</div>
+  }
 } @else {
   <p class="passage">{{ unit().passage }}</p>
 }
@@ -11,7 +19,7 @@
     <button
       type="button"
       [class]="optionClass($index)"
-      [disabled]="choice() !== null"
+      [disabled]="review() || choice() !== null"
       (click)="pick($index)"
     >
       <span class="lt">{{ option.letter }}</span><span>{{ option.text }}</span>
@@ -19,14 +27,18 @@
   }
 </div>
 
-@if (choice() !== null) {
+@if (review() || choice() !== null) {
   <div class="feedback">
-    <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
-      @if (isCorrect()) {
-        ✓ Correct
-      } @else {
-        ✗ Incorrect · answer: {{solutionLetter()}}
-      }</div>
+    @if (review()) {
+      <div class="fbline good">Correct answer: {{ solutionLetter() }}</div>
+    } @else {
+      <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
+        @if (isCorrect()) {
+          ✓ Correct
+        } @else {
+          ✗ Incorrect · answer: {{solutionLetter()}}
+        }</div>
+    }
     @if (unit().speak) {
       <div class="transcript-label">Transcript</div>
       <div class="transcript">{{ unit().passage }}</div>

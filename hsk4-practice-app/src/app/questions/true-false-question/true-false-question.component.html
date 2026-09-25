@@ -1,23 +1,36 @@
 @if (unit().audio) {
-  <button class="playbtn" type="button" (click)="play()">🔊 Play audio</button>
+  <button class="playbtn" type="button" (click)="play()" [class.playing]="isPlaying()">
+    {{ isPlaying() ? '🔊 Playing…' : '🔊 Play audio' }}
+    @if (clip(); as recording) {
+      <span class="clipmeta">· real voice {{ recording.duration }}s</span>
+    }
+  </button>
+}
+
+@if (audio.failed()) {
+  <div class="audiowarn">The recording for this question could not be played.</div>
 }
 
 <p class="statement"><span class="star">★</span> {{ unit().statement }}</p>
 
 <div class="tfrow">
   @for (part of parts; track $index) {
-    <button class="optbtn" type="button" [class]="buttonClass($index)" [disabled]="!locked()" (click)="pick($index)">{{ labels[$index] }}</button>
+    <button class="optbtn" type="button" [class]="buttonClass($index)" [disabled]="review() || !locked()" (click)="pick($index)">{{ labels[$index] }}</button>
   }
 </div>
 
-@if (choice() !== null) {
+@if (review() || choice() !== null) {
   <div class="feedback">
-    <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
-      @if (isCorrect()) {
-        ✓ Correct
-      } @else {
-        ✗ Incorrect · answer: {{ solutionLabel() }}
-      }</div>
+    @if (review()) {
+      <div class="fbline good">Correct answer: {{ solutionLabel() }}</div>
+    } @else {
+      <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
+        @if (isCorrect()) {
+          ✓ Correct
+        } @else {
+          ✗ Incorrect · answer: {{ solutionLabel() }}
+        }</div>
+    }
     @if (unit().audio) {
       <div class="transcript-label">Transcript</div>
       <div class="transcript">{{ unit().audio }}</div>

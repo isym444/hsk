@@ -56,7 +56,7 @@ service, and falls back to `index.html` for real routes such as
 Other commands:
 
 ```bash
-npm test          # 180 unit + component tests (headless Chrome)
+npm test          # 209 unit + component tests (headless Chrome)
 npm run api       # convenience: start the backend from here
 npm run catalogue # regenerate backend/data/catalogue.json from the data layer
 ```
@@ -77,6 +77,7 @@ src/
       build-units.ts          the single pure walker: units, question keys, inventory
       question-inventory.ts   question key → renderable unit, per-category counts
       catalogue-export.ts     entry point the backend's generator bundles
+      audio-clips.ts          paper+question → the real recording in public/audio
       h41001|h41002|h41003.data.ts, tests.data.ts, section-meta.ts
     core/
       review-api.service.ts   typed client for the FastAPI backend (/api)
@@ -84,7 +85,8 @@ src/
       quiz-builder.service.ts per-paper flattening (delegates to build-units)
       quiz-state.service.ts   one per-paper quiz session
       format.ts               duration/percent/date formatting + mode labels
-      speech.service.ts, active-session.guard.ts
+      audio.service.ts        plays the real-voice listening clips
+      active-session.guard.ts
     home/                     aggregated decks + the per-paper expander
     deck-run/                 the aggregated practice runner
     deck-summary/             end-of-session stats for one session
@@ -93,6 +95,55 @@ src/
     questions/                one component per question kind
     summary/                  per-paper final score screen
 ```
+
+## Listening audio
+
+The listening sections play the **official HSK 4 recordings**, not synthesised
+speech. `H41001.mp3`, `H41002.mp3` and `H41003.mp3` each hold all 45 questions of
+one paper; every question has been cut out of them into its own clip:
+
+```
+public/audio/H41001_q01.mp3 … H41003_q45.mp3     135 clips, ~20 MB total
+```
+
+Each clip runs from just after the spoken question number to the end of the
+question itself, so the 10–15 second answer pauses are trimmed but nothing the
+examiner says is lost. `data/audio-clips.ts` is the manifest (paper, question,
+part, file, duration) and `core/audio.service.ts` plays it through one shared
+`HTMLAudioElement`; the question components take a `[paper]` input so they can
+resolve their own clip. Questions whose clip is missing keep working — the play
+button reports the failure instead of breaking the question.
+
+Both artefacts are reproducible:
+
+```bash
+# cut the clips again (needs ffmpeg + whisper-cli + the three source MP3s)
+HSK_AUDIO_DIR=~/Downloads python3 scripts/extract-listening-clips.py public/audio
+
+# score every clip's transcription against its own transcript
+python3 scripts/verify-listening-clips.py
+```
+
+`clip_span` in the extractor, and the block→question layout it relies on, are
+documented in the extraction script header. The layout is the same for all three
+papers:
+
+| Blocks | Content |
+| --- | --- |
+| 1, 2 | paper intro, worked example |
+| 3–12 | part 1, Q1–Q10 |
+| 13, 14–28 | part 2 intro + example, then Q11–Q25 |
+| 29, 30–39 | part 3 intro + example, then Q26–Q35 |
+| 40–50 | part 4, passage + two questions per pair (Q36–Q45) |
+
+Parts 1 and 2 of this paper bank are shortened to 10 and 15 questions, so the
+recording's own numbering ends at question 45 even though the official exam has
+more items per part.
+
+`core/audio.service.spec.ts` loads all 135 files in a real browser and checks
+each one decodes to the length the manifest claims, so a mis-cut or missing clip
+fails the suite. There is a second, slower check used while cutting the clips:
+transcribe each one and compare it with that question's transcript.
 
 ## How the pieces agree
 
@@ -116,6 +167,15 @@ question data (`npm run catalogue`); a backend test fails if it is stale.
 - **Engaged time only.** The per-question timer pauses while the tab is hidden,
   and any single answer longer than 10 minutes is capped, so "average response
   time" is not inflated by a question left open in a background tab.
+- **Timer hidden by default.** The live "time on this question" readout, the
+  session average and the per-answer time are hidden while practising; "Show
+  timer" reveals them and the choice is remembered on the device
+  (`PreferencesService`). Answers are still timed either way.
+- **Questions reopen for review.** Every row of "Question detail for this
+  session" on the summary page reopens that question read-only with the answer
+  revealed (previous/next steps through the session). The review database only
+  stores the question key, so the question itself is re-rendered from the local
+  inventory.
 - **Self-assessed writing.** The open writing items (看图造句) are marked
   self-assessed, counted as answered, and excluded from success rate and average
   time — the same rule the original quiz used.

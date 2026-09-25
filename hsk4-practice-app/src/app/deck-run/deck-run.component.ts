@@ -3,10 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { SECTION_META, SectionMeta } from '../data/section-meta';
-import { SectionKey } from '../data/models';
+import { SectionKey, TestId, Unit } from '../data/models';
 import { CATEGORY_ORDER, categoryTotal, inventoryForCategory } from '../data/question-inventory';
-import { SpeechService } from '../core/speech.service';
+import { AudioService } from '../core/audio.service';
 import { DeckStateService } from '../core/deck-state.service';
+import { PreferencesService } from '../core/preferences.service';
 import { DeckMode } from '../core/review-api.service';
 import { DECK_MODE_LABELS, formatDuration, formatPercent } from '../core/format';
 import { TrueFalseQuestionComponent } from '../questions/true-false-question/true-false-question.component';
@@ -42,7 +43,10 @@ export class DeckRunComponent implements OnInit {
   readonly deck = inject(DeckStateService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly speech = inject(SpeechService);
+  private readonly audio = inject(AudioService);
+
+  /** The live timer is hidden unless the learner has opted into it. */
+  private readonly prefs = inject(PreferencesService);
 
   readonly modes: DeckMode[] = ['smart', 'random'];
   readonly modeLabels = DECK_MODE_LABELS;
@@ -126,7 +130,18 @@ export class DeckRunComponent implements OnInit {
     void this.deck.answer(event.correct);
   }
 
+  /**
+   * The sample paper the current question came from, so a listening question
+   * can find its recording. The deck mixes all three papers into one queue, so
+   * this is read per question rather than from the page.
+   */
+  paperOf(unit: Unit): TestId | null {
+    const paper = this.deck.current()?.paper;
+    return paper === 'H41001' || paper === 'H41002' || paper === 'H41003' ? paper : null;
+  }
+
   next(): void {
+    this.audio.stop();
     void this.deck.next();
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
   }
@@ -149,7 +164,7 @@ export class DeckRunComponent implements OnInit {
 
   /** Finishes the session and shows its summary; an empty session is dropped. */
   async endSession(goToSummary = true): Promise<void> {
-    this.speech.cancel();
+    this.audio.stop();
     if (this.deck.tally().answered === 0) {
       await this.deck.discard();
       void this.router.navigate(['/']);
@@ -181,4 +196,12 @@ export class DeckRunComponent implements OnInit {
   /* ------------------------------------------------------------------ */
 
   readonly progressLabel = computed(() => `Answered this session: ${this.deck.tally().answered}`);
+
+  /** Whether the per-question timer readouts are currently visible. */
+  readonly timingVisible = this.prefs.showResponseTimer;
+
+  /** Shows/hides the timing readouts, and remembers the choice on this device. */
+  toggleTimer(): void {
+    this.prefs.toggleResponseTimer();
+  }
 }

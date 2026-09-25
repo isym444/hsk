@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TrueFalseQuestionComponent } from './true-false-question.component';
 import { TrueFalseUnit } from '../../data/models';
-import { SpeechService } from '../../core/speech.service';
+import { AudioService } from '../../core/audio.service';
 
 /** Typed non-null lookup, so specs stay readable without `!` everywhere. */
 function el<T extends HTMLElement>(root: unknown, selector: string): T {
@@ -15,7 +15,7 @@ function el<T extends HTMLElement>(root: unknown, selector: string): T {
 describe('TrueFalseQuestionComponent', () => {
   let fixture: ComponentFixture<TrueFalseQuestionComponent>;
   let component: TrueFalseQuestionComponent;
-  let spoken: string[];
+  let played: { paper: string; n: number }[];
 
   const unit: TrueFalseUnit = {
     kind: 'tf',
@@ -30,18 +30,25 @@ describe('TrueFalseQuestionComponent', () => {
   }
 
   beforeEach(() => {
-    spoken = [];
+    played = [];
     TestBed.configureTestingModule({
       imports: [TrueFalseQuestionComponent],
       providers: [
         {
-          provide: SpeechService,
-          useValue: { supported: true, speak: (t: string) => spoken.push(t), cancel: () => {} },
+          provide: AudioService,
+          useValue: {
+            activeUrl: () => null,
+            playing: () => false,
+            failed: () => false,
+            playQuestion: (paper: string, n: number) => played.push({ paper, n }),
+            stop: () => {},
+          },
         },
       ],
     });
     fixture = TestBed.createComponent(TrueFalseQuestionComponent);
     fixture.componentRef.setInput('unit', unit);
+    fixture.componentRef.setInput('paper', 'H41001');
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -99,10 +106,10 @@ describe('TrueFalseQuestionComponent', () => {
     expect(emitted).toEqual([{ correct: true }]);
   });
 
-  it('speaks the audio when the play button is pressed', () => {
+  it('plays this question\'s official recording when the play button is pressed', () => {
     el<HTMLButtonElement>(fixture.nativeElement, '.playbtn').click();
 
-    expect(spoken).toEqual([unit.audio]);
+    expect(played).toEqual([{ paper: 'H41001', n: unit.n }]);
   });
 
   it('omits the play button and transcript for items without audio', () => {
@@ -125,5 +132,30 @@ describe('TrueFalseQuestionComponent', () => {
 
     expect(fixture.nativeElement.querySelector('.fbline.bad')?.textContent).toContain('answer: 错');
     expect(buttons()[1].classList).toContain('correct');
+  });
+
+  it('reviews the item read-only with the answer highlighted', () => {
+    fixture.componentRef.setInput('review', true);
+    fixture.detectChanges();
+
+    expect(buttons()[0].classList).toContain('correct');
+    expect(buttons()[1].classList).toContain('dim');
+    expect(buttons().every((button) => button.disabled)).toBeTrue();
+    expect(fixture.nativeElement.querySelector('.fbline.good')?.textContent).toContain('Correct answer: 对');
+    expect(fixture.nativeElement.querySelector('.transcript')?.textContent).toContain('树林');
+  });
+
+  it('emits nothing while reviewing', () => {
+    const emitted: { correct?: boolean }[] = [];
+    component.answered.subscribe((event) => emitted.push(event));
+    fixture.componentRef.setInput('review', true);
+    fixture.detectChanges();
+
+    buttons()[0].click();
+    buttons()[1].click();
+    fixture.detectChanges();
+
+    expect(emitted).toEqual([]);
+    expect(component.hasAnswered()).toBeFalse();
   });
 });

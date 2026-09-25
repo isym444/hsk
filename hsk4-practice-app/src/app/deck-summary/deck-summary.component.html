@@ -79,6 +79,7 @@
 
     <div class="sectiontitle">Question detail for this session</div>
     @if (data.items.length) {
+      <div class="metricnote">Select a question to reopen it and check the answer.</div>
       <div class="tablewrap">
         <table class="dtable items">
           <thead>
@@ -89,11 +90,12 @@
               <th>Result</th>
               <th class="num">Time</th>
               <th class="num">When</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             @for (item of data.items; track $index) {
-              <tr>
+              <tr class="reviewrow" (click)="openReview(item)">
                 <td class="muted">{{ item.paper }}</td>
                 <td class="muted">{{ kindLabels[item.kind] ?? item.kind }}</td>
                 <td class="qtext">{{ item.label }}</td>
@@ -109,6 +111,9 @@
                   {{ item.outcome === 'self_assessed' ? '—' : formatDuration(item.elapsed_ms) }}
                 </td>
                 <td class="num muted">{{ formatDateTime(item.answered_at) }}</td>
+                <td class="num">
+                  <button class="linkbtn" type="button" (click)="openReview(item)">Review</button>
+                </td>
               </tr>
             }
           </tbody>
@@ -122,6 +127,93 @@
       }
     } @else {
       <div class="loading">No question records for this session.</div>
+    }
+
+    @if (reviewItem(); as item) {
+      <div class="review-overlay" (click)="closeReview()">
+        <div
+          class="review-sheet"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Question review"
+          (click)="$event.stopPropagation()"
+        >
+          <div class="review-head">
+            <div>
+              <div class="tag" [style.color]="meta().color">
+                {{ item.paper }} · {{ kindLabels[item.kind] ?? item.kind }} · question {{ item.number }}
+              </div>
+              <div class="review-meta">
+                <span
+                  class="pill"
+                  [class.good]="item.outcome === 'correct'"
+                  [class.bad]="item.outcome === 'incorrect'"
+                  [class.self]="item.outcome === 'self_assessed'"
+                >{{ outcomeLabels[item.outcome] }}</span>
+                @if (item.outcome !== 'self_assessed') {
+                  <span>Answered in {{ formatDuration(item.elapsed_ms) }}</span>
+                }
+              </div>
+            </div>
+            <button class="smallbtn" type="button" (click)="closeReview()">Close</button>
+          </div>
+
+          @if (reviewUnit(); as unit) {
+            <div class="card review-card" [style.--c]="meta().color">
+              @switch (unit.kind) {
+                @case ('tf') {
+                  @for (question of [unit]; track reviewKey()) {
+                    <app-true-false-question [unit]="unit" [paper]="reviewPaper()" [review]="true" />
+                  }
+                }
+                @case ('mc') {
+                  @for (question of [unit]; track reviewKey()) {
+                    <app-multiple-choice-question [unit]="unit" [paper]="reviewPaper()" [review]="true" />
+                  }
+                }
+                @case ('fill') {
+                  @for (question of [unit]; track reviewKey()) {
+                    <app-fill-blank-question [unit]="unit" [review]="true" />
+                  }
+                }
+                @case ('order') {
+                  @for (question of [unit]; track reviewKey()) {
+                    <app-sentence-order-question [unit]="unit" [review]="true" />
+                  }
+                }
+                @case ('build') {
+                  @for (question of [unit]; track reviewKey()) {
+                    <app-sentence-build-question [unit]="unit" [review]="true" />
+                  }
+                }
+                @case ('open') {
+                  @for (question of [unit]; track reviewKey()) {
+                    <app-open-writing-question [unit]="unit" [review]="true" />
+                  }
+                }
+              }
+            </div>
+          } @else {
+            <div class="loading">This question is no longer in the {{ meta().label }} bank.</div>
+          }
+
+          <div class="review-nav">
+            <button
+              class="smallbtn"
+              type="button"
+              [disabled]="reviewPosition() <= 0"
+              (click)="stepReview(-1)"
+            >← Previous</button>
+            <span class="metricnote">{{ reviewPosition() + 1 }} of {{ data.items.length }}</span>
+            <button
+              class="smallbtn"
+              type="button"
+              [disabled]="reviewPosition() >= data.items.length - 1"
+              (click)="stepReview(1)"
+            >Next →</button>
+          </div>
+        </div>
+      </div>
     }
 
     <div class="sectiontitle">{{ meta().label }} totals</div>

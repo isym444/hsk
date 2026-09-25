@@ -128,13 +128,23 @@
       }
 
       <div class="sessionline">
-        <span>Time on this question <b>{{ formatDuration(deck.elapsedMs()) }}</b></span>
-        @if (deck.averageMs() !== null) {
-          <span class="muted">Session average <b>{{ formatDuration(deck.averageMs()) }}</b></span>
+        @if (timingVisible()) {
+          <span>Time on this question <b>{{ formatDuration(deck.elapsedMs()) }}</b></span>
+          @if (deck.averageMs() !== null) {
+            <span class="muted">Session average <b>{{ formatDuration(deck.averageMs()) }}</b></span>
+          }
         }
         @if (deck.current(); as question) {
           <span class="muted">{{ question.paper }} · question {{ question.number }}</span>
         }
+        <button
+          class="timertoggle"
+          type="button"
+          [attr.aria-pressed]="timingVisible()"
+          (click)="toggleTimer()"
+        >
+          {{ timingVisible() ? 'Hide timer' : 'Show timer' }}
+        </button>
       </div>
 
       @if (deck.currentUnit(); as unit) {
@@ -146,12 +156,12 @@
           @switch (unit.kind) {
             @case ('tf') {
               @for (question of [unit]; track deck.token()) {
-                <app-true-false-question [unit]="unit" (answered)="onAnswered($event)" />
+                <app-true-false-question [unit]="unit" [paper]="paperOf(unit)" (answered)="onAnswered($event)" />
               }
             }
             @case ('mc') {
               @for (question of [unit]; track deck.token()) {
-                <app-multiple-choice-question [unit]="unit" (answered)="onAnswered($event)" />
+                <app-multiple-choice-question [unit]="unit" [paper]="paperOf(unit)" (answered)="onAnswered($event)" />
               }
             }
             @case ('fill') {
@@ -179,7 +189,9 @@
           @if (deck.answered()) {
             <div class="nextrow">
               <span class="nextnote">
-                This question took {{ formatDuration(deck.elapsedMs()) }}
+                @if (timingVisible()) {
+                  This question took {{ formatDuration(deck.elapsedMs()) }}
+                }
                 @switch (deck.lastOutcome()) {
                   @case ('correct') {
                     <span class="pill good">Correct</span>

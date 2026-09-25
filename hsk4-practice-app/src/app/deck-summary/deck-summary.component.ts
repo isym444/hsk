@@ -1,10 +1,16 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SECTION_META } from '../data/section-meta';
-import { SectionKey } from '../data/models';
-import { CATEGORY_ORDER, KIND_LABELS } from '../data/question-inventory';
-import { ReviewApiService, SessionSummary } from '../core/review-api.service';
+import { SectionKey, TestId, Unit } from '../data/models';
+import { CATEGORY_ORDER, KIND_LABELS, unitForQuestionKey } from '../data/question-inventory';
+import { ReviewApiService, SessionItem, SessionSummary } from '../core/review-api.service';
 import { DECK_MODE_LABELS, OUTCOME_LABELS, formatDateTime, formatDuration, formatPercent } from '../core/format';
+import { TrueFalseQuestionComponent } from '../questions/true-false-question/true-false-question.component';
+import { MultipleChoiceQuestionComponent } from '../questions/multiple-choice-question/multiple-choice-question.component';
+import { FillBlankQuestionComponent } from '../questions/fill-blank-question/fill-blank-question.component';
+import { SentenceOrderQuestionComponent } from '../questions/sentence-order-question/sentence-order-question.component';
+import { SentenceBuildQuestionComponent } from '../questions/sentence-build-question/sentence-build-question.component';
+import { OpenWritingQuestionComponent } from '../questions/open-writing-question/open-writing-question.component';
 
 /**
  * End-of-session stats: the numbers for the practice run the learner just
@@ -12,10 +18,23 @@ import { DECK_MODE_LABELS, OUTCOME_LABELS, formatDateTime, formatDuration, forma
  *
  * Everything is fetched from the API by session id, so the page survives a
  * refresh and can be reopened from the stats page later.
+ *
+ * Each row of "Question detail for this session" reopens that question in a
+ * read-only review overlay, with the correct answer revealed — the review
+ * database only stores the key, so the question itself comes from the local
+ * inventory (see `data/question-inventory.ts`).
  */
 @Component({
   selector: 'app-deck-summary',
   standalone: true,
+  imports: [
+    TrueFalseQuestionComponent,
+    MultipleChoiceQuestionComponent,
+    FillBlankQuestionComponent,
+    SentenceOrderQuestionComponent,
+    SentenceBuildQuestionComponent,
+    OpenWritingQuestionComponent,
+  ],
   templateUrl: './deck-summary.component.html',
   styleUrl: './deck-summary.component.css',
 })
@@ -71,6 +90,60 @@ export class DeckSummaryComponent implements OnInit {
     }
     return items.reduce((worst, item) => (item.elapsed_ms > worst.elapsed_ms ? item : worst));
   });
+
+  /** The session item currently open in the review overlay, if any. */
+  readonly reviewItem = signal<SessionItem | null>(null);
+
+  /** The renderable unit behind the open item, or null if the key is unknown. */
+  readonly reviewUnit = computed<Unit | null>(() => {
+    const item = this.reviewItem();
+    return item ? unitForQuestionKey(item.question_key) : null;
+  });
+
+  /**
+   * Changes with the reviewed question, so the card's `@for` recreates the
+   * question component (and clears its state) when stepping to another item.
+   */
+  readonly reviewKey = computed(() => this.reviewItem()?.question_key ?? '');
+
+  /**
+   * Paper of the question under review, read from the front of its stable key
+   * (`H41002:listening:tf:3`), so the review card can replay its recording.
+   */
+  readonly reviewPaper = computed<TestId | null>(() => {
+    const paper = this.reviewItem()?.question_key.split(':')[0];
+    return paper === 'H41001' || paper === 'H41002' || paper === 'H41003' ? paper : null;
+  });
+
+  /** Where the open question sits in the session, for the prev/next controls. */
+  readonly reviewPosition = computed(() => {
+    const item = this.reviewItem();
+    return item ? this.summary()?.items.indexOf(item) ?? -1 : -1;
+  });
+
+  /** Opens the review overlay on one question of this session. */
+  openReview(item: SessionItem): void {
+    this.reviewItem.set(item);
+  }
+
+  closeReview(): void {
+    this.reviewItem.set(null);
+  }
+
+  /** Steps through the session's questions, stopping at either end. */
+  stepReview(delta: number): void {
+    const items = this.summary()?.items ?? [];
+    const index = this.reviewPosition() + delta;
+    if (index < 0 || index >= items.length) {
+      return;
+    }
+    this.reviewItem.set(items[index]);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.closeReview();
+  }
 
   ngOnInit(): void {
     const sessionId = this.route.snapshot.paramMap.get('sessionId') ?? '';

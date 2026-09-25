@@ -6,7 +6,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { By } from '@angular/platform-browser';
 import { DeckRunComponent } from './deck-run.component';
 import { DeckStateService } from '../core/deck-state.service';
-import { SpeechService } from '../core/speech.service';
+import { AudioService } from '../core/audio.service';
 import { TrueFalseQuestionComponent } from '../questions/true-false-question/true-false-question.component';
 import { routeStub } from '../testing/route-stub';
 import {
@@ -53,6 +53,9 @@ describe('DeckRunComponent', () => {
 
   beforeEach(() => {
     spoken = [];
+    // The timer preference persists in localStorage, so every test starts from
+    // the default (hidden) rather than inheriting a previous test's choice.
+    localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
         provideZoneChangeDetection(),
@@ -60,11 +63,13 @@ describe('DeckRunComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         {
-          provide: SpeechService,
+          provide: AudioService,
           useValue: {
-            supported: true,
-            speak: (text: string) => spoken.push(text),
-            cancel: () => spoken.push('__cancel__'),
+            activeUrl: () => null,
+            playing: () => false,
+            failed: () => false,
+            playQuestion: () => {},
+            stop: () => spoken.push('__stop__'),
           },
         },
       ],
@@ -229,13 +234,46 @@ describe('DeckRunComponent', () => {
     expect(element().querySelector('.nextrow')).toBeNull();
   });
 
-  it('shows the running wrong count and average time', async () => {
+  it('hides the response timer by default and can turn it on', async () => {
+    await open();
+    await startSession();
+
+    expect(text('.sessionline')).not.toContain('Time on this question');
+    expect(text('.timertoggle')).toBe('Show timer');
+
+    element().querySelector<HTMLButtonElement>('.timertoggle')?.click();
+    fixture.detectChanges();
+
+    expect(text('.sessionline')).toContain('Time on this question');
+    expect(text('.timertoggle')).toBe('Hide timer');
+
+    element().querySelector<HTMLButtonElement>('.timertoggle')?.click();
+    fixture.detectChanges();
+
+    expect(text('.sessionline')).not.toContain('Time on this question');
+  });
+
+  it('keeps the wrong count while timing stays hidden after answering', async () => {
     await open();
     await startSession();
     await answer(false);
 
     expect(text('.qz-score')).toContain('✗1');
+    expect(text('.sessionline')).not.toContain('Session average');
+    expect(text('.nextnote')).toContain('Wrong');
+    expect(text('.nextnote')).not.toContain('This question took');
+  });
+
+  it('shows the session average and answer time once the timer is on', async () => {
+    await open();
+    await startSession();
+
+    element().querySelector<HTMLButtonElement>('.timertoggle')?.click();
+    fixture.detectChanges();
+    await answer(false);
+
     expect(text('.sessionline')).toContain('Session average');
+    expect(text('.nextnote')).toContain('This question took');
   });
 
   it('ends the session on "End session" and opens that session summary', async () => {
@@ -276,7 +314,7 @@ describe('DeckRunComponent', () => {
     http.expectOne('/api/sessions/session-1/finish').flush(sessionSummaryFixture());
     await settle();
 
-    expect(spoken).toContain('__cancel__');
+    expect(spoken).toContain('__stop__');
     expect(navigate).toHaveBeenCalledWith(['/']);
   });
 
