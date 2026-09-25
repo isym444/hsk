@@ -153,35 +153,38 @@ listed here.
 
 ## 2. The VPS
 
-### 2a. Find the network Traefik shares
+### 2a. How Traefik reaches containers (already checked on this box)
 
-Traefik only routes to containers on a network it is attached to. Your
-`net-worth-api` snippet has no `networks:` key, so check what your Traefik
-actually uses before deploying:
+This deployment's Traefik runs with **`network_mode: host`** and is attached to
+**no Docker network**:
 
-```bash
-TRAEFIK=$(docker ps --filter name=traefik --format '{{.Names}}' | head -1)
-echo "Traefik container: $TRAEFIK"
-
-# Networks Traefik is attached to:
-docker inspect "$TRAEFIK" --format '{{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{"\n"}}{{end}}'
-
-# Entrypoint and certresolver names, to confirm they match the compose labels:
-docker inspect "$TRAEFIK" --format '{{join .Args "\n"}}'
+```
+$ docker inspect traefik-lqfm-traefik-1 \
+    --format '{{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{"\n"}}{{end}}'
+host
 ```
 
-- If it lists a named network such as `traefik` or `proxy`, put that name in
-  `TRAEFIK_NETWORK` in `.env`. That is what `docker-compose.yml` assumes.
-- If it lists only `bridge` / nothing useful, your Traefik is probably in the
-  same compose project as its services. In that case **delete** the
-  `networks:` block and the `- traefik` line from `docker-compose.yml`, and add
-  this service to that same compose project instead.
-- Confirm the entrypoint and resolver names above match `websecure` and
-  `letsencrypt` in the labels (they are copied from your working
-  `net-worth-api`, so they should).
+So there is no shared network to join. `deploy/docker-compose.yml` therefore
+declares **no** `networks:` block: the service takes the default compose bridge,
+and Traefik reaches it by container IP through the Docker socket. That is the
+same shape as the working `net-worth-api`, which also declares no network.
 
-Also make sure the VPS firewall allows 80 and 443 — Let's Encrypt needs port 80
-for the HTTP-01 challenge:
+Its flags, which the compose labels match:
+
+```
+--providers.docker.exposedbydefault=false   -> traefik.enable=true is required
+--entrypoints.websecure.address=:443        -> routers belong on `websecure`
+--certificatesresolvers.letsencrypt.acme…   -> tls.certresolver=letsencrypt
+--entrypoints.web.http.redirections…        -> http→https is global
+```
+
+The last one means this file needs no redirect router — plain HTTP is already
+redirected to HTTPS by the entrypoint itself.
+
+If you ever move to a Traefik that *does* share a network, re-run the inspect
+command and add a `networks:` block back to the compose file naming that
+network. And make sure the VPS firewall allows 80 and 443 — Let's Encrypt needs
+port 80 for the HTTP-01 challenge:
 
 ```bash
 sudo ufw status

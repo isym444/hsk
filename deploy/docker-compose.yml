@@ -1,22 +1,33 @@
 # The HSK4 review API on the Hostinger VPS, routed by the Traefik instance that
-# is already running there. Same shape as the existing net-worth-api service:
-# an image from GHCR, no published ports, Traefik labels do the routing.
+# is already running there.
 #
 #   cd deploy
-#   cp .env.example .env      # then fill in HSK_DATABASE_URL and friends
+#   cp .env.example .env      # then fill it in
 #   docker compose pull
 #   docker compose up -d
 #
-# See deploy/README.md for the full runbook (Supabase, GHCR login, DNS).
+# See deploy/README.md for the full runbook.
 #
 # ---------------------------------------------------------------------------
-# ONE THING TO CHECK FIRST — the network below.
+# Why there is no `networks:` block here.
 #
-# Traefik only routes to containers it shares a Docker network with. This file
-# attaches the service to an *external* network named by TRAEFIK_NETWORK. If
-# your Traefik instead shares the default network of its own compose project,
-# delete the `networks:` block at the bottom and the two lines under the
-# service. deploy/README.md has the command that tells you which case you are in.
+# Traefik on this box runs with `network_mode: host` and is attached to no
+# Docker network — confirmed with:
+#     docker inspect traefik-lqfm-traefik-1 \
+#       --format '{{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{end}}'
+#     -> host
+#
+# So there is no shared network to join. This service takes the default compose
+# bridge, and Traefik reaches it by container IP through the Docker socket. That
+# is exactly the shape of the working net-worth-api service, which also declares
+# no network.
+#
+# Traefik's own flags, for reference:
+#   --providers.docker.exposedbydefault=false   -> traefik.enable=true is required
+#   --entrypoints.websecure.address=:443        -> routers belong on `websecure`
+#   --certificatesresolvers.letsencrypt.acme…   -> tls.certresolver=letsencrypt
+#   --entrypoints.web.http.redirections…        -> http→https is global, so this
+#                                                  file needs no redirect router
 # ---------------------------------------------------------------------------
 
 name: hsk4-practice
@@ -28,7 +39,8 @@ services:
     pull_policy: always
     restart: unless-stopped
 
-    # HSK_DATABASE_URL (Supabase), HSK_CORS_ORIGINS, pool sizes.
+    # HSK_DATABASE_URL, HSK_DB_SCHEMA, HSK_SUPABASE_URL, HSK_ALLOWED_EMAILS,
+    # HSK_CORS_ORIGINS, pool sizes.
     env_file:
       - .env
 
@@ -49,12 +61,3 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-
-    networks:
-      - traefik
-
-networks:
-  traefik:
-    external: true
-    # Override in .env if your shared network has another name.
-    name: ${TRAEFIK_NETWORK:-traefik}
