@@ -2,8 +2,8 @@
   <div class="hero">
     <h1 class="heading">HSK 4 · Combined question bank</h1>
     <p>
-      The three official sample papers H41001–H41003, merged into three question banks by skill:
-      Listening, Reading and Writing. Practise in random order or sorted by success rate and
+      The {{ paperCountLabel }} official sample papers {{ paperRange }}, merged into three question
+      banks by skill: Listening, Reading and Writing. Practise in random order or sorted by success rate and
       forgetting curve, stop whenever you like, and your score is saved to the local database
       automatically.
     </p>
@@ -24,7 +24,7 @@
       <div class="deckcard-head">
         <span class="name">{{ meta[category].label }}</span>
         <span class="sub">
-          {{ categoryTotal(category) }} questions across all three sample papers
+          {{ categoryTotal(category) }} questions across all {{ paperCountLabel }} sample papers
           @if (statsFor(category); as stats) {
             @if (stats.last_reviewed_at) {
               · last practised {{ formatDateTime(stats.last_reviewed_at) }}

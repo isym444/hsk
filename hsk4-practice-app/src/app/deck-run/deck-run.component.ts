@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { SECTION_META, SectionMeta } from '../data/section-meta';
+import { PAPER_COUNT_LABEL } from '../data/tests.data';
 import { SectionKey, TestId, Unit } from '../data/models';
 import { CATEGORY_ORDER, categoryTotal, inventoryForCategory } from '../data/question-inventory';
 import { AudioService } from '../core/audio.service';
@@ -79,6 +80,9 @@ export class DeckRunComponent implements OnInit {
   );
 
   readonly papers = computed(() => Object.keys(this.perPaper()));
+
+  /** Spelled-out paper count for the hero copy ("four sample papers"). */
+  readonly paperCountLabel = computed(() => PAPER_COUNT_LABEL);
 
   /** Last category this component prepared; see `ngOnInit` / the effect. */
   private prepared: SectionKey | null = null;

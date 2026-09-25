@@ -6,7 +6,7 @@
  * one flat question at a time, discriminated by `kind`.
  */
 
-export type TestId = 'H41001' | 'H41002' | 'H41003';
+export type TestId = 'H41001' | 'H41002' | 'H41003' | 'H41332';
 export type SectionKey = 'listening' | 'reading' | 'writing';
 
 /* ---------- Raw test-bank shapes (today's T/B/Q/F/O/W/P helpers) ---------- */

@@ -11,8 +11,8 @@ Three ways to work through the HSK4 sample papers, plus review statistics:
 
 ## What the app does
 
-- **Aggregated decks.** H41001, H41002 and H41003 are pooled per skill:
-  听力 (135 questions), 阅读 (120), 写作 (45). Practise a whole skill instead of
+- **Aggregated decks.** H41001, H41002, H41003 and H41332 are pooled per skill:
+  听力 (180 questions), 阅读 (160), 写作 (60). Practise a whole skill instead of
   one paper at a time.
 - **Two ordering modes.** 随机练习 shuffles every time; 智能复习 weights by
   success rate and a spaced-repetition interval, so questions you get wrong and
@@ -26,6 +26,9 @@ Three ways to work through the HSK4 sample papers, plus review statistics:
   question, attempts, a per-question table (attempts, correct/incorrect, streak,
   last answered) with filters (未作答 / 成功率<60% / 从没答对), the questions most
   in need of review, and recent sessions.
+- **Real exam audio.** The listening questions play the official recordings,
+  cut into one clip per question, instead of the browser reading the transcript
+  aloud.
 - **A real SQLite database.** Every answer is stored with its outcome
   (correct / incorrect / self-assessed), elapsed milliseconds, the UTC
   timestamp, and the browser's own local time.
@@ -105,7 +108,7 @@ docker compose cp api:/data/hsk_reviews.sqlite3 ./hsk_reviews.sqlite3
 
 ```bash
 cd backend && ./.venv/bin/python -m pytest -q          # 64 tests
-cd hsk4-practice-app && npm test                       # 180 tests
+cd hsk4-practice-app && npm test                       # 211 tests
 ```
 
 See [`hsk4-practice-app/README.md`](hsk4-practice-app/README.md) and

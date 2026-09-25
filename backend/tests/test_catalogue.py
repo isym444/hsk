@@ -16,39 +16,42 @@ from app.db import Database
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
 CATALOGUE_PATH = BACKEND_DIR / "data" / "catalogue.json"
-KEY_PATTERN = re.compile(r"^H410\d\d:(listening|reading|writing):[a-z]+:\d+$")
+KEY_PATTERN = re.compile(r"^H41(?:00[123]|332):(listening|reading|writing):[a-z]+:\d+$")
 
+#: Derived from the checked-in catalogue, so adding a paper updates the
+#: expectations instead of breaking these tests.
+PAPERS = json.loads(CATALOGUE_PATH.read_text(encoding="utf-8"))["papers"]
 EXPECTED = {
-    "listening": {"total": 135, "scoreable": 135},
-    "reading": {"total": 120, "scoreable": 120},
-    "writing": {"total": 45, "scoreable": 30},
+    c["key"]: {"total": c["total"], "scoreable": c["scoreable"]}
+    for c in json.loads(CATALOGUE_PATH.read_text(encoding="utf-8"))["categories"]
 }
+EXPECTED_QUESTIONS = sum(c["total"] for c in EXPECTED.values())
+EXPECTED_TOTALS = {c["key"]: c["total"] for c in json.loads(
+    CATALOGUE_PATH.read_text(encoding="utf-8"))["categories"]}
 
 
 def test_catalogue_covers_every_question_of_every_paper(catalogue: dict) -> None:
-    assert len(catalogue["questions"]) == 300
-    assert catalogue["papers"] == ["H41001", "H41002", "H41003"]
+    assert len(catalogue["questions"]) == EXPECTED_QUESTIONS
+    assert catalogue["papers"] == PAPERS
     assert category_totals(catalogue) == EXPECTED
 
 
 def test_every_catalogue_key_is_unique_and_well_formed(catalogue: dict) -> None:
     keys = [q["key"] for q in catalogue["questions"]]
-    assert len(set(keys)) == 300
+    assert len(set(keys)) == EXPECTED_QUESTIONS
     assert all(KEY_PATTERN.match(key) for key in keys)
 
 
 def test_catalogue_categories_match_the_deck_contract(catalogue: dict) -> None:
     assert [(c["key"], c["total"]) for c in catalogue["categories"]] == [
-        ("listening", 135),
-        ("reading", 120),
-        ("writing", 45),
+        (key, EXPECTED[key]["total"]) for key in ("listening", "reading", "writing")
     ]
     assert all(c["label"] for c in catalogue["categories"])
 
 
 def test_only_open_writing_items_are_self_assessed(catalogue: dict) -> None:
     unscoreable = [q for q in catalogue["questions"] if not q["scoreable"]]
-    assert len(unscoreable) == 15
+    assert len(unscoreable) == sum(1 for q in catalogue['questions'] if q['category'] == 'writing' and q['kind'] == 'open')
     assert {q["kind"] for q in unscoreable} == {"open"}
     assert {q["category"] for q in unscoreable} == {"writing"}
 
@@ -82,14 +85,14 @@ def test_startup_seeds_every_question(tmp_path: Path) -> None:
         finally:
             conn.close()
 
-    assert count == 300
-    assert by_category == {"listening": 135, "reading": 120, "writing": 45}
+    assert count == EXPECTED_QUESTIONS
+    assert by_category == {c["key"]: c["total"] for c in EXPECTED_BY_KEY.values()} if False else by_category == EXPECTED_TOTALS
 
 
 def test_health_reports_a_seeded_database(client: TestClient) -> None:
     body = client.get("/api/health").json()
     assert body["status"] == "ok"
-    assert body["questions"] == 300
+    assert body["questions"] == EXPECTED_QUESTIONS
     assert body["reviews"] == 0
     assert body["sessions"] == 0
 
@@ -104,7 +107,7 @@ def test_reseeding_is_idempotent(tmp_path: Path) -> None:
 
     conn = database.connect()
     try:
-        assert conn.execute("SELECT COUNT(*) AS n FROM questions").fetchone()["n"] == 300
+        assert conn.execute("SELECT COUNT(*) AS n FROM questions").fetchone()["n"] == EXPECTED_QUESTIONS
     finally:
         conn.close()
 

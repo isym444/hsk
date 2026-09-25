@@ -14,7 +14,7 @@ import { TEST_IDS } from '../data/tests.data';
  */
 describe('listening audio clips', () => {
   it('has exactly one clip for each of the 45 listening questions per paper', () => {
-    expect(AUDIO_CLIPS.length).toBe(135);
+    expect(AUDIO_CLIPS.length).toBe(180);
     for (const paper of TEST_IDS) {
       const numbers = AUDIO_CLIPS.filter((c) => c.paper === paper)
         .map((c) => c.n)
@@ -28,13 +28,15 @@ describe('listening audio clips', () => {
       expect(clip.part).toBeGreaterThanOrEqual(1);
       expect(clip.part).toBeLessThanOrEqual(4);
       expect(clip.duration).toBeGreaterThan(2);
-      expect(clip.file).toMatch(/^H4100[123]_q\d\d\.mp3$/);
+      expect(clip.file).toMatch(/^H41(?:00[123]|332)_q\d\d\.mp3$/);
     }
   });
 
   it('resolves a clip by paper and question number', () => {
     expect(clipFor('H41001', 1)?.file).toBe('H41001_q01.mp3');
     expect(clipFor('H41003', 45)?.file).toBe('H41003_q45.mp3');
+    expect(clipFor('H41332', 1)?.file).toBe('H41332_q01.mp3');
+    expect(clipFor('H41332', 45)?.file).toBe('H41332_q45.mp3');
     expect(clipFor('H41002', 46)).toBeUndefined();
     expect(clipUrl(clipFor('H41002', 20)!)).toBe('audio/H41002_q20.mp3');
   });

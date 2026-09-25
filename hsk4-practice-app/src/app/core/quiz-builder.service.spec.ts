@@ -12,14 +12,22 @@ describe('QuizBuilderService', () => {
     service = TestBed.inject(QuizBuilderService);
   });
 
-  it('flattens every section of every paper exactly like the original buildUnits()', () => {
-    for (const testId of TEST_IDS) {
+  it('flattens every ported section exactly like the original buildUnits()', () => {
+    // The fixtures come from hsk4-practice.html, which only holds the first
+    // three papers; H41332 was added later and has no counterpart there.
+    for (const testId of ['H41001', 'H41002', 'H41003'] as const) {
       for (const sectionKey of ['listening', 'reading', 'writing'] as const) {
         expect(service.buildUnits(testId, sectionKey))
           .withContext(`${testId}|${sectionKey}`)
           .toEqual(fixtureUnits(testId, sectionKey));
       }
     }
+  });
+
+  it('flattens H41332 into the same unit counts as every other paper', () => {
+    expect(service.buildUnits('H41332', 'listening').length).toBe(45);
+    expect(service.buildUnits('H41332', 'reading').length).toBe(40);
+    expect(service.buildUnits('H41332', 'writing').length).toBe(15);
   });
 
   it('produces 45 listening units tagged tf then mc', () => {

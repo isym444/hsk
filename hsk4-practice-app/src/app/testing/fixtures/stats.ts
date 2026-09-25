@@ -3,6 +3,7 @@
  * render realistic numbers without hitting a server.
  */
 
+import { categoryTotal } from '../../data/question-inventory';
 import {
   CategoryStats,
   CategoryStatsPage,
@@ -14,7 +15,16 @@ import {
   StatsOverview,
 } from '../../core/review-api.service';
 
-const TOTALS: Record<string, number> = { listening: 135, reading: 120, writing: 45 };
+/**
+ * Real category totals, read from the local question bank instead of being
+ * hardcoded, so adding a paper cannot leave these fixtures behind.
+ */
+const TOTALS: Record<string, number> = {
+  listening: categoryTotal('listening'),
+  reading: categoryTotal('reading'),
+  writing: categoryTotal('writing'),
+};
+const ALL_TOTAL = TOTALS['listening'] + TOTALS['reading'] + TOTALS['writing'];
 
 export function categoryStats(
   category: keyof typeof TOTALS,
@@ -94,12 +104,12 @@ export function overviewFixture(overrides: Partial<StatsOverview> = {}): StatsOv
     categories: [listening, reading, writing],
     totals: categoryStats('listening', {
       category: 'all',
-      total_questions: 300,
-      scoreable_questions: 285,
+      total_questions: ALL_TOTAL,
+      scoreable_questions: ALL_TOTAL - 20,
       answered_questions: 21,
       answered_scoreable: 20,
-      unanswered_questions: 279,
-      coverage: 21 / 300,
+      unanswered_questions: ALL_TOTAL - 21,
+      coverage: 21 / ALL_TOTAL,
       attempts: 32,
       correct: 21,
       incorrect: 10,
@@ -144,9 +154,9 @@ export function deckQuestion(overrides: Partial<DeckQuestion> = {}): DeckQuestio
 export function deckPreviewFixture(overrides: Partial<DeckPreview> = {}): DeckPreview {
   return {
     category: 'reading',
-    total_questions: 120,
+    total_questions: TOTALS['reading'],
     answered: 6,
-    unseen: 114,
+    unseen: TOTALS['reading'] - 6,
     weak: 2,
     due: 1,
     ...overrides,

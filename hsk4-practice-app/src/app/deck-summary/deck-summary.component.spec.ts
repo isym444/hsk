@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { provideZoneChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { categoryTotal } from '../data/question-inventory';
 import { DeckSummaryComponent } from './deck-summary.component';
 import { routeStub } from '../testing/route-stub';
 import { sessionSummaryFixture } from '../testing/fixtures/stats';
@@ -118,7 +119,7 @@ describe('DeckSummaryComponent', () => {
     await open();
 
     const stats = allFlat('.statgrid');
-    expect(stats).toContain('Questionspractised8/120');
+    expect(stats).toContain(`Questionspractised8/${categoryTotal('reading')}`);
     expect(stats).toContain('Overallsuccessrate55%');
     expect(stats).toContain('Totalanswers11');
   });

@@ -8,6 +8,8 @@ import { DeckRunComponent } from './deck-run.component';
 import { DeckStateService } from '../core/deck-state.service';
 import { AudioService } from '../core/audio.service';
 import { TrueFalseQuestionComponent } from '../questions/true-false-question/true-false-question.component';
+import { categoryTotal } from '../data/question-inventory';
+import { SectionKey } from '../data/models';
 import { routeStub } from '../testing/route-stub';
 import {
   deckPreviewFixture,
@@ -116,9 +118,9 @@ describe('DeckRunComponent', () => {
       .flush(
         deckPreviewFixture({
           category,
-          total_questions: category === 'listening' ? 135 : 120,
+          total_questions: categoryTotal(category as SectionKey),
           answered: 21,
-          unseen: 114,
+          unseen: categoryTotal(category as SectionKey) - 21,
           weak: 2,
           due: 1,
         }),
@@ -186,11 +188,11 @@ describe('DeckRunComponent', () => {
     await open();
 
     expect(text('.hero h1')).toBe('Listening · Combined practice');
-    expect(text('.hero p')).toContain('H41001–H41003');
-    expect(text('.hero p')).toContain('135');
-    expect(text('.deckcard-head')).toContain('Source papers: H41001 · H41002 · H41003');
-    expect(flat('.statgrid')).toContain('Questionsinbank135');
-    expect(flat('.statgrid')).toContain('Notseenyet114');
+    expect(text('.hero p')).toContain('H41001 · H41002 · H41003 · H41332');
+    expect(text('.hero p')).toContain(String(categoryTotal('listening')));
+    expect(text('.deckcard-head')).toContain('Source papers: H41001 · H41002 · H41003 · H41332');
+    expect(flat('.statgrid')).toContain(`Questionsinbank${categoryTotal('listening')}`);
+    expect(flat('.statgrid')).toContain(`Notseenyet${categoryTotal('listening') - 21}`);
     expect(flat('.statgrid')).toContain('Dueforreview1');
   });
 

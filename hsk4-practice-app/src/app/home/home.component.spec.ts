@@ -55,7 +55,7 @@ describe('HomeComponent', () => {
 
   /* ---------- Aggregated decks (primary flow) ---------- */
 
-  it('lists the three aggregated skill decks with their totals', () => {
+  it('lists the aggregated skill decks with their totals', () => {
     const cards = Array.from(element().querySelectorAll<HTMLElement>('.deckcard'));
     expect(cards.length).toBe(3);
     expect(cards.map((card) => card.querySelector('.name')?.textContent?.trim())).toEqual([
@@ -63,9 +63,9 @@ describe('HomeComponent', () => {
       'Reading',
       'Writing',
     ]);
-    expect(cards[0].textContent).toContain('135 questions across all three sample papers');
-    expect(cards[1].textContent).toContain('120 questions across all three sample papers');
-    expect(cards[2].textContent).toContain('45 questions across all three sample papers');
+    expect(cards[0].textContent).toContain('180 questions across all four sample papers');
+    expect(cards[1].textContent).toContain('160 questions across all four sample papers');
+    expect(cards[2].textContent).toContain('60 questions across all four sample papers');
   });
 
   it('shows live progress from the review database on each deck card', () => {
@@ -73,7 +73,7 @@ describe('HomeComponent', () => {
     const stats = Array.from(reading.querySelectorAll<HTMLElement>('.stat')).map((stat) =>
       stat.textContent?.replace(/\s+/g, ''),
     );
-    expect(stats[0]).toContain('Answered6/120');
+    expect(stats[0]).toContain('Answered6/160');
     expect(stats[1]).toContain('Successrate50%');
     expect(reading.querySelector<HTMLElement>('.metricnote')?.textContent).toContain('Coverage 5.0%');
   });
@@ -108,21 +108,22 @@ describe('HomeComponent', () => {
 
   /* ---------- Per-paper practice (secondary flow) ---------- */
 
-  it('keeps the three per-paper rows behind the expander', () => {
+  it('keeps the per-paper rows behind the expander', () => {
     expect(rows().length).toBe(0);
     expandPaperList();
-    expect(rows().length).toBe(3);
+    expect(rows().length).toBe(4);
     expect(rows().map((r) => r.querySelector('.id')?.textContent?.trim())).toEqual([
       'H41001',
       'H41002',
       'H41003',
+      'H41332',
     ]);
   });
 
-  it('shows nine section buttons with the section labels and counts', () => {
+  it('shows a section button per paper and section, with their labels and counts', () => {
     expandPaperList();
     const buttons = Array.from(element().querySelectorAll<HTMLButtonElement>('.secbtn'));
-    expect(buttons.length).toBe(9);
+    expect(buttons.length).toBe(12);
     expect(buttons.slice(0, 3).map((b) => b.textContent?.replace(/\s+/g, ''))).toEqual([
       'Listening45questions',
       'Reading40questions',

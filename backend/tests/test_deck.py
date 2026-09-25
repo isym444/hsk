@@ -4,12 +4,19 @@ from __future__ import annotations
 
 from fastapi.testclient import TestClient
 
+import json
+from pathlib import Path
+
 from tests.conftest import READING_FILL, READING_MC, answer
 
-EXPECTED_TOTALS = {"listening": 135, "reading": 120, "writing": 45}
+_CATALOGUE = json.loads(
+    (Path(__file__).resolve().parent.parent / "data" / "catalogue.json").read_text(encoding="utf-8")
+)
+EXPECTED_TOTALS = {c["key"]: c["total"] for c in _CATALOGUE["categories"]}
+PAPERS = set(_CATALOGUE["papers"])
 
 
-def test_each_category_deck_aggregates_all_three_papers(client: TestClient) -> None:
+def test_each_category_deck_aggregates_every_paper(client: TestClient) -> None:
     for category, total in EXPECTED_TOTALS.items():
         body = client.get(f"/api/deck/{category}").json()
         assert body["count"] == total, category
@@ -17,15 +24,13 @@ def test_each_category_deck_aggregates_all_three_papers(client: TestClient) -> N
         keys = [q["question_key"] for q in body["questions"]]
         assert len(set(keys)) == total, "no question is repeated within one deck"
         assert {key.split(":")[1] for key in keys} == {category}
-        assert {key.split(":")[0] for key in keys} == {"H41001", "H41002", "H41003"}, (
-            "the deck draws on every paper"
-        )
+        assert {key.split(":")[0] for key in keys} == PAPERS, "the deck draws on every paper"
 
 
 def test_deck_carries_the_labels_and_part_information_the_ui_needs(client: TestClient) -> None:
     question = client.get("/api/deck/writing").json()["questions"][0]
     assert question["label"]
-    assert question["paper"] in {"H41001", "H41002", "H41003"}
+    assert question["paper"] in PAPERS
     assert question["part"] in {1, 2}
     assert question["number"] >= 1
 
@@ -41,7 +46,7 @@ def test_limit_caps_the_deck_without_dropping_questions_from_the_category(client
     body = client.get("/api/deck/reading", params={"limit": 10}).json()
     assert body["count"] == 10
     assert len(body["questions"]) == 10
-    assert body["total_questions"] == 120
+    assert body["total_questions"] == EXPECTED_TOTALS["reading"]
 
 
 def test_exclude_keeps_the_tail_of_the_current_queue_out_of_a_refill(client: TestClient) -> None:
@@ -56,7 +61,7 @@ def test_exclude_keeps_the_tail_of_the_current_queue_out_of_a_refill(client: Tes
 def test_excluding_every_question_falls_back_to_the_full_category(client: TestClient) -> None:
     keys = [q["question_key"] for q in client.get("/api/deck/writing").json()["questions"]]
     body = client.get("/api/deck/writing", params={"exclude": ",".join(keys)}).json()
-    assert body["count"] == 45
+    assert body["count"] == EXPECTED_TOTALS["writing"]
 
 
 def test_unknown_category_or_mode_is_rejected(client: TestClient) -> None:
@@ -67,18 +72,19 @@ def test_unknown_category_or_mode_is_rejected(client: TestClient) -> None:
 
 def test_smart_mode_carries_a_reason_for_every_question(client: TestClient) -> None:
     questions = client.get("/api/deck/reading", params={"mode": "smart"}).json()["questions"]
-    assert len(questions) == 120
+    assert len(questions) == EXPECTED_TOTALS["reading"]
     assert {q["reason"] for q in questions} == {"new"}, "nothing has been reviewed yet"
     assert all(q["priority"] > 0 for q in questions)
 
 
 def test_preview_counts_unseen_questions_before_any_practice(client: TestClient) -> None:
     body = client.get("/api/deck/reading/preview").json()
+    total = EXPECTED_TOTALS["reading"]
     assert body == {
         "category": "reading",
-        "total_questions": 120,
+        "total_questions": total,
         "answered": 0,
-        "unseen": 120,
+        "unseen": total,
         "weak": 0,
         "due": 0,
     }
@@ -90,7 +96,7 @@ def test_preview_tracks_answered_weak_and_due_questions(client: TestClient, sess
 
     body = client.get("/api/deck/reading/preview").json()
     assert body["answered"] == 2
-    assert body["unseen"] == 118
+    assert body["unseen"] == EXPECTED_TOTALS["reading"] - 2
     assert body["weak"] == 1, "the question answered wrong is flagged weak"
 
 

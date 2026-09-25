@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { provideZoneChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { categoryTotal } from '../data/question-inventory';
 import { CategoryStatsComponent } from './category-stats.component';
 import { routeStub } from '../testing/route-stub';
 import { categoryPageFixture } from '../testing/fixtures/stats';
@@ -83,7 +84,7 @@ describe('CategoryStatsComponent', () => {
 
     expect(text('.hero h1')).toBe('Reading · Statistics');
     expect(text('.deckcard-head')).toContain('Reading');
-    expect(flat('.deckcard .statgrid')).toContain('Answered2/120');
+    expect(flat('.deckcard .statgrid')).toContain(`Answered2/${categoryTotal('reading')}`);
     expect(flat('.deckcard .statgrid')).toContain('Unanswered118');
   });
 

@@ -50,7 +50,12 @@ def sim(a, b):
 
 
 def main():
-    papers = {'H41001': 'h41001.data.ts', 'H41002': 'h41002.data.ts', 'H41003': 'h41003.data.ts'}
+    papers = {
+        'H41001': 'h41001.data.ts',
+        'H41002': 'h41002.data.ts',
+        'H41003': 'h41003.data.ts',
+        'H41332': 'h41332.data.ts',
+    }
     ctxdir = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, '.cache', 'ctx')
     grand = []
     for pid, f in papers.items():

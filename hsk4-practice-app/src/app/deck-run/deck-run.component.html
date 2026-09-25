@@ -4,7 +4,7 @@
     <div class="hero">
       <h1 class="heading">{{ meta().label }} · Combined practice</h1>
       <p>
-        All {{ meta().label }} questions from the three sample papers H41001–H41003 are merged into
+        All {{ meta().label }} questions from all {{ paperCountLabel() }} sample papers ({{ papers().join(' · ') }}) are merged into
         one bank of <b>{{ total() }}</b> questions, shuffled or ordered by how well you know them.
         Practise as much as you like, and press “End session” at any time to see your score.
       </p>

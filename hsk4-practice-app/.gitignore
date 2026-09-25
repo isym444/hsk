@@ -33,6 +33,7 @@ yarn-error.log
 # Extraction cache: whisper model + per-block transcriptions (regenerable).
 # The generated clips in public/audio are committed; this is not.
 /scripts/.cache
+/scripts/.cache132
 
 # Miscellaneous
 /.angular/cache

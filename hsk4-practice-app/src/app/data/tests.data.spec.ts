@@ -4,17 +4,27 @@ import { SECTION_ORDER } from '../data/section-meta';
 import { FIXTURE_TESTS } from '../testing/fixtures/fixtures';
 
 /**
- * The port must be data-identical to `hsk4-practice.html`. The fixtures are
- * extracted straight out of that file by `.build/make-fixtures.js`, so these
- * assertions fail loudly if any transcription drifts.
+ * The three papers ported from `hsk4-practice.html` must stay data-identical to
+ * it. The fixtures are extracted straight out of that file by
+ * `scripts/make-fixtures.js`, so these assertions fail loudly if any
+ * transcription drifts. Papers added later (H41332) are not in that file and
+ * are checked on their own below.
  */
 describe('data layer parity with hsk4-practice.html', () => {
-  it('has the same three papers in the same order', () => {
-    expect(TEST_IDS).toEqual(['H41001', 'H41002', 'H41003']);
+  const ORIGINAL_PAPERS = ['H41001', 'H41002', 'H41003'] as const;
+
+  it('keeps the original papers first, in their original order', () => {
+    expect(TEST_IDS.slice(0, 3)).toEqual([...ORIGINAL_PAPERS]);
   });
 
-  it('deep-equals the original TESTS object', () => {
-    expect(TESTS).toEqual(FIXTURE_TESTS);
+  it('deep-equals the original TESTS object for the ported papers', () => {
+    for (const id of ORIGINAL_PAPERS) {
+      expect(TESTS[id]).withContext(id).toEqual(FIXTURE_TESTS[id]);
+    }
+  });
+
+  it('registers every paper in TEST_IDS', () => {
+    expect(TEST_IDS).toEqual(['H41001', 'H41002', 'H41003', 'H41332']);
   });
 
   it('keeps the section meta map, with English UI labels', () => {

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { SECTION_META, SECTION_ORDER } from '../data/section-meta';
-import { TEST_IDS } from '../data/tests.data';
+import { PAPER_COUNT_LABEL, PAPER_RANGE_LABEL, TEST_IDS } from '../data/tests.data';
 import { SectionKey, TestId } from '../data/models';
 import { KIND_LABELS, categoryTotal } from '../data/question-inventory';
 import { QuizBuilderService } from '../core/quiz-builder.service';
@@ -22,9 +22,9 @@ interface HomeTestRow {
 }
 
 /**
- * Home screen: the aggregated skill decks (all three papers combined) come
- * first, with their live progress from the review database. The original
- * three-papers-by-three-sections grid is kept below as "Practice by paper".
+ * Home screen: the aggregated skill decks (every paper combined) come first,
+ * with their live progress from the review database. The per-paper sections
+ * grid is kept below as "Practice by paper".
  */
 @Component({
   selector: 'app-home',
@@ -50,6 +50,9 @@ export class HomeComponent implements OnInit {
   }));
 
   readonly categories: SectionKey[] = SECTION_ORDER;
+
+  readonly paperCountLabel = PAPER_COUNT_LABEL;
+  readonly paperRange = PAPER_RANGE_LABEL;
   readonly meta = SECTION_META;
   readonly kindLabels = KIND_LABELS;
 

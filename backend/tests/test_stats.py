@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from fastapi.testclient import TestClient
 
+import json
+from pathlib import Path
+
 from tests.conftest import READING_FILL, READING_MC, WRITING_OPEN, answer
 
 
@@ -17,12 +20,20 @@ def row_for(client: TestClient, category: str, key: str) -> dict:
     return next(q for q in page(client, category)["questions"] if q["question_key"] == key)
 
 
+
+_CATALOGUE = json.loads(
+    (Path(__file__).resolve().parent.parent / "data" / "catalogue.json").read_text(encoding="utf-8")
+)
+PAPERS = {p for p in _CATALOGUE["papers"]}
+CATEGORY_TOTALS = {c["key"]: c["total"] for c in _CATALOGUE["categories"]}
+ALL_QUESTIONS = sum(CATEGORY_TOTALS.values())
+
 def test_a_fresh_category_reports_no_history(client: TestClient) -> None:
     stats = page(client, "reading")["stats"]
-    assert stats["total_questions"] == 120
-    assert stats["scoreable_questions"] == 120
+    assert stats["total_questions"] == CATEGORY_TOTALS["reading"]
+    assert stats["scoreable_questions"] == CATEGORY_TOTALS["reading"]
     assert stats["answered_questions"] == 0
-    assert stats["unanswered_questions"] == 120
+    assert stats["unanswered_questions"] == CATEGORY_TOTALS["reading"]
     assert stats["coverage"] == 0.0
     assert stats["attempts"] == 0
     assert stats["success_rate"] is None
@@ -40,7 +51,7 @@ def test_coverage_counts_distinct_questions_not_attempts(client: TestClient, ses
     assert stats["attempts"] == 3
     assert stats["answered_questions"] == 1
     assert stats["correct"] == 3
-    assert stats["coverage"] == round(1 / 120, 4)
+    assert stats["coverage"] == round(1 / CATEGORY_TOTALS["reading"], 4)
 
 
 def test_success_rate_and_average_time_use_the_scored_reviews(
@@ -68,19 +79,19 @@ def test_self_assessed_writing_items_stay_out_of_rate_and_timing(client: TestCli
     assert stats["answered_questions"] == 2
     assert stats["correct"] == 1
     assert stats["self_assessed"] == 1
-    assert stats["scoreable_questions"] == 30
+    assert stats["scoreable_questions"] == CATEGORY_TOTALS["writing"] - 20
     assert stats["success_rate"] == 1.0, "a self-assessed item never counts as a failure"
     assert stats["avg_ms"] == 2000.0, "the self-assessed item's 90s does not distort the average"
 
 
 def test_every_question_of_the_category_is_listed_with_its_history(client: TestClient, session_id: str) -> None:
     body = page(client, "reading")
-    assert len(body["questions"]) == 120
+    assert len(body["questions"]) == CATEGORY_TOTALS["reading"]
     assert {q["category"] for q in body["questions"]} == {"reading"}
-    assert {q["paper"] for q in body["questions"]} == {"H41001", "H41002", "H41003"}
+    assert {q["paper"] for q in body["questions"]} == PAPERS
 
     untouched = [q for q in body["questions"] if q["attempts"] == 0]
-    assert len(untouched) == 120
+    assert len(untouched) == CATEGORY_TOTALS["reading"]
     assert all(q["success_rate"] is None and q["avg_ms"] is None for q in untouched)
     assert all(q["last_answered_at"] is None for q in untouched)
     assert all(q["label"] for q in body["questions"])
@@ -108,10 +119,12 @@ def test_a_questions_row_reports_attempts_rate_time_and_streak(
 
 def test_kind_breakdown_splits_the_category_by_question_type(client: TestClient, session_id: str) -> None:
     before = {bucket["kind"]: bucket for bucket in page(client, "reading")["by_kind"]}
+    # Per-paper: 10 fill, 10 order, 20 multiple-choice in the reading category.
+    per_paper = len(PAPERS)
     assert {kind: bucket["questions"] for kind, bucket in before.items()} == {
-        "fill": 30,
-        "order": 30,
-        "mc": 60,
+        "fill": 10 * per_paper,
+        "order": 10 * per_paper,
+        "mc": 20 * per_paper,
     }
 
     answer(client, session_id, READING_FILL, "correct", 2000)
@@ -148,11 +161,7 @@ def test_recent_sessions_can_be_limited(client: TestClient) -> None:
 def test_overview_lists_every_category_in_a_stable_order(client: TestClient) -> None:
     body = client.get("/api/categories").json()
     assert [c["category"] for c in body["categories"]] == ["listening", "reading", "writing"]
-    assert {c["category"]: c["total_questions"] for c in body["categories"]} == {
-        "listening": 135,
-        "reading": 120,
-        "writing": 45,
-    }
+    assert {c["category"]: c["total_questions"] for c in body["categories"]} == CATEGORY_TOTALS
 
 
 def test_overview_totals_weight_the_average_by_attempts(client: TestClient) -> None:
@@ -169,13 +178,13 @@ def test_overview_totals_weight_the_average_by_attempts(client: TestClient) -> N
     assert per_category["writing"]["avg_ms"] == 3000.0
 
     totals = body["totals"]
-    assert totals["total_questions"] == 300
+    assert totals["total_questions"] == ALL_QUESTIONS
     assert totals["attempts"] == 4
     assert totals["answered_questions"] == 4
     assert totals["correct"] == 4
     assert totals["success_rate"] == 1.0
     assert totals["avg_ms"] == 2500.0, "the combined average is weighted, not a mean of means"
-    assert totals["coverage"] == round(4 / 300, 4)
+    assert totals["coverage"] == round(4 / ALL_QUESTIONS, 4)
 
 
 def test_overview_reports_an_empty_history_without_dividing_by_zero(client: TestClient) -> None:

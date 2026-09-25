@@ -2,9 +2,9 @@
 
 Angular app for HSK4 practice, with two ways to study:
 
-1. **Aggregated decks** (`/deck/:category`) — all three official sample papers
-   combined into one question bank per skill. 听力 = 135 questions, 阅读 = 120,
-   写作 = 45 (H41001–H41003 pooled). Practise in random order or by
+1. **Aggregated decks** (`/deck/:category`) — all four official sample papers
+   combined into one question bank per skill. 听力 = 180 questions, 阅读 = 160,
+   写作 = 60 (H41001–H41003 and H41332 pooled). Practise in random order or by
    success-rate/spaced-repetition, for as long as you like, then see the stats
    for that session.
 2. **Per-paper practice** (`/quiz/:testId/:section`) — the original flow: one
@@ -56,7 +56,7 @@ service, and falls back to `index.html` for real routes such as
 Other commands:
 
 ```bash
-npm test          # 209 unit + component tests (headless Chrome)
+npm test          # 211 unit + component tests (headless Chrome)
 npm run api       # convenience: start the backend from here
 npm run catalogue # regenerate backend/data/catalogue.json from the data layer
 ```
@@ -78,7 +78,7 @@ src/
       question-inventory.ts   question key → renderable unit, per-category counts
       catalogue-export.ts     entry point the backend's generator bundles
       audio-clips.ts          paper+question → the real recording in public/audio
-      h41001|h41002|h41003.data.ts, tests.data.ts, section-meta.ts
+      h41001|h41002|h41003|h41332.data.ts, tests.data.ts, section-meta.ts
     core/
       review-api.service.ts   typed client for the FastAPI backend (/api)
       deck-state.service.ts   one aggregated deck session: queue, timer, tallies
@@ -99,11 +99,26 @@ src/
 ## Listening audio
 
 The listening sections play the **official HSK 4 recordings**, not synthesised
-speech. `H41001.mp3`, `H41002.mp3` and `H41003.mp3` each hold all 45 questions of
-one paper; every question has been cut out of them into its own clip:
+speech. Each paper's recording holds all 45 of its listening questions; every
+question has been cut out into its own clip:
 
 ```
-public/audio/H41001_q01.mp3 … H41003_q45.mp3     135 clips, ~20 MB total
+public/audio/H41001_q01.mp3 … H41332_q45.mp3     180 clips, ~26 MB total
+```
+
+The four recordings are shaped the same way (intro, worked example, then the
+questions separated by the exam's answer pauses), so one cutting strategy covers
+all of them:
+
+```bash
+# H41001-H41003 (one recording per paper, block cache in scripts/.cache)
+HSK_AUDIO_DIR=~/Downloads python3 scripts/extract-listening-clips.py public/audio
+
+# H41332 (its own recording; block cache in scripts/.cache132)
+HSK_AUDIO_DIR=~/Downloads python3 scripts/extract-h41332-clips.py public/audio
+
+# score every clip's transcription against its own transcript
+python3 scripts/verify-listening-clips.py
 ```
 
 Each clip runs from just after the spoken question number to the end of the
@@ -114,19 +129,9 @@ part, file, duration) and `core/audio.service.ts` plays it through one shared
 resolve their own clip. Questions whose clip is missing keep working — the play
 button reports the failure instead of breaking the question.
 
-Both artefacts are reproducible:
-
-```bash
-# cut the clips again (needs ffmpeg + whisper-cli + the three source MP3s)
-HSK_AUDIO_DIR=~/Downloads python3 scripts/extract-listening-clips.py public/audio
-
-# score every clip's transcription against its own transcript
-python3 scripts/verify-listening-clips.py
-```
-
 `clip_span` in the extractor, and the block→question layout it relies on, are
-documented in the extraction script header. The layout is the same for all three
-papers:
+documented in the extraction script headers. All four recordings share this
+block layout:
 
 | Blocks | Content |
 | --- | --- |
@@ -136,14 +141,35 @@ papers:
 | 29, 30–39 | part 3 intro + example, then Q26–Q35 |
 | 40–50 | part 4, passage + two questions per pair (Q36–Q45) |
 
+The layout is identical for every recording; only the pause lengths differ
+(H41001 pauses ~9.9 s before its first answer, H41332 ~9.05 s), which is why each
+extractor script carries its own `LAYOUT` and thresholds rather than sharing
+one file.
+
 Parts 1 and 2 of this paper bank are shortened to 10 and 15 questions, so the
 recording's own numbering ends at question 45 even though the official exam has
 more items per part.
 
-`core/audio.service.spec.ts` loads all 135 files in a real browser and checks
+`core/audio.service.spec.ts` loads all 180 files in a real browser and checks
 each one decodes to the length the manifest claims, so a mis-cut or missing clip
 fails the suite. There is a second, slower check used while cutting the clips:
 transcribe each one and compare it with that question's transcript.
+
+## Adding a paper
+
+H41332 was added on top of the three ported papers, so the steps are proven:
+
+1. Add `src/app/data/h41332.data.ts` and register it in `models.ts` (`TestId`)
+   and `tests.data.ts` (`TESTS`).
+2. Add the clips to `public/audio/` and their rows to `data/audio-clips.ts`.
+3. `npm run catalogue` to regenerate `backend/data/catalogue.json`.
+4. Update the counts encoded in tests. Prefer deriving them
+   (`categoryTotal('reading')`, the catalogue JSON, `TEST_IDS.length`) over
+   hardcoding a number, so the next paper does not repeat the churn.
+5. Check the new paper's questions against the existing bank before adding them:
+   `scripts/` has no committed duplicate checker, but `verify-listening-clips.py`
+   plus a similarity scan over the `*.data.ts` text is what caught nothing here
+   (H41332 shares no question with H41001–H41003).
 
 ## How the pieces agree
 

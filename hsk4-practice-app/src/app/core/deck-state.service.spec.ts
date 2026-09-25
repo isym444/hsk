@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { categoryTotal } from '../data/question-inventory';
 import { DeckStateService } from './deck-state.service';
 import { DeckQuestion, DeckResponse, SessionSummary } from './review-api.service';
 import {
@@ -124,7 +125,7 @@ describe('DeckStateService', () => {
     http.expectOne('/api/deck/reading/preview').flush(deckPreviewFixture());
     await loaded;
 
-    expect(service.preview()?.unseen).toBe(114);
+    expect(service.preview()?.unseen).toBe(categoryTotal('reading') - 6);
     expect(service.category()).toBe('reading');
   });
 

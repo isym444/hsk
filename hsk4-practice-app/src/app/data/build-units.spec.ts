@@ -25,14 +25,14 @@ import { SectionKey, TestId, Unit } from './models';
 describe('question inventory (deck identity)', () => {
   const KINDS = ['tf', 'mc', 'fill', 'order', 'build', 'open'];
 
-  it('covers all three papers × three categories = 300 questions', () => {
-    expect(QUESTION_INVENTORY.length).toBe(300);
+  it('covers every paper × three categories = 400 questions', () => {
+    expect(QUESTION_INVENTORY.length).toBe(400);
   });
 
-  it('counts 135 listening, 120 reading and 45 writing questions', () => {
-    expect(categoryTotal('listening')).toBe(135);
-    expect(categoryTotal('reading')).toBe(120);
-    expect(categoryTotal('writing')).toBe(45);
+  it('counts 180 listening, 160 reading and 60 writing questions', () => {
+    expect(categoryTotal('listening')).toBe(180);
+    expect(categoryTotal('reading')).toBe(160);
+    expect(categoryTotal('writing')).toBe(60);
   });
 
   it('gives every question a unique key', () => {
@@ -42,7 +42,7 @@ describe('question inventory (deck identity)', () => {
 
   it('formats every key as paper:category:kind:number', () => {
     for (const q of QUESTION_INVENTORY) {
-      expect(q.key).toMatch(/^H410\d\d:(listening|reading|writing):[a-z]+:\d+$/);
+      expect(q.key).toMatch(/^H41(?:00[123]|332):(listening|reading|writing):[a-z]+:\d+$/);
       expect(q.key).toBe(`${q.paper}:${q.category}:${q.kind}:${q.number}`);
       expect(KINDS).toContain(q.kind);
     }
@@ -59,7 +59,7 @@ describe('question inventory (deck identity)', () => {
 
   it('marks only the open writing items as self-assessed', () => {
     const unscoreable = QUESTION_INVENTORY.filter((q) => !q.scoreable);
-    expect(unscoreable.length).toBe(15);
+    expect(unscoreable.length).toBe(20);
     expect(unscoreable.every((q) => q.kind === 'open' && q.category === 'writing')).toBeTrue();
   });
 
@@ -84,7 +84,7 @@ describe('question inventory (deck identity)', () => {
   });
 
   it('resolves every inventory key back to the unit the components render', () => {
-    expect(UNIT_BY_QUESTION_KEY.size).toBe(300);
+    expect(UNIT_BY_QUESTION_KEY.size).toBe(400);
     for (const entry of QUESTION_INVENTORY) {
       const unit = unitForQuestionKey(entry.key);
       expect(unit).withContext(entry.key).not.toBeNull();
@@ -113,13 +113,13 @@ describe('question inventory (deck identity)', () => {
   it('builds a catalogue whose totals match the inventory', () => {
     const catalogue = buildCatalogue();
     expect(catalogue.schema_version).toBe(1);
-    expect(catalogue.questions.length).toBe(300);
+    expect(catalogue.questions.length).toBe(400);
     expect(catalogue.categories.map((c) => [c.key, c.total])).toEqual([
-      ['listening', 135],
-      ['reading', 120],
-      ['writing', 45],
+      ['listening', 180],
+      ['reading', 160],
+      ['writing', 60],
     ]);
-    expect(catalogue.categories.find((c) => c.key === 'writing')?.scoreable).toBe(30);
+    expect(catalogue.categories.find((c) => c.key === 'writing')?.scoreable).toBe(40);
     expect(catalogue.categories.find((c) => c.key === 'listening')?.label).toBe('Listening');
   });
 
