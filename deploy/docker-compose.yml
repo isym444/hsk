@@ -18,9 +18,15 @@
 #     -> host
 #
 # So there is no shared network to join. This service takes the default compose
-# bridge, and Traefik reaches it by container IP through the Docker socket. That
-# is exactly the shape of the working net-worth-api service, which also declares
-# no network.
+# bridge, and Traefik reaches it by container IP through the Docker socket.
+#
+# ---------------------------------------------------------------------------
+# Why the Traefik settings are under `labels:` and not `environment:`.
+#
+# Traefik's Docker provider reads **container labels**. Putting `traefik.*`
+# under `environment:` would set environment variables, which Traefik never
+# looks at — the container would run perfectly and be completely unreachable,
+# with nothing in either log to explain it.
 #
 # Traefik's own flags, for reference:
 #   --providers.docker.exposedbydefault=false   -> traefik.enable=true is required
@@ -40,11 +46,11 @@ services:
     restart: unless-stopped
 
     # HSK_DATABASE_URL, HSK_DB_SCHEMA, HSK_SUPABASE_URL, HSK_ALLOWED_EMAILS,
-    # HSK_CORS_ORIGINS, pool sizes.
+    # HSK_CORS_ORIGINS, pool sizes. (Or set them here under `environment:`.)
     env_file:
       - .env
 
-    environment:
+    labels:
       traefik.enable: "true"
 
       # Route every request for the hostname to this container.
@@ -54,6 +60,12 @@ services:
 
       # uvicorn listens here (Dockerfile EXPOSE 8000).
       traefik.http.services.hsk4-api.loadbalancer.server.port: "8000"
+
+      # Only needed if routing fails with the container apparently healthy:
+      # pins which of the container's networks Traefik should dial. Uncomment
+      # and use the name from
+      #   docker inspect <container> --format '{{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{end}}'
+      # traefik.docker.network: "hsk4-practice_default"
 
     # Keeps a chatty container from filling a small VPS disk.
     logging:
