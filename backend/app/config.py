@@ -34,6 +34,12 @@ DATABASE_URL = _clean(os.environ.get("HSK_DATABASE_URL"))
 DB_POOL_MIN = int(os.environ.get("HSK_DB_POOL_MIN", "1"))
 DB_POOL_MAX = int(os.environ.get("HSK_DB_POOL_MAX", "5"))
 
+#: PostgreSQL schema holding the review tables. Defaults to the connection's own
+#: default (`public`), which is right for a dedicated database. Set it when
+#: sharing a database with another application, so neither can collide on names
+#: like `sessions`. Ignored by SQLite, which has no schemas.
+DB_SCHEMA = _clean(os.environ.get("HSK_DB_SCHEMA"))
+
 # --------------------------------------------------------------------------- #
 # Authentication (Supabase Auth)
 # --------------------------------------------------------------------------- #

@@ -317,6 +317,22 @@ class PgConnection:
             self.raw.close()
 
 
+_SCHEMA_NAME = re.compile(r"^[a-z_][a-z0-9_]{0,62}$")
+
+
+def validate_schema_name(name: str) -> str:
+    """Rejects anything that is not a plain lowercase identifier.
+
+    The schema name is interpolated into DDL (there is no bind parameter for an
+    identifier), so this is the boundary that keeps it from being a hole.
+    """
+    if not _SCHEMA_NAME.match(name):
+        raise ValueError(
+            f"HSK_DB_SCHEMA must look like a lowercase SQL identifier, got {name!r}"
+        )
+    return name
+
+
 class PostgresDatabase:
     """Owns a psycopg connection pool and hands out pooled connections."""
 
@@ -328,6 +344,7 @@ class PostgresDatabase:
         min_size: int = 1,
         max_size: int = 5,
         timeout: float = 10.0,
+        schema: str | None = None,
     ) -> None:
         if ConnectionPool is None:  # pragma: no cover
             raise RuntimeError(
@@ -338,6 +355,10 @@ class PostgresDatabase:
         self.min_size = min_size
         self.max_size = max_size
         self.timeout = timeout
+        #: When set, the review tables live in this schema instead of the
+        #: connection's default. Used when the database is shared with another
+        #: application, so the two cannot collide on names like `sessions`.
+        self.schema = validate_schema_name(schema) if schema else None
         self._pool = ConnectionPool(
             conninfo=dsn,
             min_size=min_size,
@@ -351,7 +372,15 @@ class PostgresDatabase:
                 # server-side prepared statements; keep everything unprepared.
                 "prepare_threshold": None,
             },
+            # Set per connection rather than in the DSN: a `SET` travels through
+            # the pooler as ordinary SQL, and this also pins `current_schema()`,
+            # which the in-place column migration relies on.
+            configure=self._use_schema if self.schema else None,
         )
+
+    def _use_schema(self, conn: Any) -> None:
+        conn.execute(f'SET search_path TO "{self.schema}", public')
+        conn.commit()
 
     # -- lifecycle -------------------------------------------------------- #
     def open(self) -> None:
@@ -366,6 +395,19 @@ class PostgresDatabase:
     # -- schema ----------------------------------------------------------- #
     def init_schema(self) -> None:
         with self.connect() as conn:
+            if self.schema:
+                # Checked before creating, rather than `CREATE SCHEMA IF NOT
+                # EXISTS`: the latter still demands CREATE on the *database*
+                # even when the schema is already there, which a least-privilege
+                # role deliberately does not have. The pool has already pointed
+                # search_path here (`SET` allows a schema that does not exist
+                # yet), so everything below lands in the right place.
+                found = conn.execute(
+                    "SELECT 1 FROM pg_namespace WHERE nspname = ?", (self.schema,)
+                ).fetchone()
+                if not found:
+                    logger.info("creating schema %s", self.schema)
+                    conn.execute(f'CREATE SCHEMA "{self.schema}"')
             conn.executescript(TABLES_POSTGRES)
             self._add_missing_user_columns(conn)
             conn.executescript(INDEXES_POSTGRES)
@@ -548,15 +590,20 @@ def create_database(
     path: str | Path | None = None,
     min_size: int = 1,
     max_size: int = 5,
+    schema: str | None = None,
 ) -> Database | PostgresDatabase:
     """Builds the backend the environment asks for.
 
     A ``connection_url`` (``postgresql://...``) wins; otherwise a SQLite file at
     ``path``. An explicit ``path`` always forces SQLite, so tests and ad-hoc runs
     can point at a throwaway database even when ``HSK_DATABASE_URL`` is exported.
+
+    ``schema`` is PostgreSQL-only and ignored by SQLite, which has no schemas.
     """
     if connection_url:
-        return PostgresDatabase(connection_url, min_size=min_size, max_size=max_size)
+        return PostgresDatabase(
+            connection_url, min_size=min_size, max_size=max_size, schema=schema
+        )
     if path is None:
         path = os.environ.get("HSK_DB_PATH") or (
             Path(__file__).resolve().parent.parent / "data" / "hsk_reviews.sqlite3"
@@ -570,6 +617,7 @@ __all__ = [
     "PgConnection",
     "DbConnection",
     "create_database",
+    "validate_schema_name",
     "TABLES_SQLITE",
     "TABLES_POSTGRES",
     "INDEXES_SQLITE",

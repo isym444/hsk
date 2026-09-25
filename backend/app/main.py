@@ -32,6 +32,7 @@ from .config import (
     DATABASE_URL,
     DB_POOL_MAX,
     DB_POOL_MIN,
+    DB_SCHEMA,
     WEB_DIST_CANDIDATES,
 )
 from .db import DbConnection, create_database
@@ -76,6 +77,7 @@ def create_app(
         path=db_path,
         min_size=DB_POOL_MIN,
         max_size=DB_POOL_MAX,
+        schema=DB_SCHEMA,
     )
     catalogue_file = Path(catalogue_path or CATALOGUE_PATH)
 

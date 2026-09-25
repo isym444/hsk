@@ -103,10 +103,18 @@ def auth_headers(user_id: str = USER_ID, email: str | None = USER_EMAIL) -> dict
 
 
 def _reset_postgres(dsn: str) -> None:
-    """Drops the three tables so each test starts from an empty database."""
+    """Empties the review tables so each test starts from nothing.
+
+    The tables are dropped rather than the schema, because a least-privilege
+    role owns its tables but not the schema it was granted — which is exactly
+    the setup used when the database is shared with another application.
+    """
     import psycopg
 
+    schema = (os.environ.get("HSK_DB_SCHEMA") or "").strip()
     with psycopg.connect(dsn, autocommit=True) as conn:
+        if schema:
+            conn.execute(f'SET search_path TO "{schema}"')
         conn.execute("DROP TABLE IF EXISTS reviews, sessions, questions CASCADE")
 
 

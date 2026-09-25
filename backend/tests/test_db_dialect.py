@@ -19,6 +19,7 @@ from app.db import (
     _statements,
     _to_pyformat,
     create_database,
+    validate_schema_name,
 )
 
 
@@ -178,6 +179,29 @@ def test_an_existing_pre_auth_database_is_upgraded_in_place(tmp_path: Path) -> N
         assert "idx_reviews_category_time" not in review_indexes
     finally:
         conn.close()
+
+
+def test_a_schema_name_is_validated_before_it_reaches_sql() -> None:
+    """The schema is interpolated into DDL, so it gets checked at the boundary."""
+    assert validate_schema_name("hsk") == "hsk"
+    assert validate_schema_name("hsk4_practice") == "hsk4_practice"
+
+    for bad in ("public; DROP TABLE users", "HSK", "with space", "1st", "", 'a"b'):
+        with pytest.raises(ValueError):
+            validate_schema_name(bad)
+
+
+def test_the_schema_is_only_used_for_postgres() -> None:
+    database = create_database(
+        connection_url="postgresql://u:p@localhost:5432/db", schema="hsk"
+    )
+    assert isinstance(database, PostgresDatabase)
+    assert database.schema == "hsk"
+    database.close()
+
+    # SQLite has no schemas, so the setting is simply ignored.
+    sqlite_database = create_database(path="/tmp/hsk-schema-ignored.sqlite3", schema="hsk")
+    assert isinstance(sqlite_database, Database)
 
 
 def test_postgres_describe_never_leaks_the_password() -> None:
