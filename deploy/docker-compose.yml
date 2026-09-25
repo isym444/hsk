@@ -54,7 +54,9 @@ services:
       traefik.enable: "true"
 
       # Route every request for the hostname to this container.
-      traefik.http.routers.hsk4-api.rule: "Host(`ftapi.isym.uk`)"
+      # hsk.isym.uk ONLY. ftapi.isym.uk is the family-tree Spring API;
+      # claiming it here would put two routers on the same hostname.
+      traefik.http.routers.hsk4-api.rule: "Host(`hsk.isym.uk`)"
       traefik.http.routers.hsk4-api.entrypoints: "websecure"
       traefik.http.routers.hsk4-api.tls.certresolver: "letsencrypt"
 

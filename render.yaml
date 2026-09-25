@@ -2,7 +2,7 @@
 #
 # The API is NOT here: it runs on the Hostinger VPS behind Traefik
 # (see deploy/). This service only serves the built bundle and points it at
-# https://ftapi.isym.uk/api through config.json.
+# https://hsk.isym.uk/api through config.json.
 #
 # Usage: Render Dashboard -> New -> Blueprint -> pick this repo. Or create a
 # Static Site by hand with the same three values (root directory, build
@@ -24,7 +24,7 @@ services:
       # HSK_API_BASE must match the Traefik host rule in
       # deploy/docker-compose.yml.
       - key: HSK_API_BASE
-        value: https://ftapi.isym.uk/api
+        value: https://hsk.isym.uk/api
       # Supabase project URL and its publishable (or legacy anon) key. The key
       # is public by design — it ships in every Supabase web app and grants
       # nothing on its own; the backend decides who may use the API.

@@ -19,7 +19,7 @@ describe('isApiRequest', () => {
   });
 
   it('matches an absolute API base on another origin', () => {
-    expect(isApiRequest('https://ftapi.isym.uk/api/me', 'https://ftapi.isym.uk/api')).toBeTrue();
+    expect(isApiRequest('https://hsk.isym.uk/api/me', 'https://hsk.isym.uk/api')).toBeTrue();
   });
 
   it('tolerates a trailing slash on the base', () => {

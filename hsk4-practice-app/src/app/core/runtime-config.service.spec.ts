@@ -33,11 +33,11 @@ describe('RuntimeConfigService', () => {
   });
 
   it('reads an absolute apiBase from config.json, without a trailing slash', async () => {
-    stubFetch(configFile({ apiBase: 'https://ftapi.isym.uk/api/' }));
+    stubFetch(configFile({ apiBase: 'https://hsk.isym.uk/api/' }));
 
     await service.load();
 
-    expect(service.apiBase).toBe('https://ftapi.isym.uk/api');
+    expect(service.apiBase).toBe('https://hsk.isym.uk/api');
   });
 
   it('reads the Supabase project and its public key', async () => {

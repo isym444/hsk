@@ -12,7 +12,7 @@ Three pieces, three homes:
       │  (1) email + password ───────────────▶ Supabase Auth
       │  (2) a session comes back (access + refresh token)
       │  (3) every API call carries  Authorization: Bearer <token>
-      │  https://ftapi.isym.uk/api               (Cloudflare DNS: A 187.6.167.78, DNS only)
+      │  https://hsk.isym.uk/api               (Cloudflare DNS: A 187.6.167.78, DNS only)
       ▼
    Hostinger VPS
       Traefik  ──websecure + letsencrypt──▶  hsk4-practice-api:8000
@@ -238,7 +238,7 @@ served everyone would be worse.
 ## 3. Verify the backend
 
 ```bash
-curl -s https://ftapi.isym.uk/api/health
+curl -s https://hsk.isym.uk/api/health
 ```
 
 Expect:
@@ -257,24 +257,24 @@ The fence around the API is a signed-in account:
 
 ```bash
 # 401 — no token
-curl -s -o /dev/null -w '%{http_code}\n' https://ftapi.isym.uk/api/categories
+curl -s -o /dev/null -w '%{http_code}\n' https://hsk.isym.uk/api/categories
 
 # 401 — not a token either
 curl -s -o /dev/null -w '%{http_code}\n' \
-  -H 'Authorization: Bearer nope' https://ftapi.isym.uk/api/categories
+  -H 'Authorization: Bearer nope' https://hsk.isym.uk/api/categories
 ```
 
 `401` for both is the correct answer, and after you sign in with a real link the
 browser's own requests return `200`. A `403` means the token was valid but the
 account is not on `HSK_ALLOWED_EMAILS`.
 
-- Human-friendly landing page: <https://ftapi.isym.uk/>
-- API docs: <https://ftapi.isym.uk/docs> (the Authorize button takes a token)
+- Human-friendly landing page: <https://hsk.isym.uk/>
+- API docs: <https://hsk.isym.uk/docs> (the Authorize button takes a token)
 
 If Traefik is not routing yet, check it directly from the VPS:
 
 ```bash
-curl -s --resolve ftapi.isym.uk:443:127.0.0.1 https://ftapi.isym.uk/api/health
+curl -s --resolve hsk.isym.uk:443:127.0.0.1 https://hsk.isym.uk/api/health
 docker compose logs --tail 50 api
 docker inspect --format '{{.State.Health.Status}}' hsk4-practice-api-1
 ```
@@ -293,7 +293,7 @@ which applies `render.yaml` — or create it by hand:
 5. **Build Command**: `npm ci && npm run build:render`.
 6. **Publish Directory**: `dist/hsk4-practice-app/browser`.
 7. **Environment** → add three variables:
-   - `HSK_API_BASE` = `https://ftapi.isym.uk/api`
+   - `HSK_API_BASE` = `https://hsk.isym.uk/api`
    - `HSK_SUPABASE_URL` = `https://<project-ref>.supabase.co`
    - `HSK_SUPABASE_ANON_KEY` = the publishable (or legacy anon) key
 
