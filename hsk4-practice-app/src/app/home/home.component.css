@@ -1,0 +1,28 @@
+/* ---------- Home ---------- */
+/* .hero and .footnote are shared with the deck/stats pages: see styles.css. */
+.paperbox{margin-top:4px;}
+.papertoggle{
+  border:1px solid var(--line); background:var(--surface); color:var(--ink-soft);
+  border-radius:8px; padding:9px 16px; font:inherit; font-size:13.5px; cursor:pointer; width:100%;
+  text-align:center;
+}
+.papertoggle:hover{color:var(--ink); border-color:var(--accent);}
+.testrow{border-top:1px solid var(--line); padding:20px 0;}
+.testrow:last-child{border-bottom:1px solid var(--line);}
+.testrow-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px;}
+.testrow-head .id{font-size:22px;}
+.testrow-head .meta{color:var(--ink-soft); font-size:13px;}
+.sectionbtns{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+.secbtn{
+  display:flex; flex-direction:column; gap:2px; text-align:left;
+  border:1px solid var(--line); border-left:3px solid var(--c,var(--accent));
+  background:var(--surface); border-radius:6px; padding:10px 12px;
+  cursor:pointer; color:var(--ink); font:inherit;
+}
+.secbtn:hover{border-color:var(--c,var(--accent));}
+.secbtn .name{font-weight:600; font-size:14.5px;}
+.secbtn .count{font-size:12px; color:var(--ink-soft);}
+
+@media (max-width:480px){
+  .sectionbtns{grid-template-columns:1fr;}
+}

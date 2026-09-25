@@ -1,0 +1,43 @@
+# The HSK4 practice app: the Angular UI served by nginx, talking to the FastAPI
+# review database.
+#
+#   docker compose up --build        # then open http://localhost:8080
+#   docker compose down              # keeps the review history volume
+#   docker compose down -v           # also deletes the review history
+#
+# Override the published ports with WEB_PORT / API_PORT if 8080 or 8000 are
+# taken: WEB_PORT=3000 docker compose up.
+
+name: hsk4-practice
+
+services:
+  api:
+    build:
+      context: ./backend
+    image: hsk4-practice-api
+    restart: unless-stopped
+    environment:
+      # On the named volume below, so history survives rebuilds.
+      HSK_DB_PATH: /data/hsk_reviews.sqlite3
+    volumes:
+      - hsk-data:/data
+    ports:
+      # Published for the API docs and for running the frontend dev server
+      # against this backend. The UI itself reaches the API through nginx.
+      - "${API_PORT:-8000}:8000"
+
+  web:
+    build:
+      context: ./hsk4-practice-app
+    image: hsk4-practice-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        # Wait for /api/health, so the first page load cannot hit a booting API.
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-8080}:80"
+
+volumes:
+  # Review history (outcome, response time and timestamp per answer).
+  hsk-data:

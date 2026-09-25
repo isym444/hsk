@@ -1,0 +1,25 @@
+<p class="statement">{{ unit().sentence }}</p>
+
+<div class="bank">
+  @for (word of bankChoices(); track $index) {
+    <button
+      type="button"
+      [class]="chipClass($index)"
+      [disabled]="choice() !== null"
+      (click)="pick($index)"
+    >
+      <span class="lt">{{ word.letter }}</span>{{ word.word }}
+    </button>
+  }
+</div>
+
+@if (choice() !== null) {
+  <div class="feedback">
+    <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
+      @if (isCorrect()) {
+        ✓ 回答正确
+      } @else {
+        ✗ 回答错误 · 正确答案：{{unit().answer}}
+      }</div>
+  </div>
+}

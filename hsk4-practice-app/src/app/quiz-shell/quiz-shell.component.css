@@ -1,0 +1,5 @@
+/*
+ * The sticky quiz chrome (.qz-top, .backbtn, .qz-label, .qz-score, .progress)
+ * is shared with the aggregated deck runner, so it lives in the global
+ * stylesheet (`src/styles.css`) rather than being duplicated here.
+ */

@@ -1,0 +1,18 @@
+# Nothing below is needed inside the image.
+
+# Local virtualenv and Python caches
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# The live database is mounted at /data, not baked in. catalogue.json *is*
+# needed and stays in the context.
+data/*.sqlite3
+data/*.sqlite3-wal
+data/*.sqlite3-shm
+
+tests/
+README.md
+Dockerfile
+.dockerignore

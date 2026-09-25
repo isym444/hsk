@@ -1,0 +1,44 @@
+<p class="question">用下面的词语组成一句话：</p>
+
+<div class="answerstrip">
+  @if (chosen().length === 0) {
+    <span class="placeholder">依次点击下方词语，组成句子</span>
+  } @else {
+    @for (word of chosen(); track $index) {
+      <span class="atile">{{ word }}</span>
+    }
+  }
+</div>
+
+<div class="tilepool">
+  @for (tile of tiles; track tile.pos) {
+    <button
+      class="tile"
+      type="button"
+      [disabled]="disabledTiles().has(tile.pos)"
+      (click)="pick(tile)"
+    >{{ tile.word }}</button>
+  }
+</div>
+
+<div class="rowbtns">
+  <button class="smallbtn" type="button" [disabled]="finished() || chosen().length === 0" (click)="undo()">
+    撤销上一个
+  </button>
+</div>
+
+@if (finished()) {
+  <div class="feedback">
+    <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
+      @if (isCorrect()) {
+        ✓ 语序正确
+      } @else {
+        ✗ 语序不对
+      }
+    </div>
+    @if (!isCorrect()) {
+      <div class="transcript-label">参考答案</div>
+      <div class="transcript">{{ referenceAnswer() }}</div>
+    }
+  </div>
+}

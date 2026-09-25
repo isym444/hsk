@@ -1,0 +1,19 @@
+# Keep the build context small: the host's node_modules and caches are large
+# and platform-specific (esbuild/rollup binaries), and `npm ci` reinstalls them
+# inside the image anyway.
+
+node_modules
+dist
+.angular
+.npm-cache
+coverage
+out-tsc
+tmp
+
+.git
+.gitignore
+.vscode
+*.log
+README.md
+Dockerfile
+.dockerignore

@@ -1,0 +1,15 @@
+/* ---------- Category stats ---------- */
+.summary-actions{display:flex; gap:10px; justify-content:center; margin-top:20px; flex-wrap:wrap;}
+
+.dtable td .g{color:var(--good); font-variant-numeric:tabular-nums;}
+.dtable td .b{color:var(--bad); font-variant-numeric:tabular-nums;}
+
+/* Unanswered questions stay legible but visually recede. */
+.dtable tr.untouched td{color:var(--ink-soft);}
+.dtable tr.untouched .qtext{opacity:.75;}
+
+.linkbtn{
+  border:none; background:none; color:var(--accent); font:inherit; font-size:13px;
+  cursor:pointer; padding:0; text-decoration:underline;
+}
+.linkbtn:hover{opacity:.8;}

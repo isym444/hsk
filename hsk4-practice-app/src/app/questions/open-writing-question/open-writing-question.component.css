@@ -1,0 +1,8 @@
+textarea.opentext{
+  width:100%; border:1px solid var(--line); border-radius:8px; padding:12px 14px; font:inherit;
+  font-size:15.5px; color:var(--ink); background:var(--surface); resize:vertical; min-height:70px; margin-bottom:12px;
+}
+.wordpill{display:inline-block; border:1px solid var(--c,var(--accent)); color:var(--c,var(--accent)); border-radius:20px; padding:8px 18px; font-size:18px; font-weight:600; margin-bottom:16px;}
+.model{background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:12px 14px; font-size:15.5px; margin-top:10px;}
+.model .lbl{font-size:12px; color:var(--ink-soft); margin-bottom:4px;}
+.rowbtns{display:flex; gap:10px;}

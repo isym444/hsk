@@ -1,0 +1,5 @@
+/**
+ * No component-specific rules: this question uses the shared `.passage`,
+ * `.question`, `.options` and `.optbtn` classes from `src/styles.css`.
+ */
+:host{display:block;}

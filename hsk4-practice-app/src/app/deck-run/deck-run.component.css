@@ -1,0 +1,29 @@
+/* ---------- Deck start panel ---------- */
+.moderow{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:10px 0 4px;}
+.modebtn{
+  display:flex; flex-direction:column; gap:4px; text-align:left;
+  border:1px solid var(--line); background:var(--surface); color:var(--ink);
+  border-radius:8px; padding:12px 14px; font:inherit; cursor:pointer;
+}
+.modebtn:hover{border-color:var(--c,var(--accent));}
+.modebtn.on{border-color:var(--c,var(--accent)); background:var(--bg); box-shadow:inset 0 0 0 1px var(--c,var(--accent));}
+.modebtn .mt{font-weight:600; font-size:14.5px; color:var(--c,var(--accent));}
+.modebtn .md{font-size:12.5px; color:var(--ink-soft); line-height:1.55;}
+
+/* ---------- Running session ---------- */
+.sessionline{
+  display:flex; flex-wrap:wrap; gap:6px 16px; align-items:baseline;
+  font-size:12.5px; color:var(--ink-soft); margin-top:16px;
+}
+.sessionline b{color:var(--ink); font-variant-numeric:tabular-nums; font-weight:600;}
+.sessionline .muted{color:var(--ink-soft);}
+
+.nextrow{align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+.nextnote{
+  font-size:12.5px; color:var(--ink-soft); display:inline-flex; align-items:center; gap:8px;
+  font-variant-numeric:tabular-nums;
+}
+
+@media (max-width:480px){
+  .moderow{grid-template-columns:1fr;}
+}

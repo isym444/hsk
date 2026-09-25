@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# The review database is local data, not source.
+data/*.sqlite3
+data/*.sqlite3-wal
+data/*.sqlite3-shm

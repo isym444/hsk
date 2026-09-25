@@ -1,0 +1,29 @@
+<div class="ordersent">
+  @for (line of lines(); track line.letter) {
+    <div><b>{{ line.letter }}</b>{{ line.text }}</div>
+  }
+</div>
+
+<p class="question">请选出正确的顺序：</p>
+
+<div class="permgrid">
+  @for (permutation of permutations; track permutation; let i = $index) {
+    <button
+      type="button"
+      [class]="permClass(i)"
+      [disabled]="choice() !== null"
+      (click)="pick(i)"
+    >{{ permLabel(permutation) }}</button>
+  }
+</div>
+
+@if (choice() !== null) {
+  <div class="feedback">
+    <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
+      @if (isCorrect()) {
+        ✓ 回答正确
+      } @else {
+        ✗ 回答错误 · 正确顺序：{{ solutionArrow() }}
+      }</div>
+  </div>
+}

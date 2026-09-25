@@ -1,0 +1,109 @@
+<div class="wrap">
+  <div class="hero">
+    <h1 class="heading">HSK 四级 · 综合题库</h1>
+    <p>
+      把 H41001–H41003 三套国家汉办官方样卷按听力、阅读、写作合并成三个题库。
+      随机打乱或按正确率和遗忘曲线排序练习，随时结束，成绩自动记入本地数据库。
+    </p>
+  </div>
+
+  <!-- ===================== Aggregated decks ===================== -->
+  @if (statsError()) {
+    <div class="errbar">
+      统计服务没有响应，进度数据暂时不可用。练习前请启动后端：
+      <code>cd backend &amp;&amp; ./.venv/bin/uvicorn app.main:app --port 8000</code>
+    </div>
+  }
+
+  <div class="sectiontitle">综合题库</div>
+  @for (category of categories; track category) {
+    <div class="deckcard" [style.--c]="meta[category].color">
+      <div class="deckcard-head">
+        <span class="name">{{ meta[category].label }}</span>
+        <span class="sub">
+          三套样卷合计 {{ categoryTotal(category) }} 题
+          @if (statsFor(category); as stats) {
+            @if (stats.last_reviewed_at) {
+              · 最近练习 {{ formatDateTime(stats.last_reviewed_at) }}
+            } @else {
+              · 还没练过
+            }
+          }
+        </span>
+      </div>
+
+      @if (statsFor(category); as stats) {
+        <div class="statgrid">
+          <div class="stat">
+            <div class="k">已答题目</div>
+            <div class="v">{{ stats.answered_questions }}<small> / {{ stats.total_questions }}</small></div>
+          </div>
+          <div class="stat">
+            <div class="k">成功率</div>
+            <div class="v">{{ formatPercent(stats.success_rate) }}</div>
+          </div>
+          <div class="stat">
+            <div class="k">平均用时</div>
+            <div class="v">{{ formatDuration(stats.avg_ms) }}</div>
+          </div>
+        </div>
+        <div class="metricbar">
+          <span [style.width.%]="stats.coverage * 100"></span>
+        </div>
+        <div class="metricnote">覆盖率 {{ formatPercent(stats.coverage) }}</div>
+      } @else {
+        <div class="metricnote" style="margin-top:10px;">
+          {{ statsError() ? '统计数据不可用。' : '正在读取进度…' }}
+        </div>
+      }
+
+      <div class="deckcard-actions">
+        <button class="primarybtn" type="button" (click)="practiceDeck(category)">开始练习</button>
+        <button class="smallbtn" type="button" (click)="openStats(category)">查看统计</button>
+      </div>
+    </div>
+  }
+
+  <div class="deckcard-actions" style="justify-content:center; margin-top:18px;">
+    <button class="smallbtn" type="button" (click)="allStats()">全部统计</button>
+  </div>
+
+  <!-- ===================== Per-paper practice ===================== -->
+  <div class="sectiontitle">按试卷练习</div>
+  <div class="paperbox">
+    <button class="papertoggle" type="button" (click)="togglePapers()">
+      {{ showPapers() ? '收起 H41001–H41003 分卷练习' : '展开 H41001–H41003 分卷练习' }}
+    </button>
+
+    @if (showPapers()) {
+      <div id="testlist">
+        @for (test of tests; track test.id) {
+          <div class="testrow">
+            <div class="testrow-head">
+              <div class="id heading">{{ test.id }}</div>
+              <div class="meta">官方样卷 · 100 题 · 按原卷顺序</div>
+            </div>
+            <div class="sectionbtns">
+              @for (section of test.sections; track section.key) {
+                <button
+                  type="button"
+                  class="secbtn"
+                  [style.--c]="section.color"
+                  (click)="startPaperSection(test.id, section.key)"
+                >
+                  <span class="name">{{ section.label }}</span>
+                  <span class="count">{{ section.count }} 题</span>
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="footnote">
+    题目来自国家汉办 / 孔子学院总部编制的 HSK（四级）官方样卷。听力部分没有原始录音文件，改用浏览器自带的语音朗读来还原听力材料，点“播放”收听；写作第二部分（看图造句）原题配有插图，这里省去了插图，只保留提示词，答完可对照参考答案自评。
+    复习记录（对错、用时、日期时间）保存在 <code>backend/data/hsk_reviews.sqlite3</code>。
+  </div>
+</div>

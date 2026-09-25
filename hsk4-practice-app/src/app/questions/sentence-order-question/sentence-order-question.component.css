@@ -1,0 +1,13 @@
+.ordersent{margin:2px 0 16px;}
+.ordersent div{padding:6px 0; font-size:15.5px;}
+.ordersent b{color:var(--c,var(--accent)); margin-right:8px;}
+.permgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
+.permbtn{border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:8px; padding:10px 6px; font:inherit; font-size:14px; cursor:pointer;}
+.permbtn:hover:not(:disabled){border-color:var(--c,var(--accent));}
+.permbtn.correct{border-color:var(--good); background:var(--good-bg); color:var(--good);}
+.permbtn.wrong{border-color:var(--bad); background:var(--bad-bg); color:var(--bad);}
+.permbtn:disabled{cursor:default;}
+
+@media (max-width:480px){
+  .permgrid{grid-template-columns:repeat(2,1fr);}
+}

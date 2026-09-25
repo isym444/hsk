@@ -1,0 +1,156 @@
+<div class="wrap">
+  @if (loading()) {
+    <div class="loading">正在读取本次练习数据…</div>
+  } @else if (error()) {
+    <div class="errbar">{{ error() }}</div>
+    <div class="summary-actions">
+      <button class="smallbtn" type="button" (click)="again()">返回练习</button>
+      <button class="primarybtn" type="button" (click)="home()">返回首页</button>
+    </div>
+  } @else {
+  @if (summary(); as data) {
+    <div class="summary-card" [style.--c]="meta().color">
+      <div class="tag" [style.color]="meta().color">本次练习 · {{ meta().label }} · {{ modeLabel() }}</div>
+
+      @if (data.answered === 0) {
+        <div class="big">0 题</div>
+        <div class="sub">这次没有作答记录。下次至少答一题就能看到成绩啦。</div>
+      } @else {
+        <div class="big">{{ data.correct }} / {{ data.correct + data.incorrect }}</div>
+        <div class="sub">
+          正确率 {{ formatPercent(data.success_rate) }}
+          @if (data.self_assessed) {
+            <span class="muted">（另有 {{ data.self_assessed }} 题写作自评，不计入正确率）</span>
+          }
+        </div>
+
+        @if (priorDelta() !== null) {
+          <div
+            class="delta"
+            [class.up]="(priorDelta() ?? 0) > 0"
+            [class.down]="(priorDelta() ?? 0) < 0"
+          >
+            与历史相比
+            @if ((priorDelta() ?? 0) > 0) {
+              <b>提高 {{ formatPercent(priorDelta() ?? 0) }}</b>
+            } @else if ((priorDelta() ?? 0) < 0) {
+              <b>下降 {{ formatPercent(-(priorDelta() ?? 0)) }}</b>
+            } @else {
+              <b>持平</b>
+            }
+            <span class="muted">（历史 {{ formatPercent(data.prior.success_rate) }}）</span>
+          </div>
+        } @else {
+          <div class="delta muted">这是{{ meta().label }}的第一次练习，暂无历史对比。</div>
+        }
+      }
+    </div>
+
+    <div class="statgrid">
+      <div class="stat">
+        <div class="k">本次作答</div>
+        <div class="v">{{ data.answered }}<small> 题</small></div>
+      </div>
+      <div class="stat">
+        <div class="k">答对 / 答错</div>
+        <div class="v">{{ data.correct }}<small> / </small>{{ data.incorrect }}</div>
+      </div>
+      <div class="stat">
+        <div class="k">平均用时</div>
+        <div class="v">{{ formatDuration(data.avg_ms) }}</div>
+      </div>
+      <div class="stat">
+        <div class="k">练习时长</div>
+        <div class="v">{{ formatDuration(data.duration_ms) }}</div>
+      </div>
+      <div class="stat">
+        <div class="k">总答题时间</div>
+        <div class="v">{{ formatDuration(data.total_ms) }}</div>
+      </div>
+      @if (speedDelta() !== null) {
+        <div class="stat">
+          <div class="k">比历史平均</div>
+          <div class="v" [class.up]="(speedDelta() ?? 0) < 0" [class.down]="(speedDelta() ?? 0) > 0">
+            {{ (speedDelta() ?? 0) <= 0 ? '快' : '慢' }} {{ formatDuration((speedDelta() ?? 0) < 0 ? -(speedDelta() ?? 0) : (speedDelta() ?? 0)) }}
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="sectiontitle">本次题目明细</div>
+    @if (data.items.length) {
+      <div class="tablewrap">
+        <table class="dtable items">
+          <thead>
+            <tr>
+              <th>试卷</th>
+              <th>题型</th>
+              <th class="qtext">题目</th>
+              <th>结果</th>
+              <th class="num">用时</th>
+              <th class="num">时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of data.items; track $index) {
+              <tr>
+                <td class="muted">{{ item.paper }}</td>
+                <td class="muted">{{ kindLabels[item.kind] ?? item.kind }}</td>
+                <td class="qtext">{{ item.label }}</td>
+                <td>
+                  <span
+                    class="pill"
+                    [class.good]="item.outcome === 'correct'"
+                    [class.bad]="item.outcome === 'incorrect'"
+                    [class.self]="item.outcome === 'self_assessed'"
+                  >{{ outcomeLabels[item.outcome] }}</span>
+                </td>
+                <td class="num">
+                  {{ item.outcome === 'self_assessed' ? '—' : formatDuration(item.elapsed_ms) }}
+                </td>
+                <td class="num muted">{{ formatDateTime(item.answered_at) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (slowest(); as worst) {
+        <div class="footnote">
+          本次最慢的一题：{{ worst.paper }} · {{ worst.label }}，用时
+          {{ formatDuration(worst.elapsed_ms) }}。
+        </div>
+      }
+    } @else {
+      <div class="loading">本次没有题目记录。</div>
+    }
+
+    <div class="sectiontitle">{{ meta().label }}累计</div>
+    <div class="statgrid">
+      <div class="stat">
+        <div class="k">已练题目</div>
+        <div class="v">
+          {{ data.category_stats.answered_questions }}<small> / {{ data.category_stats.total_questions }}</small>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="k">累计正确率</div>
+        <div class="v">{{ formatPercent(data.category_stats.success_rate) }}</div>
+      </div>
+      <div class="stat">
+        <div class="k">累计平均用时</div>
+        <div class="v">{{ formatDuration(data.category_stats.avg_ms) }}</div>
+      </div>
+      <div class="stat">
+        <div class="k">累计作答次数</div>
+        <div class="v">{{ data.category_stats.attempts }}</div>
+      </div>
+    </div>
+
+    <div class="summary-actions">
+      <button class="smallbtn" type="button" (click)="again()">继续练习</button>
+      <button class="smallbtn" type="button" (click)="stats()">查看{{ meta().label }}统计</button>
+      <button class="primarybtn" type="button" (click)="home()">返回首页</button>
+    </div>
+  }
+  }
+</div>

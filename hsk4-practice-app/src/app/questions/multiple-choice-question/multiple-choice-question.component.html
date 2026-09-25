@@ -1,0 +1,35 @@
+@if (unit().speak) {
+  <button class="playbtn" type="button" (click)="play()">🔊 播放听力</button>
+} @else {
+  <p class="passage">{{ unit().passage }}</p>
+}
+
+<p class="question">{{ unit().question }}</p>
+
+<div class="options">
+  @for (option of options(); track $index) {
+    <button
+      type="button"
+      [class]="optionClass($index)"
+      [disabled]="choice() !== null"
+      (click)="pick($index)"
+    >
+      <span class="lt">{{ option.letter }}</span><span>{{ option.text }}</span>
+    </button>
+  }
+</div>
+
+@if (choice() !== null) {
+  <div class="feedback">
+    <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
+      @if (isCorrect()) {
+        ✓ 回答正确
+      } @else {
+        ✗ 回答错误 · 正确答案：{{solutionLetter()}}
+      }</div>
+    @if (unit().speak) {
+      <div class="transcript-label">听力原文</div>
+      <div class="transcript">{{ unit().passage }}</div>
+    }
+  </div>
+}

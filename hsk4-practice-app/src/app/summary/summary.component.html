@@ -1,0 +1,16 @@
+<div class="wrap">
+  <div class="summary-card" [style.--c]="meta().color">
+    <div class="tag" [style.color]="meta().color" style="margin-bottom:14px;">{{ tag() }}</div>
+    <div class="big">{{ quizState.correct() }} / {{ quizState.scoreable() }}</div>
+    <div class="sub">正确率 {{ percentage() }}%</div>
+    @if (quizState.openTotal() > 0) {
+      <div class="summary-open">
+        写作开放题（看图造句）已完成 {{ quizState.openDone() }} / {{ quizState.openTotal() }} 题 — 已对照参考答案自评，不计入正确率。
+      </div>
+    }
+    <div class="summary-actions">
+      <button class="smallbtn" type="button" (click)="retry()">重做一遍</button>
+      <button class="primarybtn" type="button" (click)="home()">返回首页</button>
+    </div>
+  </div>
+</div>

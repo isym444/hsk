@@ -1,0 +1,26 @@
+@if (unit().audio) {
+  <button class="playbtn" type="button" (click)="play()">🔊 播放听力</button>
+}
+
+<p class="statement"><span class="star">★</span> {{ unit().statement }}</p>
+
+<div class="tfrow">
+  @for (part of parts; track $index) {
+    <button class="optbtn" type="button" [class]="buttonClass($index)" [disabled]="!locked()" (click)="pick($index)">{{ labels[$index] }}</button>
+  }
+</div>
+
+@if (choice() !== null) {
+  <div class="feedback">
+    <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
+      @if (isCorrect()) {
+        ✓ 回答正确
+      } @else {
+        ✗ 回答错误 · 正确答案：{{ solutionLabel() }}
+      }</div>
+    @if (unit().audio) {
+      <div class="transcript-label">听力原文</div>
+      <div class="transcript">{{ unit().audio }}</div>
+    }
+  </div>
+}

@@ -1,0 +1,31 @@
+<p class="question">用这个词写一句话（原题配有图片，这里省略）：</p>
+
+<div class="wordpill">{{unit().word}}</div>
+
+<textarea
+  class="opentext"
+  placeholder="在这里输入你的句子…"
+  [disabled]="revealed()"
+  (input)="onInput($any($event.target).value)"
+></textarea>
+
+<div class="rowbtns">
+  <button class="smallbtn" type="button" [disabled]="revealed()" (click)="reveal()">
+    查看参考答案
+  </button>
+</div>
+
+@if (revealed()) {
+  <div class="feedback">
+    <div class="fbline good">
+      @if (usedTargetWord()) {
+        {{ prompt() }}
+      } @else {
+        {{ hint() }}
+      }
+    </div>
+    <div class="model">
+      <div class="lbl">参考答案</div>{{ unit().model }}
+    </div>
+  </div>
+}

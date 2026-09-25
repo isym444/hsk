@@ -1,0 +1,11 @@
+.tilepool{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; min-height:44px;}
+.tile{border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:8px; padding:10px 14px; font:inherit; font-size:15.5px; cursor:pointer;}
+.tile:hover{border-color:var(--c,var(--accent));}
+.tile:disabled{opacity:.35; cursor:default;}
+.answerstrip{
+  min-height:52px; border:1px dashed var(--line); border-radius:8px; padding:10px 12px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:6px; font-size:16px; margin-bottom:14px;
+}
+.answerstrip .placeholder{color:var(--ink-soft); font-size:14px;}
+.answerstrip .atile{background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:6px 10px; cursor:pointer;}
+.rowbtns{display:flex; gap:10px;}

@@ -1,0 +1,93 @@
+<div id="quiz">
+  <div class="qz-top">
+    <div class="qz-topinner">
+      <button class="backbtn" type="button" (click)="back()">← 返回</button>
+      <div class="qz-label"><b>{{ title() }}</b> · <span>{{ progressLabel() }}</span></div>
+      <div class="qz-score">
+        <span class="g">✓{{ quizState.correct() }}</span>
+        <span class="b">✗{{ wrongCount() }}</span>
+      </div>
+    </div>
+    <div class="progress"><div [style.width]="progressWidth()" [style.--c]="meta().color"></div></div>
+  </div>
+
+  <!--
+    Each question is rendered through a one-item @for tracked by the question
+    number. Angular recreates a tracked row when its key changes, so every
+    question gets a brand-new question component instead of reusing the
+    previous one — which would otherwise carry its local state (the picked
+    option, the shuffled tile pool, the answered flags) into the next question.
+    This mirrors the original app, which rebuilt the card's DOM from scratch
+    for every question.
+  -->
+  <div class="wrap" id="qzBody">
+    @if (quizState.currentUnit(); as unit) {
+      <div class="card" [style.--c]="meta().color">
+        <div class="tag">{{ meta().label }} · 第 {{ unit.n }} 题</div>
+
+        @switch (unit.kind) {
+          @case ('tf') {
+            @for (question of [unit]; track question.n) {
+              <app-true-false-question [unit]="unit" (answered)="onAnswered($event)" />
+              @if (hasAnswered()) {
+                <div class="nextrow">
+                  <button class="primarybtn" type="button" (click)="next()">{{ nextLabel() }}</button>
+                </div>
+              }
+            }
+          }
+          @case ('mc') {
+            @for (question of [unit]; track question.n) {
+              <app-multiple-choice-question [unit]="unit" (answered)="onAnswered($event)" />
+              @if (hasAnswered()) {
+                <div class="nextrow">
+                  <button class="primarybtn" type="button" (click)="next()">{{ nextLabel() }}</button>
+                </div>
+              }
+            }
+          }
+          @case ('fill') {
+            @for (question of [unit]; track question.n) {
+              <app-fill-blank-question [unit]="unit" (answered)="onAnswered($event)" />
+              @if (hasAnswered()) {
+                <div class="nextrow">
+                  <button class="primarybtn" type="button" (click)="next()">{{ nextLabel() }}</button>
+                </div>
+              }
+            }
+          }
+          @case ('order') {
+            @for (question of [unit]; track question.n) {
+              <app-sentence-order-question [unit]="unit" (answered)="onAnswered($event)" />
+              @if (hasAnswered()) {
+                <div class="nextrow">
+                  <button class="primarybtn" type="button" (click)="next()">{{ nextLabel() }}</button>
+                </div>
+              }
+            }
+          }
+          @case ('build') {
+            @for (question of [unit]; track question.n) {
+              <app-sentence-build-question [unit]="unit" (answered)="onAnswered($event)" />
+              @if (hasAnswered()) {
+                <div class="nextrow">
+                  <button class="primarybtn" type="button" (click)="next()">{{ nextLabel() }}</button>
+                </div>
+              }
+            }
+          }
+          @case ('open') {
+            @for (question of [unit]; track question.n) {
+              <app-open-writing-question [unit]="unit" (answered)="onAnswered($event)" />
+              @if (hasAnswered()) {
+                <div class="nextrow">
+                  <button class="primarybtn" type="button" (click)="next()">{{ nextLabel() }}</button>
+                </div>
+              }
+            }
+          }
+        }
+      </div>
+    }
+  </div>
+</div>
