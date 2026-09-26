@@ -53,6 +53,47 @@ describe('DeckRunComponent', () => {
     deckQuestion({ question_key: 'H41001:listening:tf:3', kind: 'tf', number: 3, reason: 'due' }),
   ];
 
+  /**
+   * Two real reading questions of the same kind, back to back. Question 48's
+   * answer is 禁止 (chip A); question 49's is 地点 (chip F). The pair is what
+   * exposed the "the next question is already answered" bug: the runner used
+   * to reuse one question component for both.
+   */
+  const READING_FILL = [
+    deckQuestion({
+      question_key: 'H41001:reading:fill:48',
+      kind: 'fill',
+      number: 48,
+      paper: 'H41001',
+      category: 'reading',
+    }),
+    deckQuestion({
+      question_key: 'H41332:reading:fill:49',
+      kind: 'fill',
+      number: 49,
+      paper: 'H41332',
+      category: 'reading',
+    }),
+  ];
+
+  /** Sentence building first (answerable by tapping tiles), then guided writing. */
+  const WRITING = [
+    deckQuestion({
+      question_key: 'H41001:writing:build:86',
+      kind: 'build',
+      number: 86,
+      paper: 'H41001',
+      category: 'writing',
+    }),
+    deckQuestion({
+      question_key: 'H41001:writing:open:96',
+      kind: 'open',
+      number: 96,
+      paper: 'H41001',
+      category: 'writing',
+    }),
+  ];
+
   beforeEach(() => {
     spoken = [];
     // The timer preference persists in localStorage, so every test starts from
@@ -131,6 +172,7 @@ describe('DeckRunComponent', () => {
   async function startSession(
     mode: 'smart' | 'random' = 'smart',
     category = 'listening',
+    questions = QUESTIONS,
   ): Promise<void> {
     const modeButton = Array.from(element().querySelectorAll<HTMLButtonElement>('.modebtn')).find(
       (candidate) => candidate.textContent?.includes(mode === 'smart' ? 'Smart review' : 'Random practice'),
@@ -159,7 +201,7 @@ describe('DeckRunComponent', () => {
 
     http
       .expectOne((request) => request.url === `/api/deck/${category}`)
-      .flush(deckResponseFixture(QUESTIONS, category as 'listening', { mode }));
+      .flush(deckResponseFixture(questions, category as 'listening', { mode }));
     await settle();
   }
 
@@ -234,6 +276,80 @@ describe('DeckRunComponent', () => {
     expect(text('.tag')).toContain('question 2');
     expect(text('.qz-label')).toContain('Answered this session: 1');
     expect(element().querySelector('.nextrow')).toBeNull();
+  });
+
+  /**
+   * The runner used to force a fresh question component with
+   * `@for (question of [unit]; track deck.token())`. That track expression
+   * ignores the item, so Angular's diff always reported "same row, new value"
+   * and the component was reused: the previous question's local state (the
+   * picked chip, the sentence built, the revealed model answer) leaked into
+   * the next question, which then rendered as already answered with no Next
+   * button. These two tests pin the fresh-card behaviour for the two kinds
+   * where questions come in long same-kind runs — reading fill-ins and
+   * writing.
+   */
+  it('starts every reading question unanswered, even after another fill-in', async () => {
+    await open('reading');
+    await startSession('smart', 'reading', READING_FILL);
+
+    const chips = () =>
+      Array.from(element().querySelectorAll<HTMLButtonElement>('.bank .bankchip'));
+
+    // Question 48: 禁止 is chip A, so picking F is wrong.
+    chips()[5].click();
+    fixture.detectChanges();
+    http.expectOne('/api/sessions/session-1/reviews').flush({});
+    await settle();
+    expect(text('.nextnote')).toContain('Wrong');
+    expect(chips()[0].classList).toContain('correct');
+    expect(chips()[5].classList).toContain('wrong');
+
+    await next();
+
+    // Question 49 (地点, chip F) must be untouched: no verdict from question
+    // 48, no feedback, no Next button, and every chip usable again.
+    expect(text('.tag')).toContain('H41332');
+    expect(text('.tag')).toContain('question 49');
+    expect(element().querySelector('.feedback')).toBeNull();
+    expect(element().querySelector('.nextrow')).toBeNull();
+    expect(chips().some((chip) => chip.classList.contains('correct'))).toBeFalse();
+    expect(chips().some((chip) => chip.classList.contains('wrong'))).toBeFalse();
+    expect(chips().every((chip) => !chip.disabled)).toBeTrue();
+  });
+
+  it('keeps a writing question answerable after Next', async () => {
+    await open('writing');
+    await startSession('smart', 'writing', WRITING);
+
+    const tiles = () =>
+      Array.from(element().querySelectorAll<HTMLButtonElement>('.tilepool .tile'));
+
+    // Build H41001's sentence in the right order: 她很羡慕会弹钢琴的人。
+    for (const word of ['她', '很', '羡慕', '会弹钢琴的人']) {
+      tiles()
+        .find((tile) => tile.textContent?.trim() === word)
+        ?.click();
+      fixture.detectChanges();
+    }
+    http.expectOne('/api/sessions/session-1/reviews').flush({});
+    await settle();
+    expect(text('.nextnote')).toContain('Correct');
+
+    await next();
+
+    // Guided writing (H41001 question 96) must be a fresh, usable question:
+    // its own prompt, an empty enabled draft box, and no carried-over verdict.
+    expect(text('.tag')).toContain('question 96');
+    expect(element().querySelector('app-open-writing-question')).toBeTruthy();
+    expect(element().querySelector('.feedback')).toBeNull();
+    expect(element().querySelector('.nextrow')).toBeNull();
+
+    const draft = element().querySelector<HTMLTextAreaElement>('textarea.opentext');
+    expect(draft).toBeTruthy();
+    expect(draft?.disabled).toBeFalse();
+    expect(draft?.value).toBe('');
+    expect(element().querySelector<HTMLButtonElement>('.rowbtns .smallbtn')?.disabled).toBeFalse();
   });
 
   it('hides the response timer by default and can turn it on', async () => {

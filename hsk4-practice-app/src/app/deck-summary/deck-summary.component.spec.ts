@@ -233,6 +233,65 @@ describe('DeckSummaryComponent', () => {
     expect(text('.review-nav .metricnote')).toBe('2 of 3');
   });
 
+  it('rebuilds the review card between two questions of the same kind', async () => {
+    // Two fill-ins in a row (the reading deck has ten in a row), with the
+    // correct chip in different places: 46 answers 顺便 (chip E) and 48 answers
+    // 禁止 (chip A). Stepping between them must build a new question component
+    // rather than update the old one in place — a stale card would keep the
+    // previous sentence and the wrong highlighted chip.
+    const item = (number: number, key: string, label: string) => ({
+      question_key: key,
+      label,
+      paper: 'H41001',
+      number,
+      kind: 'fill',
+      part: 1,
+      scoreable: true,
+      outcome: 'incorrect' as const,
+      elapsed_ms: 3000,
+      answered_at: '2026-09-25T09:56:00.000Z',
+      answered_at_local: null,
+    });
+
+    await open(
+      { category: 'reading', sessionId: 'session-same-kind' },
+      {
+        items: [
+          item(46, 'H41001:reading:fill:46', '你去买啤酒吗？'),
+          item(48, 'H41001:reading:fill:48', '飞机上（　）使用手机。'),
+        ],
+      },
+    );
+
+    element().querySelector<HTMLTableRowElement>('.items tbody tr')?.click();
+    fixture.detectChanges();
+
+    const bankBefore = element().querySelector('.review-card .bank');
+    const chips = (): string[] =>
+      Array.from(element().querySelectorAll('.review-card .bankchip')).map(
+        (chip) => chip.textContent?.replace(/\s+/g, '') ?? '',
+      );
+    const correctChip = (): string =>
+      element().querySelector('.review-card .bankchip.correct')?.textContent?.replace(/\s+/g, '') ??
+      '';
+
+    expect(text('.review-card .statement')).toContain('啤酒');
+    expect(correctChip()).toBe('E顺便');
+    expect(chips()[0]).toBe('A禁止');
+
+    Array.from(element().querySelectorAll<HTMLButtonElement>('.review-nav button'))
+      .find((button) => button.textContent?.includes('Next'))
+      ?.click();
+    fixture.detectChanges();
+
+    expect(text('.review-head')).toContain('question 48');
+    expect(text('.review-card .statement')).toContain('飞机上');
+    expect(chips()[0]).toBe('A禁止');
+    expect(correctChip()).toBe('A禁止');
+    // A brand-new component, not the previous one with its state patched.
+    expect(element().querySelector('.review-card .bank')).not.toBe(bankBefore);
+  });
+
   it('closes the review overlay with Close', async () => {
     await open();
     element().querySelector<HTMLTableRowElement>('.items tbody tr')?.click();

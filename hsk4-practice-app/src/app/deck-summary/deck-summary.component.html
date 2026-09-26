@@ -158,42 +158,30 @@
             <button class="smallbtn" type="button" (click)="closeReview()">Close</button>
           </div>
 
-          @if (reviewUnit(); as unit) {
+          @for (row of reviewRows(); track row.token) {
             <div class="card review-card" [style.--c]="meta().color">
-              @switch (unit.kind) {
+              @switch (row.unit.kind) {
                 @case ('tf') {
-                  @for (question of [unit]; track reviewKey()) {
-                    <app-true-false-question [unit]="unit" [paper]="reviewPaper()" [review]="true" />
-                  }
+                  <app-true-false-question [unit]="row.unit" [paper]="reviewPaper()" [review]="true" />
                 }
                 @case ('mc') {
-                  @for (question of [unit]; track reviewKey()) {
-                    <app-multiple-choice-question [unit]="unit" [paper]="reviewPaper()" [review]="true" />
-                  }
+                  <app-multiple-choice-question [unit]="row.unit" [paper]="reviewPaper()" [review]="true" />
                 }
                 @case ('fill') {
-                  @for (question of [unit]; track reviewKey()) {
-                    <app-fill-blank-question [unit]="unit" [review]="true" />
-                  }
+                  <app-fill-blank-question [unit]="row.unit" [review]="true" />
                 }
                 @case ('order') {
-                  @for (question of [unit]; track reviewKey()) {
-                    <app-sentence-order-question [unit]="unit" [review]="true" />
-                  }
+                  <app-sentence-order-question [unit]="row.unit" [review]="true" />
                 }
                 @case ('build') {
-                  @for (question of [unit]; track reviewKey()) {
-                    <app-sentence-build-question [unit]="unit" [review]="true" />
-                  }
+                  <app-sentence-build-question [unit]="row.unit" [review]="true" />
                 }
                 @case ('open') {
-                  @for (question of [unit]; track reviewKey()) {
-                    <app-open-writing-question [unit]="unit" [review]="true" />
-                  }
+                  <app-open-writing-question [unit]="row.unit" [review]="true" />
                 }
               }
             </div>
-          } @else {
+          } @empty {
             <div class="loading">This question is no longer in the {{ meta().label }} bank.</div>
           }
 

@@ -131,7 +131,7 @@ docker compose cp api:/data/hsk_reviews.sqlite3 ./hsk_reviews.sqlite3
 
 ```bash
 cd backend && ./.venv/bin/python -m pytest -q          # 115 tests (SQLite)
-cd hsk4-practice-app && npm test                       # 277 tests
+cd hsk4-practice-app && npm test                       # 285 tests
 ```
 
 The backend suite also runs against PostgreSQL, which is what CI does:

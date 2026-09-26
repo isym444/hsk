@@ -24,6 +24,7 @@ import { firstValueFrom } from 'rxjs';
 import { SectionKey, Unit } from '../data/models';
 import { unitForQuestionKey } from '../data/question-inventory';
 import { localIsoWithOffset } from './format';
+import { QuestionRow, questionRows } from './question-row';
 import {
   CategoryStats,
   DeckMode,
@@ -93,11 +94,19 @@ export class DeckStateService {
   });
 
   /**
-   * Changes whenever the on-screen question changes, even if the same question
-   * comes round again. The runner tracks its `@for` by this so every question
-   * gets a fresh component instead of inheriting the previous one's state.
+   * Identity of the queue slot on screen. Changes whenever the question
+   * changes, even if the same question comes round again.
    */
   readonly token = computed(() => `${this.index()}:${this.current()?.question_key ?? ''}`);
+
+  /**
+   * The question on screen, as a one-item list for the runner's `@for`.
+   *
+   * `token` is carried on the item because a `@for` track expression must read
+   * the item it is handed — see `core/question-row.ts` for what goes wrong when
+   * it only reads component state.
+   */
+  readonly currentRows = computed<QuestionRow[]>(() => questionRows(this.token(), this.currentUnit()));
 
   readonly averageMs = computed<number | null>(() => {
     const { correct, incorrect, totalMs } = this.tally();

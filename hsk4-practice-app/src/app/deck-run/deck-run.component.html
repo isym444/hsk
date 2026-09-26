@@ -147,42 +147,30 @@
         </button>
       </div>
 
-      @if (deck.currentUnit(); as unit) {
+      @for (row of deck.currentRows(); track row.token) {
         <div class="card" [style.--c]="meta().color">
           <div class="tag">
-            {{ meta().label }} · {{ deck.current()?.paper }} · question {{ unit.n }}
+            {{ meta().label }} · {{ deck.current()?.paper }} · question {{ row.unit.n }}
           </div>
 
-          @switch (unit.kind) {
+          @switch (row.unit.kind) {
             @case ('tf') {
-              @for (question of [unit]; track deck.token()) {
-                <app-true-false-question [unit]="unit" [paper]="paperOf(unit)" (answered)="onAnswered($event)" />
-              }
+              <app-true-false-question [unit]="row.unit" [paper]="paperOf(row.unit)" (answered)="onAnswered($event)" />
             }
             @case ('mc') {
-              @for (question of [unit]; track deck.token()) {
-                <app-multiple-choice-question [unit]="unit" [paper]="paperOf(unit)" (answered)="onAnswered($event)" />
-              }
+              <app-multiple-choice-question [unit]="row.unit" [paper]="paperOf(row.unit)" (answered)="onAnswered($event)" />
             }
             @case ('fill') {
-              @for (question of [unit]; track deck.token()) {
-                <app-fill-blank-question [unit]="unit" (answered)="onAnswered($event)" />
-              }
+              <app-fill-blank-question [unit]="row.unit" (answered)="onAnswered($event)" />
             }
             @case ('order') {
-              @for (question of [unit]; track deck.token()) {
-                <app-sentence-order-question [unit]="unit" (answered)="onAnswered($event)" />
-              }
+              <app-sentence-order-question [unit]="row.unit" (answered)="onAnswered($event)" />
             }
             @case ('build') {
-              @for (question of [unit]; track deck.token()) {
-                <app-sentence-build-question [unit]="unit" (answered)="onAnswered($event)" />
-              }
+              <app-sentence-build-question [unit]="row.unit" (answered)="onAnswered($event)" />
             }
             @case ('open') {
-              @for (question of [unit]; track deck.token()) {
-                <app-open-writing-question [unit]="unit" (answered)="onAnswered($event)" />
-              }
+              <app-open-writing-question [unit]="row.unit" (answered)="onAnswered($event)" />
             }
           }
 
@@ -208,7 +196,7 @@
             </div>
           }
         </div>
-      } @else {
+      } @empty {
         <div class="loading">Preparing questions…</div>
       }
     </div>

@@ -5,6 +5,7 @@ import { SectionKey, TestId, Unit } from '../data/models';
 import { CATEGORY_ORDER, KIND_LABELS, unitForQuestionKey } from '../data/question-inventory';
 import { ReviewApiService, SessionItem, SessionSummary } from '../core/review-api.service';
 import { DECK_MODE_LABELS, OUTCOME_LABELS, formatDateTime, formatDuration, formatPercent } from '../core/format';
+import { QuestionRow, questionRows } from '../core/question-row';
 import { TrueFalseQuestionComponent } from '../questions/true-false-question/true-false-question.component';
 import { MultipleChoiceQuestionComponent } from '../questions/multiple-choice-question/multiple-choice-question.component';
 import { FillBlankQuestionComponent } from '../questions/fill-blank-question/fill-blank-question.component';
@@ -101,8 +102,9 @@ export class DeckSummaryComponent implements OnInit {
   });
 
   /**
-   * Changes with the reviewed question, so the card's `@for` recreates the
-   * question component (and clears its state) when stepping to another item.
+   * Changes with the reviewed question. The review card's `@for` tracks the
+   * row's own token (see `core/question-row.ts`), so the question component is
+   * rebuilt — with a clean state — when stepping to another item.
    */
   readonly reviewKey = computed(() => this.reviewItem()?.question_key ?? '');
 
@@ -120,6 +122,15 @@ export class DeckSummaryComponent implements OnInit {
     const item = this.reviewItem();
     return item ? this.summary()?.items.indexOf(item) ?? -1 : -1;
   });
+
+  /**
+   * The reviewed question as the review card's one-item `@for` collection. The
+   * token is the item's place in the session plus its key, so stepping to
+   * another question always builds a fresh question component.
+   */
+  readonly reviewRows = computed<QuestionRow[]>(() =>
+    questionRows(`${this.reviewPosition()}:${this.reviewKey()}`, this.reviewUnit()),
+  );
 
   /** Opens the review overlay on one question of this session. */
   openReview(item: SessionItem): void {

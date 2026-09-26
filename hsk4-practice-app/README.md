@@ -97,7 +97,7 @@ page explains why.
 Other commands:
 
 ```bash
-npm test          # 277 unit + component tests (headless Chrome)
+npm test          # 285 unit + component tests (headless Chrome)
 npm run api       # convenience: start the backend from here
 npm run catalogue # regenerate backend/data/catalogue.json from the data layer
 ```
