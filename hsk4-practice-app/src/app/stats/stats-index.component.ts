@@ -1,7 +1,7 @@
-import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { catchError, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import { SECTION_ORDER, SECTION_META } from '../data/section-meta';
 import { Level, SectionKey } from '../data/models';
 import { isLevel } from '../data/tests.data';
@@ -21,7 +21,7 @@ import { formatDateTime, formatDuration, formatPercent } from '../core/format';
   templateUrl: './stats-index.component.html',
   styleUrl: './stats-index.component.css',
 })
-export class StatsIndexComponent implements OnInit {
+export class StatsIndexComponent {
   private readonly api = inject(ReviewApiService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -31,16 +31,46 @@ export class StatsIndexComponent implements OnInit {
     { initialValue: 'HSK4' },
   );
 
+  private readonly levelParam$ = this.route.paramMap.pipe(map((p) => p.get('level') ?? ''));
+
   readonly level = computed<Level>(() => {
     const value = this.params();
     return isLevel(value) ? value : 'HSK4';
   });
 
-  private loadedLevel: Level | null = null;
+  /**
+   * The level's overview, derived from the route param rather than fetched by
+   * an `effect`. The effect version silently failed to re-fetch when the level
+   * changed while this component was reused, leaving the previous level's
+   * numbers on screen.
+   */
+  private readonly overviewResult = toSignal(
+    this.levelParam$.pipe(
+      map((raw) => (isLevel(raw) ? raw : 'HSK4') as Level),
+      distinctUntilChanged(),
+      switchMap((level) =>
+        this.api.overview(level).pipe(
+          map((overview) => ({ overview, failed: false as const })),
+          catchError(() =>
+            of({
+              overview: null,
+              failed: true as const,
+              message:
+                'Could not load the statistics. Check that the backend is running: cd backend && ./.venv/bin/uvicorn app.main:app --port 8000',
+            }),
+          ),
+        ),
+      ),
+    ),
+    { initialValue: null },
+  );
 
-  readonly overview = signal<StatsOverview | null>(null);
-  readonly loading = signal(true);
-  readonly error = signal<string | null>(null);
+  readonly overview = computed(() => this.overviewResult()?.overview ?? null);
+  readonly loading = computed(() => this.overviewResult() === null);
+  readonly error = computed(() => {
+    const result = this.overviewResult();
+    return result && result.failed ? result.message : null;
+  });
 
   readonly order: SectionKey[] = SECTION_ORDER;
   readonly meta = SECTION_META;
@@ -49,38 +79,6 @@ export class StatsIndexComponent implements OnInit {
   readonly formatDuration = formatDuration;
   readonly formatPercent = formatPercent;
   readonly formatDateTime = formatDateTime;
-
-  constructor() {
-    effect(() => {
-      const level = this.level();
-      if (this.loadedLevel !== null && level !== this.loadedLevel) {
-        this.loadedLevel = level;
-        this.load();
-      }
-    });
-  }
-
-  ngOnInit(): void {
-    this.loadedLevel = this.level();
-    this.load();
-  }
-
-  private load(): void {
-    this.loading.set(true);
-    this.overview.set(null);
-    this.api.overview(this.level()).subscribe({
-      next: (overview) => {
-        this.overview.set(overview);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.error.set(
-          'Could not load the statistics. Check that the backend is running: cd backend && ./.venv/bin/uvicorn app.main:app --port 8000',
-        );
-      },
-    });
-  }
 
   statsFor(category: SectionKey): CategoryStats | null {
     return this.overview()?.categories.find((entry) => entry.category === category) ?? null;

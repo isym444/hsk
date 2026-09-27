@@ -1,7 +1,7 @@
-import { Component, HostListener, OnInit, computed, effect, inject, signal } from '@angular/core';
+import { Component, HostListener, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { SECTION_META, SectionMeta } from '../data/section-meta';
 import { isLevel, papersForLevel } from '../data/tests.data';
 import { LevelSwitcherComponent } from '../home/level-switcher.component';
@@ -44,7 +44,7 @@ import { AnswerEvent } from '../questions/answer-event';
   templateUrl: './deck-run.component.html',
   styleUrl: './deck-run.component.css',
 })
-export class DeckRunComponent implements OnInit {
+export class DeckRunComponent {
   readonly deck = inject(DeckStateService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -61,27 +61,38 @@ export class DeckRunComponent implements OnInit {
   readonly formatDuration = formatDuration;
   readonly formatPercent = formatPercent;
 
-  /** Route param, tracked live so switching categories re-prepares the page. */
-  private readonly params = toSignal(
-    this.route.paramMap.pipe(map((params) => params.get('category') ?? '')),
-    { initialValue: 'listening' },
+  /** Both route params, as observables — the prepare step runs off these. */
+  private readonly categoryParam$ = this.route.paramMap.pipe(
+    map((params) => params.get('category') ?? ''),
   );
+  private readonly levelParam$ = this.route.paramMap.pipe(
+    map((params) => params.get('level') ?? ''),
+  );
+
+  /** The same params as signals, for the template and the local totals. */
+  private readonly params = toSignal(this.categoryParam$, { initialValue: 'listening' });
+  private readonly levelParam = toSignal(this.levelParam$, { initialValue: 'HSK4' });
 
   readonly category = computed<SectionKey>(() => {
     const value = this.params();
     return (CATEGORY_ORDER as string[]).includes(value) ? (value as SectionKey) : 'listening';
   });
 
-  /** Route param `:level`, tracked live so switching re-prepares the page. */
-  private readonly levelParam = toSignal(
-    this.route.paramMap.pipe(map((params) => params.get('level') ?? '')),
-    { initialValue: 'HSK4' },
-  );
-
   readonly level = computed<Level>(() => {
     const value = this.levelParam();
     return isLevel(value) ? value : 'HSK4';
   });
+
+  /** Level + skill from the URL, as a keyed stream. */
+  private readonly routeParams$ = combineLatest([this.levelParam$, this.categoryParam$]).pipe(
+    map(([level, category]) => ({
+      level: (isLevel(level) ? level : 'HSK4') as Level,
+      category: (CATEGORY_ORDER as string[]).includes(category)
+        ? (category as SectionKey)
+        : ('listening' as SectionKey),
+      key: `${level}|${category}`,
+    })),
+  );
 
   readonly meta = computed<SectionMeta>(() => SECTION_META[this.category()]);
   readonly total = computed(() => categoryTotalForLevel(this.level(), this.category()));
@@ -96,28 +107,21 @@ export class DeckRunComponent implements OnInit {
   /** Spelled-out paper count for the hero copy ("four sample papers"). */
 
 
-  /** Last level+category this component prepared; see `ngOnInit` / the effect. */
-  private prepared: string | null = null;
-
+  /**
+   * Prepare the start panel whenever the level or skill in the URL changes.
+   *
+   * This runs off the route param stream rather than an `effect` watching
+   * `level()`. The effect version silently skipped the reload when only the
+   * level changed on a reused component, so switching to HSK3 kept showing the
+   * HSK4 bank's counts.
+   */
   constructor() {
-    // The component instance is reused when only the category param changes,
-    // so re-prepare on a live category switch. The first run is handled by
-    // ngOnInit (which also clears any state left over from a previous visit).
-    effect(() => {
-      const key = `${this.level()}|${this.category()}`;
-      if (this.prepared === null || key === this.prepared) {
-        return;
-      }
-      this.prepared = key;
-      this.deck.reset();
-      void this.deck.loadPreview(this.category(), this.level());
-    });
-  }
-
-  ngOnInit(): void {
-    this.prepared = `${this.level()}|${this.category()}`;
-    this.deck.reset();
-    void this.deck.loadPreview(this.category(), this.level());
+    this.routeParams$
+      .pipe(distinctUntilChanged((a, b) => a.key === b.key))
+      .subscribe(({ level, category }) => {
+        this.deck.reset();
+        void this.deck.loadPreview(category, level);
+      });
   }
 
   /* ------------------------------------------------------------------ */

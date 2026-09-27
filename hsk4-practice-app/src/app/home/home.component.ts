@@ -1,7 +1,7 @@
-import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { catchError, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import { SECTION_META, SECTION_ORDER } from '../data/section-meta';
 import { isLevel, papersForLevel } from '../data/tests.data';
 import { Level, SectionKey, TestId } from '../data/models';
@@ -39,18 +39,22 @@ interface HomeTestRow {
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
   private readonly quizState = inject(QuizStateService);
   private readonly builder = inject(QuizBuilderService);
   private readonly api = inject(ReviewApiService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  /** Route param, tracked live so switching level re-renders this page. */
-  private readonly params = toSignal(
-    this.route.paramMap.pipe(map((p) => p.get('level') ?? '')),
-    { initialValue: '' },
-  );
+  /**
+   * The `:level` route param, as a stream. Kept as an observable as well as a
+   * signal because the stats request is derived from it directly — see
+   * `overviewResult`.
+   */
+  private readonly levelParam$ = this.route.paramMap.pipe(map((p) => p.get('level') ?? ''));
+
+  /** The same param as a signal, for the template and the local totals. */
+  private readonly params = toSignal(this.levelParam$, { initialValue: '' });
 
   readonly level = computed<Level>(() => {
     const value = this.params();
@@ -82,11 +86,35 @@ export class HomeComponent implements OnInit {
   readonly meta = SECTION_META;
   readonly kindLabels = KIND_LABELS;
 
-  /** Lowest level currently rendered, so a level switch refetches its stats. */
-  private loadedLevel: Level | null = null;
+  /**
+   * Stats for the level on screen, driven straight off the route param.
+   *
+   * This used to be an `effect` that watched `level()` and called a loader,
+   * which silently failed to re-fetch when the level changed while the
+   * component was reused — so the HSK3 page kept showing HSK4's numbers.
+   * Deriving the data from the param stream instead makes the request and the
+   * level impossible to get out of step: `switchMap` cancels the previous
+   * level's in-flight request, and there is no bookkeeping to forget.
+   */
+  private readonly overviewResult = toSignal(
+    this.levelParam$.pipe(
+      map((raw) => (isLevel(raw) ? raw : DEFAULT_LEVEL)),
+      distinctUntilChanged(),
+      switchMap((level) =>
+        this.api.overview(level).pipe(
+          map((overview) => ({ overview, failed: false as const })),
+          catchError(() => of({ overview: null, failed: true as const })),
+        ),
+      ),
+    ),
+    { initialValue: null },
+  );
 
-  readonly overview = signal<{ categories: CategoryStats[]; generated_at: string } | null>(null);
-  readonly statsError = signal(false);
+  /** The level's stats, or null while loading / after a failure. */
+  readonly overview = computed(() => this.overviewResult()?.overview ?? null);
+
+  readonly statsError = computed(() => this.overviewResult()?.failed === true);
+
   readonly showPapers = signal(false);
 
   readonly formatDuration = formatDuration;
@@ -96,32 +124,6 @@ export class HomeComponent implements OnInit {
   /** Deck size per category for the current level, from the question inventory. */
   categoryTotal(category: SectionKey): number {
     return categoryTotalForLevel(this.level(), category);
-  }
-
-  constructor() {
-    // The component is reused when only the level param changes, so reload on a
-    // live switch; ngOnInit covers the first paint.
-    effect(() => {
-      const level = this.level();
-      if (this.loadedLevel !== null && level !== this.loadedLevel) {
-        this.loadedLevel = level;
-        this.load();
-      }
-    });
-  }
-
-  ngOnInit(): void {
-    this.loadedLevel = this.level();
-    this.load();
-  }
-
-  private load(): void {
-    this.overview.set(null);
-    this.statsError.set(false);
-    this.api.overview(this.level()).subscribe({
-      next: (overview) => this.overview.set(overview),
-      error: () => this.statsError.set(true),
-    });
   }
 
   statsFor(category: SectionKey): CategoryStats | null {

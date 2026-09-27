@@ -1,3 +1,5 @@
+import { RouterTestingHarness } from '@angular/router/testing';
+import { categoryTotalForLevel } from '../data/question-inventory';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { provideZoneChangeDetection } from '@angular/core';
@@ -163,5 +165,67 @@ describe('HomeComponent', () => {
 
   it('renders the hero copy for the aggregated decks', () => {
     expect(element().querySelector('.hero h1')?.textContent?.trim()).toBe('HSK 4 · Combined question bank');
+  });
+});
+
+/*
+ * The two levels are separate banks, so switching must re-scope what the home
+ * screen shows. This is driven through `RouterTestingHarness`, because a
+ * component created with `TestBed.createComponent` sits *outside* the outlet
+ * and never sees its `:level` param — which would make the test pass or fail
+ * for reasons that have nothing to do with the app.
+ */
+describe('HomeComponent level scoping', () => {
+  let harness: RouterTestingHarness;
+  let http: HttpTestingController;
+
+  beforeEach(async () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideZoneChangeDetection(),
+        provideRouter(routes),
+        ...authStubProviders(),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
+    });
+    http = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    http.verify();
+  });
+
+  it('re-scopes the headline totals when the level changes', async () => {
+    harness = await RouterTestingHarness.create('/HSK4');
+    http.expectOne('/api/categories?level=HSK4').flush(overviewFixture());
+    await harness.fixture.whenStable();
+    harness.fixture.detectChanges();
+
+    const card = () =>
+      (harness.fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>('.deckcard')[0];
+
+    expect(card().textContent).toContain(
+      `${categoryTotalForLevel('HSK4', 'listening')} questions from every HSK4 paper`,
+    );
+
+    await harness.navigateByUrl('/HSK3');
+    const cmp = harness.routeDebugElement?.componentInstance as { level?: () => string } | null;
+    expect(cmp?.level?.()).withContext('level after switch').toBe('HSK3');
+    http.expectOne('/api/categories?level=HSK3').flush(overviewFixture());
+    await harness.fixture.whenStable();
+    harness.fixture.detectChanges();
+
+    expect(card().textContent).toContain(
+      `${categoryTotalForLevel('HSK3', 'listening')} questions from every HSK3 paper`,
+    );
+  });
+
+  it('gives the two levels different headline totals', () => {
+    // Guards the data itself: if these were equal the test above would be
+    // asserting nothing.
+    expect(categoryTotalForLevel('HSK3', 'listening')).not.toBe(
+      categoryTotalForLevel('HSK4', 'listening'),
+    );
   });
 });
