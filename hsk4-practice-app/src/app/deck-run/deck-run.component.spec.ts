@@ -406,7 +406,7 @@ describe('DeckRunComponent', () => {
       .flush(sessionSummaryFixture({ category: 'listening' }));
     await settle();
 
-    expect(navigate).toHaveBeenCalledWith(['/deck', 'listening', 'summary', 'session-1']);
+    expect(navigate).toHaveBeenCalledWith(['/', 'HSK4', 'deck', 'listening', 'summary', 'session-1']);
   });
 
   it('discards a session where nothing was answered', async () => {
@@ -458,6 +458,6 @@ describe('DeckRunComponent', () => {
     );
     statsButton?.click();
 
-    expect(navigate).toHaveBeenCalledWith(['/stats', 'listening']);
+    expect(navigate).toHaveBeenCalledWith(['/', 'HSK4', 'stats', 'listening']);
   });
 });

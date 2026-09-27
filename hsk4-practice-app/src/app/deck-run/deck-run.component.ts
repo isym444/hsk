@@ -197,7 +197,7 @@ export class DeckRunComponent {
       return;
     }
     void this.router.navigate(
-      goToSummary ? ['/deck', summary.category, 'summary', summary.id] : ['/'],
+      goToSummary ? ['/', this.level(), 'deck', summary.category, 'summary', summary.id] : ['/'],
     );
   }
 
@@ -210,7 +210,7 @@ export class DeckRunComponent {
   }
 
   statsLink(): void {
-    void this.router.navigate(['/stats', this.category()]);
+    void this.router.navigate(['/', this.level(), 'stats', this.category()]);
   }
 
   /* ------------------------------------------------------------------ */
