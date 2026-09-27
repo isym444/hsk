@@ -135,7 +135,7 @@ describe('QuizShellComponent', () => {
     await fixture.whenStable();
 
     expect(spoken).toContain('__stop__');
-    expect(router.url).toBe('/');
+    expect(router.url).toBe('/HSK4');
   });
 
   it('labels the last question See results and navigates to the summary', async () => {

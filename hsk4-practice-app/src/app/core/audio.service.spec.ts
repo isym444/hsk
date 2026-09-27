@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { AudioService } from './audio.service';
 import { AUDIO_CLIPS, clipFor, clipUrl } from '../data/audio-clips';
-import { TEST_IDS } from '../data/tests.data';
+import { LEVEL_OF_PAPER, TEST_IDS } from '../data/tests.data';
 
 /**
  * Guards the real-voice recordings that replace the old speech synthesis.
@@ -13,13 +13,18 @@ import { TEST_IDS } from '../data/tests.data';
  * the advertised length.
  */
 describe('listening audio clips', () => {
-  it('has exactly one clip for each of the 45 listening questions per paper', () => {
-    expect(AUDIO_CLIPS.length).toBe(180);
+  it('has exactly one clip for each listening question of every paper', () => {
+    const expected = TEST_IDS.reduce(
+      (n, id) => n + (LEVEL_OF_PAPER[id] === 'HSK3' ? 40 : 45),
+      0,
+    );
+    expect(AUDIO_CLIPS.length).toBe(expected);
     for (const paper of TEST_IDS) {
+      const size = LEVEL_OF_PAPER[paper] === 'HSK3' ? 40 : 45;
       const numbers = AUDIO_CLIPS.filter((c) => c.paper === paper)
         .map((c) => c.n)
         .sort((a, b) => a - b);
-      expect(numbers).toEqual(Array.from({ length: 45 }, (_, i) => i + 1));
+      expect(numbers).withContext(paper).toEqual(Array.from({ length: size }, (_, i) => i + 1));
     }
   });
 
@@ -28,7 +33,7 @@ describe('listening audio clips', () => {
       expect(clip.part).toBeGreaterThanOrEqual(1);
       expect(clip.part).toBeLessThanOrEqual(4);
       expect(clip.duration).toBeGreaterThan(2);
-      expect(clip.file).toMatch(/^H41(?:00[123]|332)_q\d\d\.mp3$/);
+      expect(clip.file).toMatch(/^[A-Z]\d{5}_q\d\d\.mp3$/);
     }
   });
 

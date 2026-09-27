@@ -1,12 +1,14 @@
 import { Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SECTION_META } from '../data/section-meta';
-import { SectionKey, TestId, Unit } from '../data/models';
+import { Level, SectionKey, TestId, Unit } from '../data/models';
+import { isLevel } from '../data/tests.data';
 import { CATEGORY_ORDER, KIND_LABELS, unitForQuestionKey } from '../data/question-inventory';
 import { ReviewApiService, SessionItem, SessionSummary } from '../core/review-api.service';
 import { DECK_MODE_LABELS, OUTCOME_LABELS, formatDateTime, formatDuration, formatPercent } from '../core/format';
 import { QuestionRow, questionRows } from '../core/question-row';
 import { TrueFalseQuestionComponent } from '../questions/true-false-question/true-false-question.component';
+import { PictureChoiceQuestionComponent } from '../questions/picture-choice-question/picture-choice-question.component';
 import { MultipleChoiceQuestionComponent } from '../questions/multiple-choice-question/multiple-choice-question.component';
 import { FillBlankQuestionComponent } from '../questions/fill-blank-question/fill-blank-question.component';
 import { SentenceOrderQuestionComponent } from '../questions/sentence-order-question/sentence-order-question.component';
@@ -30,6 +32,7 @@ import { OpenWritingQuestionComponent } from '../questions/open-writing-question
   standalone: true,
   imports: [
     TrueFalseQuestionComponent,
+    PictureChoiceQuestionComponent,
     MultipleChoiceQuestionComponent,
     FillBlankQuestionComponent,
     SentenceOrderQuestionComponent,
@@ -43,6 +46,12 @@ export class DeckSummaryComponent implements OnInit {
   private readonly api = inject(ReviewApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+
+  /** Route param, so the back links stay inside this level's bank. */
+  readonly level = computed<Level>(() => {
+    const value = this.route.snapshot.paramMap.get('level') ?? '';
+    return isLevel(value) ? value : 'HSK4';
+  });
 
   readonly summary = signal<SessionSummary | null>(null);
   readonly error = signal<string | null>(null);
@@ -171,11 +180,11 @@ export class DeckSummaryComponent implements OnInit {
   }
 
   again(): void {
-    void this.router.navigate(['/deck', this.category()]);
+    void this.router.navigate(['/', this.level(), 'deck', this.category()]);
   }
 
   stats(): void {
-    void this.router.navigate(['/stats', this.category()]);
+    void this.router.navigate(['/', this.level(), 'stats', this.category()]);
   }
 
   home(): void {

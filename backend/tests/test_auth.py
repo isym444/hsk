@@ -10,6 +10,8 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
+from app import auth
+
 from tests.conftest import (
     JWT_ISSUER,
     JWT_SECRET,
@@ -356,3 +358,50 @@ def test_the_same_token_secret_is_shared_by_every_account(client: TestClient) ->
     second = client.get("/api/me", headers=auth_headers(OTHER_USER_ID, OTHER_EMAIL)).json()
     assert first["user_id"] != second["user_id"]
     assert JWT_SECRET  # the suite's tokens are signed, not trusted blindly
+
+
+# --------------------------------------------------------------------------- #
+# Local development bypass
+# --------------------------------------------------------------------------- #
+class TestDevNoAuthBypass:
+    """`HSK_DEV_NO_AUTH` lets the app run locally without a Supabase project.
+
+    The property that matters is the refusal: a deployment cannot serve a
+    request without a project or shared secret, so the bypass must be inert the
+    moment either is configured — otherwise a stray environment variable would
+    be an authentication hole.
+    """
+
+    def test_off_by_default(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setattr(auth, "DEV_NO_AUTH", False)
+        assert auth.dev_principal() is None
+
+    def test_returns_a_dev_identity_without_a_project(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setattr(auth, "DEV_NO_AUTH", True)
+        monkeypatch.setattr(auth, "SUPABASE_JWKS_URL", None)
+        monkeypatch.setattr(auth, "SUPABASE_JWT_SECRET", None)
+
+        principal = auth.dev_principal()
+
+        assert principal is not None
+        assert principal.user_id
+        assert principal.role == "authenticated"
+
+    def test_refuses_when_a_project_is_configured(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setattr(auth, "DEV_NO_AUTH", True)
+        monkeypatch.setattr(auth, "SUPABASE_JWKS_URL", "https://example.supabase.co/auth/v1")
+
+        assert auth.dev_principal() is None
+
+    def test_refuses_when_only_the_legacy_secret_is_configured(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setattr(auth, "DEV_NO_AUTH", True)
+        monkeypatch.setattr(auth, "SUPABASE_JWKS_URL", None)
+        monkeypatch.setattr(auth, "SUPABASE_JWT_SECRET", "shared-secret")
+
+        assert auth.dev_principal() is None

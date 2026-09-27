@@ -10,8 +10,12 @@ from pathlib import Path
 from tests.conftest import READING_FILL, READING_MC, WRITING_OPEN, answer
 
 
+#: The level these assertions are about; the app always sends one.
+HSK4 = {"level": "HSK4"}
+
+
 def page(client: TestClient, category: str) -> dict:
-    response = client.get(f"/api/stats/{category}")
+    response = client.get(f"/api/stats/{category}", params=HSK4)
     assert response.status_code == 200, response.text
     return response.json()
 
@@ -24,8 +28,15 @@ def row_for(client: TestClient, category: str, key: str) -> dict:
 _CATALOGUE = json.loads(
     (Path(__file__).resolve().parent.parent / "data" / "catalogue.json").read_text(encoding="utf-8")
 )
-PAPERS = {p for p in _CATALOGUE["papers"]}
-CATEGORY_TOTALS = {c["key"]: c["total"] for c in _CATALOGUE["categories"]}
+#: The tests below request level=HSK4, so their expectations are that level's
+#: totals, not the whole two-bank catalogue.
+LEVEL = "HSK4"
+#: Papers of the level these tests request, not every paper shipped.
+PAPERS = {q["paper"] for q in _CATALOGUE["questions"] if q["level"] == LEVEL}
+CATEGORY_TOTALS = {
+    key: sum(1 for q in _CATALOGUE["questions"] if q["category"] == key and q["level"] == LEVEL)
+    for key in ("listening", "reading", "writing")
+}
 ALL_QUESTIONS = sum(CATEGORY_TOTALS.values())
 
 def test_a_fresh_category_reports_no_history(client: TestClient) -> None:
@@ -119,13 +130,12 @@ def test_a_questions_row_reports_attempts_rate_time_and_streak(
 
 def test_kind_breakdown_splits_the_category_by_question_type(client: TestClient, session_id: str) -> None:
     before = {bucket["kind"]: bucket for bucket in page(client, "reading")["by_kind"]}
-    # Per-paper: 10 fill, 10 order, 20 multiple-choice in the reading category.
-    per_paper = len(PAPERS)
-    assert {kind: bucket["questions"] for kind, bucket in before.items()} == {
-        "fill": 10 * per_paper,
-        "order": 10 * per_paper,
-        "mc": 20 * per_paper,
-    }
+    # Taken from the catalogue so a new paper cannot silently break this.
+    expected: dict[str, int] = {}
+    for q in _CATALOGUE["questions"]:
+        if q["category"] == "reading" and q["level"] == LEVEL:
+            expected[q["kind"]] = expected.get(q["kind"], 0) + 1
+    assert {kind: bucket["questions"] for kind, bucket in before.items()} == expected
 
     answer(client, session_id, READING_FILL, "correct", 2000)
     after = {bucket["kind"]: bucket for bucket in page(client, "reading")["by_kind"]}
@@ -155,11 +165,11 @@ def test_recent_sessions_can_be_limited(client: TestClient) -> None:
         session = client.post("/api/sessions", json={"category": "reading"}).json()["id"]
         answer(client, session, READING_FILL, "correct", 1000)
 
-    assert len(client.get("/api/stats/reading", params={"sessions": 2}).json()["recent_sessions"]) == 2
+    assert len(client.get("/api/stats/reading", params={**HSK4, "sessions": 2}).json()["recent_sessions"]) == 2
 
 
 def test_overview_lists_every_category_in_a_stable_order(client: TestClient) -> None:
-    body = client.get("/api/categories").json()
+    body = client.get("/api/categories", params=HSK4).json()
     assert [c["category"] for c in body["categories"]] == ["listening", "reading", "writing"]
     assert {c["category"]: c["total_questions"] for c in body["categories"]} == CATEGORY_TOTALS
 
@@ -172,7 +182,7 @@ def test_overview_totals_weight_the_average_by_attempts(client: TestClient) -> N
     for key in ("H41001:writing:build:86", "H41001:writing:build:87", "H41001:writing:build:88"):
         answer(client, writing, key, "correct", 3000)
 
-    body = client.get("/api/categories").json()
+    body = client.get("/api/categories", params=HSK4).json()
     per_category = {c["category"]: c for c in body["categories"]}
     assert per_category["reading"]["avg_ms"] == 1000.0
     assert per_category["writing"]["avg_ms"] == 3000.0
@@ -188,7 +198,7 @@ def test_overview_totals_weight_the_average_by_attempts(client: TestClient) -> N
 
 
 def test_overview_reports_an_empty_history_without_dividing_by_zero(client: TestClient) -> None:
-    totals = client.get("/api/categories").json()["totals"]
+    totals = client.get("/api/categories", params=HSK4).json()["totals"]
     assert totals["success_rate"] is None
     assert totals["avg_ms"] is None
     assert totals["coverage"] == 0.0

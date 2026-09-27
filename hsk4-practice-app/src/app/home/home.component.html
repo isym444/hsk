@@ -1,11 +1,13 @@
 <div class="wrap">
+  <app-level-switcher [level]="level()" />
+
   <div class="hero">
-    <h1 class="heading">HSK 4 · Combined question bank</h1>
+    <h1 class="heading">{{ level() === 'HSK3' ? 'HSK 3' : 'HSK 4' }} · Combined question bank</h1>
     <p>
-      The {{ paperCountLabel }} official sample papers {{ paperRange }}, merged into three question
-      banks by skill: Listening, Reading and Writing. Practise in random order or sorted by success rate and
-      forgetting curve, stop whenever you like, and your score is saved to the local database
-      automatically.
+      The {{ papers().length }} sample papers of this level ({{ paperRange() }}) are merged into three
+      question banks by skill: Listening, Reading and Writing — {{ levelQuestionCount() }} questions in
+      all. Practise in random order or sorted by success rate and forgetting curve, stop whenever you
+      like, and your score is saved to the local database automatically.
     </p>
   </div>
 
@@ -24,7 +26,7 @@
       <div class="deckcard-head">
         <span class="name">{{ meta[category].label }}</span>
         <span class="sub">
-          {{ categoryTotal(category) }} questions across all {{ paperCountLabel }} sample papers
+          {{ categoryTotal(category) }} questions from every {{ level() }} paper
           @if (statsFor(category); as stats) {
             @if (stats.last_reviewed_at) {
               · last practised {{ formatDateTime(stats.last_reviewed_at) }}
@@ -80,7 +82,7 @@
 
     @if (showPapers()) {
       <div id="testlist">
-        @for (test of tests; track test.id) {
+        @for (test of tests(); track test.id) {
           <div class="testrow">
             <div class="testrow-head">
               <div class="id heading">{{ test.id }}</div>

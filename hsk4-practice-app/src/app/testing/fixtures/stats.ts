@@ -3,7 +3,7 @@
  * render realistic numbers without hitting a server.
  */
 
-import { categoryTotal } from '../../data/question-inventory';
+import { categoryTotalForLevel } from '../../data/question-inventory';
 import {
   CategoryStats,
   CategoryStatsPage,
@@ -20,9 +20,9 @@ import {
  * hardcoded, so adding a paper cannot leave these fixtures behind.
  */
 const TOTALS: Record<string, number> = {
-  listening: categoryTotal('listening'),
-  reading: categoryTotal('reading'),
-  writing: categoryTotal('writing'),
+  listening: categoryTotalForLevel('HSK4', 'listening'),
+  reading: categoryTotalForLevel('HSK4', 'reading'),
+  writing: categoryTotalForLevel('HSK4', 'writing'),
 };
 const ALL_TOTAL = TOTALS['listening'] + TOTALS['reading'] + TOTALS['writing'];
 

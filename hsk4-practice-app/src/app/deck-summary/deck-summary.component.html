@@ -164,6 +164,9 @@
                 @case ('tf') {
                   <app-true-false-question [unit]="row.unit" [paper]="reviewPaper()" [review]="true" />
                 }
+                @case ('picture') {
+                  <app-picture-choice-question [unit]="row.unit" [paper]="reviewPaper()" [review]="true" />
+                }
                 @case ('mc') {
                   <app-multiple-choice-question [unit]="row.unit" [paper]="reviewPaper()" [review]="true" />
                 }

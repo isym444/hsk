@@ -43,10 +43,12 @@ describe('authGuard', () => {
   it('remembers where the visitor was heading', async () => {
     configure(false);
 
-    await router.navigate(['/stats', 'reading']);
+    await router.navigate(['/HSK4', 'stats', 'reading']);
 
+    // The guard sends the visitor to the landing route with the target
+    // recorded; `/` itself redirects on to the default level.
     const query = router.parseUrl(router.url).queryParams;
-    expect(query['redirectTo']).toBe('/stats/reading');
+    expect(query['redirectTo']).toBe('/HSK4/stats/reading');
   });
 
   it('keeps the login page itself reachable while signed out', async () => {

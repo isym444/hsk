@@ -19,6 +19,12 @@ services:
     environment:
       # On the named volume below, so history survives rebuilds.
       HSK_DB_PATH: /data/hsk_reviews.sqlite3
+      # Opt-in local development bypass. Start with
+      #   HSK_DEV_NO_AUTH=1 docker compose up --build
+      # to use the app without a Supabase account. Left empty by default, and
+      # the API ignores it outright whenever a Supabase project is configured,
+      # so it cannot open a real deployment.
+      HSK_DEV_NO_AUTH: "${HSK_DEV_NO_AUTH:-}"
     volumes:
       - hsk-data:/data
     ports:

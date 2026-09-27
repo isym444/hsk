@@ -51,6 +51,9 @@ TABLES_SQLITE = """
 CREATE TABLE IF NOT EXISTS questions (
     question_key TEXT PRIMARY KEY,
     paper        TEXT    NOT NULL,
+    -- Exam level ('HSK3'/'HSK4'). Stored rather than derived from the paper id so
+    -- the deck and stats queries can filter on it directly.
+    level        TEXT    NOT NULL DEFAULT 'HSK4',
     category     TEXT    NOT NULL,
     kind         TEXT    NOT NULL,
     number       INTEGER NOT NULL,
@@ -98,6 +101,9 @@ TABLES_POSTGRES = """
 CREATE TABLE IF NOT EXISTS questions (
     question_key TEXT PRIMARY KEY,
     paper        TEXT    NOT NULL,
+    -- Exam level ('HSK3'/'HSK4'). Stored rather than derived from the paper id so
+    -- the deck and stats queries can filter on it directly.
+    level        TEXT    NOT NULL DEFAULT 'HSK4',
     category     TEXT    NOT NULL,
     kind         TEXT    NOT NULL,
     number       INTEGER NOT NULL,
@@ -409,31 +415,35 @@ class PostgresDatabase:
                     logger.info("creating schema %s", self.schema)
                     conn.execute(f'CREATE SCHEMA "{self.schema}"')
             conn.executescript(TABLES_POSTGRES)
-            self._add_missing_user_columns(conn)
+            self._add_missing_columns(conn)
             conn.executescript(INDEXES_POSTGRES)
             conn.commit()
 
     @staticmethod
-    def _add_missing_user_columns(conn: PgConnection) -> None:
-        """Upgrades a database created before the app had user accounts.
+    def _add_missing_columns(conn: PgConnection) -> None:
+        """Upgrades a database created before later columns existed.
 
-        ``CREATE TABLE IF NOT EXISTS`` leaves an existing table alone, so the
-        ``user_id`` column added to the schema has to be applied by hand. The
-        default makes it work on a table that already has rows; those rows keep
-        ``''`` and therefore belong to nobody.
+        ``CREATE TABLE IF NOT EXISTS`` leaves an existing table alone, so any
+        column added to the schema after the first release has to be applied by
+        hand. The defaults make each one work on a table that already has rows:
+        pre-account rows keep ``''`` (nobody's), and pre-level rows keep the
+        level they were created for.
         """
-        for table in ("sessions", "reviews"):
+        additions = (
+            ("sessions", "user_id", "TEXT NOT NULL DEFAULT ''"),
+            ("reviews", "user_id", "TEXT NOT NULL DEFAULT ''"),
+            ("questions", "level", "TEXT NOT NULL DEFAULT 'HSK4'"),
+        )
+        for table, column, ddl in additions:
             found = conn.execute(
                 "SELECT COUNT(*) AS n FROM information_schema.columns"
                 " WHERE table_schema = current_schema()"
-                " AND table_name = ? AND column_name = 'user_id'",
-                (table,),
+                " AND table_name = ? AND column_name = ?",
+                (table, column),
             ).fetchone()["n"]
             if not found:
-                logger.info("adding %s.user_id to an existing database", table)
-                conn.execute(
-                    f"ALTER TABLE {table} ADD COLUMN user_id TEXT NOT NULL DEFAULT ''"
-                )
+                logger.info("adding %s.%s to an existing database", table, column)
+                conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {ddl}")
 
     def describe(self) -> str:
         """A log-safe identifier: never includes the password."""
@@ -453,10 +463,11 @@ class PostgresDatabase:
             conn.executemany(
                 """
                 INSERT INTO questions
-                    (question_key, paper, category, kind, number, part, scoreable, label, active)
-                VALUES (:key, :paper, :category, :kind, :number, :part, :scoreable, :label, 1)
+                    (question_key, paper, level, category, kind, number, part, scoreable, label, active)
+                VALUES (:key, :paper, :level, :category, :kind, :number, :part, :scoreable, :label, 1)
                 ON CONFLICT(question_key) DO UPDATE SET
                     paper     = excluded.paper,
+                    level     = excluded.level,
                     category  = excluded.category,
                     kind      = excluded.kind,
                     number    = excluded.number,
@@ -522,24 +533,27 @@ class Database:
     def init_schema(self) -> None:
         with self.connect() as conn:
             conn.executescript(TABLES_SQLITE)
-            self._add_missing_user_columns(conn)
+            self._add_missing_columns(conn)
             conn.executescript(INDEXES_SQLITE)
             conn.commit()
 
     @staticmethod
-    def _add_missing_user_columns(conn: sqlite3.Connection) -> None:
-        """Upgrades a database created before the app had user accounts.
+    def _add_missing_columns(conn: sqlite3.Connection) -> None:
+        """Upgrades a database created before later columns existed.
 
-        See :meth:`PostgresDatabase._add_missing_user_columns`; SQLite has no
-        ``information_schema``, so the table is inspected directly.
+        See :meth:`PostgresDatabase._add_missing_columns`; SQLite has no
+        ``information_schema``, so each table is inspected directly.
         """
-        for table in ("sessions", "reviews"):
+        additions = (
+            ("sessions", "user_id", "TEXT NOT NULL DEFAULT ''"),
+            ("reviews", "user_id", "TEXT NOT NULL DEFAULT ''"),
+            ("questions", "level", "TEXT NOT NULL DEFAULT 'HSK4'"),
+        )
+        for table, column, ddl in additions:
             columns = {row["name"] for row in conn.execute(f"PRAGMA table_info({table})")}
-            if "user_id" not in columns:
-                logger.info("adding %s.user_id to an existing database", table)
-                conn.execute(
-                    f"ALTER TABLE {table} ADD COLUMN user_id TEXT NOT NULL DEFAULT ''"
-                )
+            if column not in columns:
+                logger.info("adding %s.%s to an existing database", table, column)
+                conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {ddl}")
 
     def seed_catalogue(self, questions: Iterable[dict], keep_stale: bool = True) -> int:
         """Upserts the question catalogue.
@@ -554,10 +568,11 @@ class Database:
             conn.executemany(
                 """
                 INSERT INTO questions
-                    (question_key, paper, category, kind, number, part, scoreable, label, active)
-                VALUES (:key, :paper, :category, :kind, :number, :part, :scoreable, :label, 1)
+                    (question_key, paper, level, category, kind, number, part, scoreable, label, active)
+                VALUES (:key, :paper, :level, :category, :kind, :number, :part, :scoreable, :label, 1)
                 ON CONFLICT(question_key) DO UPDATE SET
                     paper     = excluded.paper,
+                    level     = excluded.level,
                     category  = excluded.category,
                     kind      = excluded.kind,
                     number    = excluded.number,

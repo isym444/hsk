@@ -9,7 +9,9 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox",
     "catalogue": "node ../backend/scripts/export_catalogue.mjs",
-    "api": "cd ../backend && ./.venv/bin/uvicorn app.main:app --reload --port 8000"
+    "api": "cd ../backend && ./.venv/bin/uvicorn app.main:app --reload --port 8000",
+    "api:local": "cd ../backend && HSK_DEV_NO_AUTH=1 ./.venv/bin/uvicorn app.main:app --reload --port 8000",
+    "start:local": "HSK_DEV_NO_AUTH=1 node scripts/write-runtime-config.mjs && ng serve --proxy-config proxy.conf.json"
   },
   "private": true,
   "dependencies": {

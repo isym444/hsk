@@ -12,13 +12,25 @@ from tests.conftest import READING_FILL, READING_MC, answer
 _CATALOGUE = json.loads(
     (Path(__file__).resolve().parent.parent / "data" / "catalogue.json").read_text(encoding="utf-8")
 )
-EXPECTED_TOTALS = {c["key"]: c["total"] for c in _CATALOGUE["categories"]}
-PAPERS = set(_CATALOGUE["papers"])
+#: The deck tests request level=HSK4, so these are that level's totals.
+LEVEL = "HSK4"
+EXPECTED_TOTALS = {
+    key: sum(
+        1
+        for q in _CATALOGUE["questions"]
+        if q["category"] == key and q["level"] == LEVEL
+    )
+    for key in ("listening", "reading", "writing")
+}
+PAPERS = {q["paper"] for q in _CATALOGUE["questions"] if q["level"] == LEVEL}
+
+#: The level these assertions are about; the app always sends one.
+HSK4 = {"level": "HSK4"}
 
 
 def test_each_category_deck_aggregates_every_paper(client: TestClient) -> None:
     for category, total in EXPECTED_TOTALS.items():
-        body = client.get(f"/api/deck/{category}").json()
+        body = client.get(f"/api/deck/{category}", params=HSK4).json()
         assert body["count"] == total, category
         assert body["total_questions"] == total
         keys = [q["question_key"] for q in body["questions"]]
@@ -28,7 +40,7 @@ def test_each_category_deck_aggregates_every_paper(client: TestClient) -> None:
 
 
 def test_deck_carries_the_labels_and_part_information_the_ui_needs(client: TestClient) -> None:
-    question = client.get("/api/deck/writing").json()["questions"][0]
+    question = client.get("/api/deck/writing", params=HSK4).json()["questions"][0]
     assert question["label"]
     assert question["paper"] in PAPERS
     assert question["part"] in {1, 2}
@@ -36,31 +48,31 @@ def test_deck_carries_the_labels_and_part_information_the_ui_needs(client: TestC
 
 
 def test_random_mode_reorders_between_requests(client: TestClient) -> None:
-    first = [q["question_key"] for q in client.get("/api/deck/reading").json()["questions"]]
-    second = [q["question_key"] for q in client.get("/api/deck/reading").json()["questions"]]
+    first = [q["question_key"] for q in client.get("/api/deck/reading", params=HSK4).json()["questions"]]
+    second = [q["question_key"] for q in client.get("/api/deck/reading", params=HSK4).json()["questions"]]
     assert sorted(first) == sorted(second)
     assert first != second
 
 
 def test_limit_caps_the_deck_without_dropping_questions_from_the_category(client: TestClient) -> None:
-    body = client.get("/api/deck/reading", params={"limit": 10}).json()
+    body = client.get("/api/deck/reading", params={**HSK4, "limit": 10}).json()
     assert body["count"] == 10
     assert len(body["questions"]) == 10
     assert body["total_questions"] == EXPECTED_TOTALS["reading"]
 
 
 def test_exclude_keeps_the_tail_of_the_current_queue_out_of_a_refill(client: TestClient) -> None:
-    everything = client.get("/api/deck/writing").json()["questions"]
+    everything = client.get("/api/deck/writing", params=HSK4).json()["questions"]
     keep = {q["question_key"] for q in everything[:5]}
     exclude = ",".join(q["question_key"] for q in everything[5:])
 
-    body = client.get("/api/deck/writing", params={"exclude": exclude}).json()
+    body = client.get("/api/deck/writing", params={**HSK4, "exclude": exclude}).json()
     assert {q["question_key"] for q in body["questions"]} == keep
 
 
 def test_excluding_every_question_falls_back_to_the_full_category(client: TestClient) -> None:
-    keys = [q["question_key"] for q in client.get("/api/deck/writing").json()["questions"]]
-    body = client.get("/api/deck/writing", params={"exclude": ",".join(keys)}).json()
+    keys = [q["question_key"] for q in client.get("/api/deck/writing", params=HSK4).json()["questions"]]
+    body = client.get("/api/deck/writing", params={**HSK4, "exclude": ",".join(keys)}).json()
     assert body["count"] == EXPECTED_TOTALS["writing"]
 
 
@@ -71,17 +83,18 @@ def test_unknown_category_or_mode_is_rejected(client: TestClient) -> None:
 
 
 def test_smart_mode_carries_a_reason_for_every_question(client: TestClient) -> None:
-    questions = client.get("/api/deck/reading", params={"mode": "smart"}).json()["questions"]
+    questions = client.get("/api/deck/reading", params={**HSK4, "mode": "smart"}).json()["questions"]
     assert len(questions) == EXPECTED_TOTALS["reading"]
     assert {q["reason"] for q in questions} == {"new"}, "nothing has been reviewed yet"
     assert all(q["priority"] > 0 for q in questions)
 
 
 def test_preview_counts_unseen_questions_before_any_practice(client: TestClient) -> None:
-    body = client.get("/api/deck/reading/preview").json()
+    body = client.get("/api/deck/reading/preview", params=HSK4).json()
     total = EXPECTED_TOTALS["reading"]
     assert body == {
         "category": "reading",
+        "level": "HSK4",
         "total_questions": total,
         "answered": 0,
         "unseen": total,
@@ -94,7 +107,7 @@ def test_preview_tracks_answered_weak_and_due_questions(client: TestClient, sess
     answer(client, session_id, READING_FILL, "incorrect", 4000)
     answer(client, session_id, READING_MC, "correct", 2000)
 
-    body = client.get("/api/deck/reading/preview").json()
+    body = client.get("/api/deck/reading/preview", params=HSK4).json()
     assert body["answered"] == 2
     assert body["unseen"] == EXPECTED_TOTALS["reading"] - 2
     assert body["weak"] == 1, "the question answered wrong is flagged weak"
@@ -112,12 +125,12 @@ def test_smart_mode_prioritises_a_weak_question_over_a_mastered_one(
 
     # Leave exactly those two candidates in the deck so the ordering is
     # unambiguous; weighted sampling is random, so check it wins over repeats.
-    keys = [q["question_key"] for q in client.get("/api/deck/reading").json()["questions"]]
+    keys = [q["question_key"] for q in client.get("/api/deck/reading", params=HSK4).json()["questions"]]
     exclude = ",".join(key for key in keys if key not in {weak, mastered})
 
     draws = [
         client.get(
-            "/api/deck/reading", params={"mode": "smart", "exclude": exclude}
+            "/api/deck/reading", params={**HSK4, "mode": "smart", "exclude": exclude}
         ).json()["questions"]
         for _ in range(10)
     ]

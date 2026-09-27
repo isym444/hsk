@@ -30,7 +30,7 @@ describe('HomeComponent', () => {
     fixture.detectChanges();
 
     http = TestBed.inject(HttpTestingController);
-    http.expectOne('/api/categories').flush(overviewFixture());
+    http.expectOne('/api/categories?level=HSK4').flush(overviewFixture());
     await fixture.whenStable();
     fixture.detectChanges();
 
@@ -65,9 +65,9 @@ describe('HomeComponent', () => {
       'Reading',
       'Writing',
     ]);
-    expect(cards[0].textContent).toContain('180 questions across all four sample papers');
-    expect(cards[1].textContent).toContain('160 questions across all four sample papers');
-    expect(cards[2].textContent).toContain('60 questions across all four sample papers');
+    expect(cards[0].textContent).toContain('180 questions from every HSK4 paper');
+    expect(cards[1].textContent).toContain('160 questions from every HSK4 paper');
+    expect(cards[2].textContent).toContain('60 questions from every HSK4 paper');
   });
 
   it('shows live progress from the review database on each deck card', () => {
@@ -85,7 +85,7 @@ describe('HomeComponent', () => {
       .querySelector<HTMLButtonElement>('.primarybtn')!
       .click();
     await fixture.whenStable();
-    expect(router.url).toBe('/deck/reading');
+    expect(router.url).toBe('/HSK4/deck/reading');
   });
 
   it('links each deck to its own stats page', async () => {
@@ -93,13 +93,13 @@ describe('HomeComponent', () => {
       .querySelector<HTMLButtonElement>('.smallbtn')!
       .click();
     await fixture.whenStable();
-    expect(router.url).toBe('/stats/writing');
+    expect(router.url).toBe('/HSK4/stats/writing');
   });
 
   it('surfaces a clear message when the stats API is unreachable', async () => {
     const fresh = TestBed.createComponent(HomeComponent);
     fresh.detectChanges();
-    http.expectOne('/api/categories').error(new ProgressEvent('error'));
+    http.expectOne('/api/categories?level=HSK4').error(new ProgressEvent('error'));
     await fresh.whenStable();
     fresh.detectChanges();
 

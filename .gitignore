@@ -20,3 +20,4 @@ backend/data/*.sqlite3-shm
 .DS_Store
 
 secrets.env
+hsk4-practice-app/public/config.json

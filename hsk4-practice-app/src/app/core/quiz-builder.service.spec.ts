@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { QuizBuilderService } from './quiz-builder.service';
-import { TEST_IDS } from '../data/tests.data';
+import { LEVEL_OF_PAPER, TEST_IDS } from '../data/tests.data';
 import { Unit } from '../data/models';
 import { fixtureUnits } from '../testing/fixtures/fixtures';
 
@@ -30,7 +30,7 @@ describe('QuizBuilderService', () => {
     expect(service.buildUnits('H41332', 'writing').length).toBe(15);
   });
 
-  it('produces 45 listening units tagged tf then mc', () => {
+  it('produces 45 listening units tagged tf then mc for HSK4', () => {
     const units = service.buildUnits('H41001', 'listening');
     expect(units.length).toBe(45);
     expect(units.slice(0, 10).every((u) => u.kind === 'tf')).toBeTrue();
@@ -59,12 +59,18 @@ describe('QuizBuilderService', () => {
     expect(units.slice(10).every((u) => u.kind === 'open')).toBeTrue();
   });
 
-  it('numbers units 1..100 without gaps', () => {
+  it('numbers each paper through its own question range without gaps', () => {
+    const size = {
+      HSK3: 40 + 30 + 10,
+      HSK4: 45 + 40 + 15,
+    } as const;
     for (const testId of TEST_IDS) {
       const numbers = (['listening', 'reading', 'writing'] as const).flatMap((sectionKey) =>
         service.buildUnits(testId, sectionKey).map((u) => u.n),
       );
-      expect(numbers).toEqual(Array.from({ length: 100 }, (_, i) => i + 1));
+      expect(numbers)
+        .withContext(testId)
+        .toEqual(Array.from({ length: size[LEVEL_OF_PAPER[testId]] }, (_, i) => i + 1));
     }
   });
 

@@ -64,6 +64,42 @@ describe('RuntimeConfigService', () => {
     expect(service.hasSupabase).toBeFalse();
   });
 
+  /*
+   * `load()` copies each field by name, so a field present in config.json but
+   * absent from that copy is silently dropped — indistinguishable from the file
+   * not being read at all, which is how the dev bypass first shipped broken.
+   */
+  it('reads the local development bypass from config.json', async () => {
+    stubFetch(configFile({ apiBase: '/api', devNoAuth: true }));
+
+    await service.load();
+
+    expect(service.devNoAuth).toBeTrue();
+  });
+
+  it('ignores the development bypass once a Supabase project is attached', async () => {
+    stubFetch(
+      configFile({
+        supabaseUrl: 'https://abcdefghijklm.supabase.co',
+        supabaseAnonKey: 'sb_publishable_abc123',
+        devNoAuth: true,
+      }),
+    );
+
+    await service.load();
+
+    expect(service.hasSupabase).toBeTrue();
+    expect(service.devNoAuth).toBeFalse();
+  });
+
+  it('leaves the development bypass off when config.json omits it', async () => {
+    stubFetch(configFile({ apiBase: '/api' }));
+
+    await service.load();
+
+    expect(service.devNoAuth).toBeFalse();
+  });
+
   it('keeps the defaults when config.json is missing', async () => {
     stubFetch(new Response('not found', { status: 404 }));
 

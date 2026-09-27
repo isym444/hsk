@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .config import CATEGORIES
+from .config import CATEGORIES, LEVELS
 
 
 class CatalogueError(RuntimeError):
@@ -29,7 +29,7 @@ def load_catalogue(path: str | Path) -> dict[str, Any]:
     if not isinstance(questions, list) or not questions:
         raise CatalogueError(f"Question catalogue at {file} contains no questions")
 
-    required = {"key", "paper", "category", "kind", "number", "part", "scoreable", "label"}
+    required = {"key", "paper", "level", "category", "kind", "number", "part", "scoreable", "label"}
     for index, row in enumerate(questions):
         missing = required - row.keys()
         if missing:
@@ -40,11 +40,24 @@ def load_catalogue(path: str | Path) -> dict[str, Any]:
             raise CatalogueError(
                 f"Question {row['key']} has unknown category {row['category']!r}"
             )
+        if row["level"] not in LEVELS:
+            raise CatalogueError(
+                f"Question {row['key']} has unknown level {row['level']!r}"
+            )
     return data
 
 
 def categories_in_catalogue(catalogue: dict[str, Any]) -> list[str]:
     return [c["key"] for c in catalogue.get("categories", [])]
+
+
+def level_papers(catalogue: dict[str, Any], level: str) -> list[str]:
+    """Every paper that contributes to one level, in catalogue order."""
+    seen: list[str] = []
+    for q in catalogue["questions"]:
+        if q["level"] == level and q["paper"] not in seen:
+            seen.append(q["paper"])
+    return seen
 
 
 def category_totals(catalogue: dict[str, Any]) -> dict[str, dict[str, int]]:

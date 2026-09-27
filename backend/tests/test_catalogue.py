@@ -16,7 +16,7 @@ from app.db import Database
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
 CATALOGUE_PATH = BACKEND_DIR / "data" / "catalogue.json"
-KEY_PATTERN = re.compile(r"^H41(?:00[123]|332):(listening|reading|writing):[a-z]+:\d+$")
+KEY_PATTERN = re.compile(r"^[A-Z]\d{5}:(listening|reading|writing):[a-z]+:\d+$")
 
 #: Derived from the checked-in catalogue, so adding a paper updates the
 #: expectations instead of breaking these tests.

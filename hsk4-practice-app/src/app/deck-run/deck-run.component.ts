@@ -3,15 +3,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { SECTION_META, SectionMeta } from '../data/section-meta';
-import { PAPER_COUNT_LABEL } from '../data/tests.data';
-import { SectionKey, TestId, Unit } from '../data/models';
-import { CATEGORY_ORDER, categoryTotal, inventoryForCategory } from '../data/question-inventory';
+import { isLevel, papersForLevel } from '../data/tests.data';
+import { LevelSwitcherComponent } from '../home/level-switcher.component';
+import { Level, SectionKey, TestId, Unit } from '../data/models';
+import { CATEGORY_ORDER, categoryTotalForLevel, perPaperForLevel } from '../data/question-inventory';
 import { AudioService } from '../core/audio.service';
 import { DeckStateService } from '../core/deck-state.service';
 import { PreferencesService } from '../core/preferences.service';
 import { DeckMode } from '../core/review-api.service';
 import { DECK_MODE_LABELS, formatDuration, formatPercent } from '../core/format';
 import { TrueFalseQuestionComponent } from '../questions/true-false-question/true-false-question.component';
+import { PictureChoiceQuestionComponent } from '../questions/picture-choice-question/picture-choice-question.component';
 import { MultipleChoiceQuestionComponent } from '../questions/multiple-choice-question/multiple-choice-question.component';
 import { FillBlankQuestionComponent } from '../questions/fill-blank-question/fill-blank-question.component';
 import { SentenceOrderQuestionComponent } from '../questions/sentence-order-question/sentence-order-question.component';
@@ -30,7 +32,9 @@ import { AnswerEvent } from '../questions/answer-event';
   selector: 'app-deck-run',
   standalone: true,
   imports: [
+    LevelSwitcherComponent,
     TrueFalseQuestionComponent,
+    PictureChoiceQuestionComponent,
     MultipleChoiceQuestionComponent,
     FillBlankQuestionComponent,
     SentenceOrderQuestionComponent,
@@ -68,44 +72,52 @@ export class DeckRunComponent implements OnInit {
     return (CATEGORY_ORDER as string[]).includes(value) ? (value as SectionKey) : 'listening';
   });
 
+  /** Route param `:level`, tracked live so switching re-prepares the page. */
+  private readonly levelParam = toSignal(
+    this.route.paramMap.pipe(map((params) => params.get('level') ?? '')),
+    { initialValue: 'HSK4' },
+  );
+
+  readonly level = computed<Level>(() => {
+    const value = this.levelParam();
+    return isLevel(value) ? value : 'HSK4';
+  });
+
   readonly meta = computed<SectionMeta>(() => SECTION_META[this.category()]);
-  readonly total = computed(() => categoryTotal(this.category()));
+  readonly total = computed(() => categoryTotalForLevel(this.level(), this.category()));
 
   /** Per-paper counts, so the start panel shows where the deck comes from. */
   readonly perPaper = computed(() =>
-    inventoryForCategory(this.category()).reduce<Record<string, number>>((counts, question) => {
-      counts[question.paper] = (counts[question.paper] ?? 0) + 1;
-      return counts;
-    }, {}),
+    perPaperForLevel(this.level(), this.category()),
   );
 
   readonly papers = computed(() => Object.keys(this.perPaper()));
 
   /** Spelled-out paper count for the hero copy ("four sample papers"). */
-  readonly paperCountLabel = computed(() => PAPER_COUNT_LABEL);
 
-  /** Last category this component prepared; see `ngOnInit` / the effect. */
-  private prepared: SectionKey | null = null;
+
+  /** Last level+category this component prepared; see `ngOnInit` / the effect. */
+  private prepared: string | null = null;
 
   constructor() {
     // The component instance is reused when only the category param changes,
     // so re-prepare on a live category switch. The first run is handled by
     // ngOnInit (which also clears any state left over from a previous visit).
     effect(() => {
-      const category = this.category();
-      if (this.prepared === null || category === this.prepared) {
+      const key = `${this.level()}|${this.category()}`;
+      if (this.prepared === null || key === this.prepared) {
         return;
       }
-      this.prepared = category;
+      this.prepared = key;
       this.deck.reset();
-      void this.deck.loadPreview(category);
+      void this.deck.loadPreview(this.category(), this.level());
     });
   }
 
   ngOnInit(): void {
-    this.prepared = this.category();
+    this.prepared = `${this.level()}|${this.category()}`;
     this.deck.reset();
-    void this.deck.loadPreview(this.category());
+    void this.deck.loadPreview(this.category(), this.level());
   }
 
   /* ------------------------------------------------------------------ */
@@ -118,12 +130,14 @@ export class DeckRunComponent implements OnInit {
 
   start(): void {
     this.starting.set(true);
-    void this.deck.start(this.category(), this.chosenMode()).finally(() => this.starting.set(false));
+    void this.deck
+      .start(this.category(), this.level(), this.chosenMode())
+      .finally(() => this.starting.set(false));
   }
 
   async retry(): Promise<void> {
     this.deck.reset();
-    await this.deck.loadPreview(this.category());
+    await this.deck.loadPreview(this.category(), this.level());
   }
 
   /* ------------------------------------------------------------------ */

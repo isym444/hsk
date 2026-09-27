@@ -24,6 +24,14 @@ FROM nginx:1.27-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist/hsk4-practice-app/browser /usr/share/nginx/html
 
+# `COPY` preserves the modes of the files it copies, and a developer machine
+# whose umask is 077 (the default on macOS for some setups) produces 0600 files.
+# nginx runs its workers as the unprivileged `nginx` user, so an unreadable
+# `config.json` answers 403 — and the app treats an unreadable config as "no
+# Supabase project", which looks exactly like a misconfigured deployment.
+# Normalising here makes the image independent of the builder's umask.
+RUN chmod -R a+rX /usr/share/nginx/html
+
 EXPOSE 80
 
 # busybox wget ships with the alpine image.

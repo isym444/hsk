@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { categoryTotal } from '../data/question-inventory';
+import { categoryTotalForLevel } from '../data/question-inventory';
 import { DeckStateService } from './deck-state.service';
 import { DeckQuestion, DeckResponse, SessionSummary } from './review-api.service';
 import {
@@ -94,7 +94,7 @@ describe('DeckStateService', () => {
 
   /** Runs `start()` and answers the two calls it makes. */
   async function start(questions: DeckQuestion[] = QUESTIONS): Promise<void> {
-    const started = service.start('reading', 'smart');
+    const started = service.start('reading', 'HSK4', 'smart');
     http.expectOne('/api/sessions').flush({
       id: 'session-1',
       category: 'reading',
@@ -121,17 +121,17 @@ describe('DeckStateService', () => {
   });
 
   it('loads the preview counts for a category', async () => {
-    const loaded = service.loadPreview('reading');
-    http.expectOne('/api/deck/reading/preview').flush(deckPreviewFixture());
+    const loaded = service.loadPreview('reading', 'HSK4');
+    http.expectOne('/api/deck/reading/preview?level=HSK4').flush(deckPreviewFixture());
     await loaded;
 
-    expect(service.preview()?.unseen).toBe(categoryTotal('reading') - 6);
+    expect(service.preview()?.unseen).toBe(categoryTotalForLevel('HSK4', 'reading') - 6);
     expect(service.category()).toBe('reading');
   });
 
   it('explains how to start the backend when the preview cannot be loaded', async () => {
-    const loaded = service.loadPreview('reading');
-    http.expectOne('/api/deck/reading/preview').error(new ProgressEvent('error'));
+    const loaded = service.loadPreview('reading', 'HSK4');
+    http.expectOne('/api/deck/reading/preview?level=HSK4').error(new ProgressEvent('error'));
     await loaded;
 
     expect(service.phase()).toBe('error');

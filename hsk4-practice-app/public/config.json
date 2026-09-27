@@ -1,5 +1,6 @@
 {
   "apiBase": "/api",
   "supabaseUrl": "",
-  "supabaseAnonKey": ""
+  "supabaseAnonKey": "",
+  "devNoAuth": true
 }

@@ -40,11 +40,21 @@ export class AuthService {
     return this.config.hasSupabase;
   }
 
+  /**
+   * True when this build runs against a local API with the development bypass
+   * switched on (see `RuntimeConfigService.devNoAuth`). The API only honours
+   * the bypass when it has no Supabase project of its own, so this is a local
+   * development convenience rather than a way in.
+   */
+  readonly devNoAuth = computed(() => this.config.devNoAuth);
+
   /** True when Supabase refused this account (the backend's allow-list). */
   readonly accessDenied = this.denied.asReadonly();
 
-  readonly signedIn = computed(() => this.session() !== null);
-  readonly email = computed(() => this.session()?.user?.email ?? null);
+  readonly signedIn = computed(() => this.devNoAuth() || this.session() !== null);
+  readonly email = computed(() =>
+    this.session()?.user?.email ?? (this.devNoAuth() ? 'local development' : null),
+  );
 
   /**
    * True when the current session came from a password-recovery link, i.e. the

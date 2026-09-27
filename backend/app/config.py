@@ -88,7 +88,30 @@ CORS_ORIGINS = [
     if origin.strip()
 ]
 
+# --------------------------------------------------------------------------- #
+# Local development
+# --------------------------------------------------------------------------- #
+#: Escape hatch for running the app locally without a Supabase project: every
+#: request is treated as one fixed development identity. It is deliberately
+#: inert whenever a Supabase project or shared secret is configured, so a real
+#: deployment -- which cannot serve a single request without one -- can never
+#: have it active, whether or not the variable is set by accident.
+DEV_NO_AUTH = (os.environ.get("HSK_DEV_NO_AUTH") or "").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+    "on",
+}
+
+#: The identity the dev bypass signs in as.
+DEV_USER_ID = (os.environ.get("HSK_DEV_USER_ID") or "local-dev-user").strip()
+DEV_USER_EMAIL = (os.environ.get("HSK_DEV_USER_EMAIL") or "dev@localhost").strip()
+
 CATEGORIES = ("listening", "reading", "writing")
+
+#: Exam levels the app ships. A paper belongs to exactly one, and a deck or a
+#: statistics page is always scoped to one -- the two banks are never pooled.
+LEVELS = ("HSK3", "HSK4")
 
 
 #: Built Angular bundle, served at / by the API when present so the whole app

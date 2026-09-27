@@ -28,6 +28,9 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from .config import (
     ALLOWED_EMAILS,
+    DEV_NO_AUTH,
+    DEV_USER_EMAIL,
+    DEV_USER_ID,
     SUPABASE_JWKS_URL,
     SUPABASE_JWT_AUDIENCE,
     SUPABASE_JWT_ISSUER,
@@ -167,6 +170,28 @@ class TokenVerifier:
         return Principal(user_id=str(claims["sub"]), email=email, role=claims.get("role"))
 
 
+def dev_principal() -> Principal | None:
+    """The stand-in caller for local development, or None when not enabled.
+
+    Refuses whenever a Supabase project or legacy secret is configured. That is
+    the safety property: a deployment cannot answer a single request without
+    one of those, so this can never be live in production even if the flag is
+    left set by mistake. The refusal is logged loudly rather than silently
+    ignored, so a half-configured local setup is obvious.
+    """
+    if not DEV_NO_AUTH:
+        return None
+    if SUPABASE_JWKS_URL or SUPABASE_JWT_SECRET:
+        logger.error(
+            "HSK_DEV_NO_AUTH is set, but a Supabase project is configured "
+            "(HSK_SUPABASE_URL/HSK_SUPABASE_JWT_SECRET). Refusing the development "
+            "bypass and verifying tokens normally; unset those to develop without "
+            "sign-in."
+        )
+        return None
+    return Principal(user_id=DEV_USER_ID, email=DEV_USER_EMAIL, role="authenticated")
+
+
 def build_verifier() -> TokenVerifier:
     """The verifier the app runs with, from the environment."""
     return TokenVerifier(
@@ -193,6 +218,11 @@ def current_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
 ) -> Principal:
     """FastAPI dependency: the signed-in caller, or 401/403/503."""
+    # Local development short-circuit; `None` in every real deployment.
+    dev: Principal | None = getattr(request.app.state, "dev_principal", None)
+    if dev is not None:
+        return dev
+
     verifier: TokenVerifier = request.app.state.verifier
 
     if not verifier.configured:

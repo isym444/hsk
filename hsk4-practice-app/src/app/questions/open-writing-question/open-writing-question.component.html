@@ -1,4 +1,10 @@
-<p class="question">Write a sentence using this word (the original item came with a picture, omitted here):</p>
+<p class="question">
+  @if (unit().instruction; as instruction) {
+    {{ instruction }}
+  } @else {
+    Write a sentence using this word (the original item came with a picture, omitted here):
+  }
+</p>
 
 <div class="wordpill">{{unit().word}}</div>
 

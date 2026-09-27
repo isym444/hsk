@@ -11,7 +11,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { SectionKey } from '../data/models';
+import { Level, SectionKey } from '../data/models';
 import { RuntimeConfigService } from './runtime-config.service';
 
 export type DeckMode = 'random' | 'smart';
@@ -177,21 +177,23 @@ export class ReviewApiService {
     return this.http.get<Me>(`${this.base}/me`);
   }
 
-  overview(): Observable<StatsOverview> {
-    return this.http.get<StatsOverview>(`${this.base}/categories`);
+  overview(level: Level): Observable<StatsOverview> {
+    const params = new HttpParams().set('level', level);
+    return this.http.get<StatsOverview>(`${this.base}/categories`, { params });
   }
 
-  categoryPage(category: SectionKey, sessions = 10): Observable<CategoryStatsPage> {
-    const params = new HttpParams().set('sessions', sessions);
+  categoryPage(category: SectionKey, level: Level, sessions = 10): Observable<CategoryStatsPage> {
+    const params = new HttpParams().set('sessions', sessions).set('level', level);
     return this.http.get<CategoryStatsPage>(`${this.base}/stats/${category}`, { params });
   }
 
   deck(
     category: SectionKey,
+    level: Level,
     mode: DeckMode,
     options: { limit?: number; exclude?: string[] } = {},
   ): Observable<DeckResponse> {
-    let params = new HttpParams().set('mode', mode);
+    let params = new HttpParams().set('mode', mode).set('level', level);
     if (options.limit !== undefined) {
       params = params.set('limit', options.limit);
     }
@@ -201,8 +203,9 @@ export class ReviewApiService {
     return this.http.get<DeckResponse>(`${this.base}/deck/${category}`, { params });
   }
 
-  preview(category: SectionKey): Observable<DeckPreview> {
-    return this.http.get<DeckPreview>(`${this.base}/deck/${category}/preview`);
+  preview(category: SectionKey, level: Level): Observable<DeckPreview> {
+    const params = new HttpParams().set('level', level);
+    return this.http.get<DeckPreview>(`${this.base}/deck/${category}/preview`, { params });
   }
 
   startSession(category: SectionKey, mode: DeckMode): Observable<SessionListItem> {

@@ -26,7 +26,7 @@ import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const outputPath = path.resolve(here, '..', 'public', 'config.json');
 
-const DEFAULTS = { apiBase: '/api', supabaseUrl: '', supabaseAnonKey: '' };
+const DEFAULTS = { apiBase: '/api', supabaseUrl: '', supabaseAnonKey: '', devNoAuth: false };
 
 /** Trimmed, with no trailing slash — the app joins paths onto these. */
 function tidy(value) {
@@ -37,6 +37,12 @@ const overrides = {
   apiBase: tidy(process.env.HSK_API_BASE),
   supabaseUrl: tidy(process.env.HSK_SUPABASE_URL),
   supabaseAnonKey: (process.env.HSK_SUPABASE_ANON_KEY ?? '').trim(),
+  // Local development without sign-in; `npm run start:local` sets this. The app
+  // ignores it whenever a Supabase project is present, so it cannot open a
+  // deployed build.
+  devNoAuth: ['1', 'true', 'yes', 'on'].includes(
+    (process.env.HSK_DEV_NO_AUTH ?? '').trim().toLowerCase(),
+  ),
 };
 
 const provided = Object.entries(overrides).filter(([, value]) => value);

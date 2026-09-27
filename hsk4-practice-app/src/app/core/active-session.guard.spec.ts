@@ -24,7 +24,7 @@ describe('activeSessionGuard', () => {
   it('redirects /summary to / when there is no session', async () => {
     await router.navigate(['/summary', 'H41001', 'listening']);
 
-    expect(router.url).toBe('/');
+    expect(router.url).toBe('/HSK4');
   });
 
   it('allows /summary when a session is in memory', async () => {
@@ -38,6 +38,6 @@ describe('activeSessionGuard', () => {
   it('redirects an unknown route home', async () => {
     await router.navigate(['/nope/nothing/here']);
 
-    expect(router.url).toBe('/');
+    expect(router.url).toBe('/HSK4');
   });
 });

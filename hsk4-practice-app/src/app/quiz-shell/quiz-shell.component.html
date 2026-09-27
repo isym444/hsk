@@ -26,6 +26,16 @@
         <div class="tag">{{ meta().label }} · question {{ unit.n }}</div>
 
         @switch (unit.kind) {
+          @case ('picture') {
+            @for (question of [unit]; track question.n) {
+              <app-picture-choice-question [unit]="unit" [paper]="paper()" (answered)="onAnswered($event)" />
+              @if (hasAnswered()) {
+                <div class="nextrow">
+                  <button class="primarybtn" type="button" (click)="next()">{{ nextLabel() }}</button>
+                </div>
+              }
+            }
+          }
           @case ('tf') {
             @for (question of [unit]; track question.n) {
               <app-true-false-question [unit]="unit" [paper]="paper()" (answered)="onAnswered($event)" />

@@ -1,8 +1,10 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SECTION_META } from '../data/section-meta';
-import { SectionKey } from '../data/models';
-import { CATEGORY_ORDER, KIND_LABELS, categoryTotal } from '../data/question-inventory';
+import { Level, SectionKey } from '../data/models';
+import { isLevel } from '../data/tests.data';
+import { LevelSwitcherComponent } from '../home/level-switcher.component';
+import { CATEGORY_ORDER, KIND_LABELS, categoryTotalForLevel } from '../data/question-inventory';
 import {
   CategoryStatsPage,
   QuestionStats,
@@ -34,6 +36,7 @@ interface QuestionRow extends QuestionStats {
 @Component({
   selector: 'app-category-stats',
   standalone: true,
+  imports: [LevelSwitcherComponent],
   templateUrl: './category-stats.component.html',
   styleUrl: './category-stats.component.css',
 })
@@ -57,6 +60,11 @@ export class CategoryStatsComponent implements OnInit {
   readonly category = computed<SectionKey>(() => {
     const value = this.route.snapshot.paramMap.get('category') ?? '';
     return (CATEGORY_ORDER as string[]).includes(value) ? (value as SectionKey) : 'listening';
+  });
+
+  readonly level = computed<Level>(() => {
+    const value = this.route.snapshot.paramMap.get('level') ?? '';
+    return isLevel(value) ? value : 'HSK4';
   });
 
   readonly meta = computed(() => SECTION_META[this.category()]);
@@ -106,10 +114,10 @@ export class CategoryStatsComponent implements OnInit {
       .slice(0, 5),
   );
 
-  readonly total = computed(() => categoryTotal(this.category()));
+  readonly total = computed(() => categoryTotalForLevel(this.level(), this.category()));
 
   ngOnInit(): void {
-    this.api.categoryPage(this.category()).subscribe({
+    this.api.categoryPage(this.category(), this.level()).subscribe({
       next: (page) => {
         this.page.set(page);
         this.loading.set(false);

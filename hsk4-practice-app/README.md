@@ -1,15 +1,30 @@
-# HSK4 Practice App (Angular)
+# HSK Practice App (Angular)
 
-Angular app for HSK4 practice, with two ways to study:
+Angular app for HSK practice at **two levels — HSK3 and HSK4** — with two ways
+to study at each:
 
-1. **Aggregated decks** (`/deck/:category`) — all four official sample papers
-   combined into one question bank per skill. 听力 = 180 questions, 阅读 = 160,
-   写作 = 60 (H41001–H41003 and H41332 pooled). Practise in random order or by
-   success-rate/spaced-repetition, for as long as you like, then see the stats
-   for that session.
+1. **Aggregated decks** (`/:level/deck/:category`) — every paper of one level
+   combined into one question bank per skill. HSK4: 听力 180, 阅读 160, 写作 60
+   (H41001–H41003, H41332). HSK3: 听力 80, 阅读 60, 写作 20 (H31330, H31332).
+   Practise in random order or by success-rate/spaced-repetition, for as long as
+   you like, then see the stats for that session.
 2. **Per-paper practice** (`/quiz/:testId/:section`) — the original flow: one
    sample paper's section at a time, in the paper's own order. Still available
-   behind the "按试卷练习" expander on the home screen.
+   behind the "按试卷练习" expander on the level's home screen.
+
+## Levels
+
+The two levels are **separate question banks and are never pooled**. A deck, a
+statistics page and even the meaning of "question 1" differ between them, so the
+level is the first path segment (`/HSK3/...`, `/HSK4/...`), `/` redirects to
+HSK4, and every level-scoped page renders a switcher that keeps you on the same
+skill when you move between them.
+
+`data/tests.data.ts` holds the mapping (`LEVEL_OF_PAPER`) and the helpers the
+rest of the app derives from (`papersForLevel`, `LEVELS`); nothing else decides
+which papers belong together. The review database stores the level on each
+question row, so one history holds both banks and the API scopes its queries by
+level — a stats page shows only the level you are looking at.
 
 Progress is stored by the FastAPI backend in [`../backend`](../backend) — SQLite
 locally, Supabase Postgres when deployed — which also serves the stats pages and
@@ -54,6 +69,39 @@ service, and falls back to `index.html` for real routes such as
 `/stats/reading`. `.dockerignore` keeps the host's 1.2 GB of `node_modules` and
 `.angular` cache out of the build context.
 
+## Running it locally without sign-in
+
+Every page sits behind Supabase sign-in, which needs a project on both the API
+and the frontend. To look at the app locally without any of that, use the
+development bypass instead — it trusts every request as one fixed local
+identity:
+
+```bash
+npm run api:local      # API on :8000 with HSK_DEV_NO_AUTH=1
+npm run start:local    # dev server on :4200 with the matching frontend flag
+```
+
+Or, from a single process (build first, then let the API serve the bundle):
+
+```bash
+npm run build && npm run api:local     # then open http://127.0.0.1:8000
+```
+
+With Docker, pass the flag to the API and rebuild (a plain `docker compose
+restart` reuses the existing image, so a config change will not appear):
+
+```bash
+HSK_DEV_NO_AUTH=1 docker compose up --build      # http://localhost:8080
+```
+
+**This cannot engage in a deployment.** Both sides ignore the flag whenever a
+Supabase project is configured: the API refuses it when `HSK_SUPABASE_URL` or
+`HSK_SUPABASE_JWT_SECRET` is set, and the frontend ignores `devNoAuth` when
+`supabaseUrl`/`supabaseAnonKey` are. A production stack must set those to work
+at all, so a stray variable cannot open it. The API logs a warning on every
+start while the bypass is live, and `backend/tests/test_auth.py` pins all four
+of those behaviours.
+
 ## Configuration and sign-in
 
 `public/config.json` carries three values, read once at startup by
@@ -97,7 +145,7 @@ page explains why.
 Other commands:
 
 ```bash
-npm test          # 285 unit + component tests (headless Chrome)
+npm test          # 286 unit + component tests (headless Chrome)
 npm run api       # convenience: start the backend from here
 npm run catalogue # regenerate backend/data/catalogue.json from the data layer
 ```
@@ -144,7 +192,8 @@ speech. Each paper's recording holds all 45 of its listening questions; every
 question has been cut out into its own clip:
 
 ```
-public/audio/H41001_q01.mp3 … H41332_q45.mp3     180 clips, ~26 MB total
+public/audio/H41001_q01.mp3 … H31332_q40.mp3     260 clips, ~43 MB total
+public/images/H31330_q01_A.png …                  110 option pictures, ~7 MB
 ```
 
 The four recordings are shaped the same way (intro, worked example, then the
@@ -195,6 +244,37 @@ more items per part.
 each one decodes to the length the manifest claims, so a mis-cut or missing clip
 fails the suite. There is a second, slower check used while cutting the clips:
 transcribe each one and compare it with that question's transcript.
+
+## HSK3 papers
+
+HSK3 is a different exam shape, not just a different level. Both papers
+(H31330, H31332) are 80 questions: listening 1-40, reading 41-70, writing 71-80.
+The differences the code has to carry:
+
+| | HSK4 | HSK3 |
+| --- | --- | --- |
+| Listening parts | 3 (45 questions) | 4 (40 questions) |
+| Listening part 1 | true/false | pick 1 of 5-6 **pictures** |
+| Listening part 2 | dialogue blocks | true/false |
+| Item readings | once | **twice** (all four parts) |
+| Options | always A-D | A-C for listening 3/4 and reading part 3 |
+| Reading part 1 | word bank | **match a prompt to one of six replies** |
+| Reading part 2 | sentence ordering | a second word bank |
+| Writing part 2 | write a sentence | **write one character** from a gapped sentence |
+
+`listening.part1`/`part2` and `reading.part2` are therefore unions in
+`data/models.ts` — each paper fills the shape its exam uses, and the walker
+tells them apart structurally rather than by paper id.
+
+Pictures live in `public/images/<paper>_q<NN>_<A-F>.png` and are rendered by
+`questions/picture-choice-question/`. Note the papers share one picture set
+across Q1-5 and another across Q6-10, and that set prints only five pictures
+(A-E) — there is no F, and the answer key never uses one. Each question still
+points at its own copies so a question is self-contained.
+
+Both recordings are extracted with `scripts/extract-h31330-clips.py` /
+`extract-h31332-clips.py` (same block-anchoring approach as HSK4, but every clip
+holds both readings).
 
 ## Adding a paper
 

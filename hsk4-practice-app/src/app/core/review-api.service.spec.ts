@@ -32,7 +32,7 @@ describe('ReviewApiService', () => {
   });
 
   it('asks for a deck with its mode, limit and excluded keys', () => {
-    api.deck('reading', 'smart', { limit: 20, exclude: ['a:b:c:1', 'a:b:c:2'] }).subscribe();
+    api.deck('reading', 'HSK4', 'smart', { limit: 20, exclude: ['a:b:c:1', 'a:b:c:2'] }).subscribe();
 
     const request = http.expectOne((req) => req.url === '/api/deck/reading');
     expect(request.request.params.get('mode')).toBe('smart');
@@ -42,7 +42,7 @@ describe('ReviewApiService', () => {
   });
 
   it('omits the exclude parameter when there is nothing to exclude', () => {
-    api.deck('listening', 'random').subscribe();
+    api.deck('listening', 'HSK4', 'random').subscribe();
 
     const request = http.expectOne((req) => req.url === '/api/deck/listening');
     expect(request.request.params.has('exclude')).toBeFalse();
@@ -52,7 +52,7 @@ describe('ReviewApiService', () => {
   });
 
   it('reads a category stats page with a session limit', () => {
-    api.categoryPage('writing', 5).subscribe();
+    api.categoryPage('writing', 'HSK4', 5).subscribe();
 
     const request = http.expectOne((req) => req.url === '/api/stats/writing');
     expect(request.request.params.get('sessions')).toBe('5');
@@ -94,11 +94,11 @@ describe('ReviewApiService', () => {
   });
 
   it('loads the overview and the deck preview', () => {
-    api.overview().subscribe((data) => expect(data.categories.length).toBe(3));
-    http.expectOne('/api/categories').flush(overviewFixture());
+    api.overview('HSK4').subscribe((data) => expect(data.categories.length).toBe(3));
+    http.expectOne('/api/categories?level=HSK4').flush(overviewFixture());
 
-    api.preview('listening').subscribe((preview) => expect(preview.unseen).toBe(114));
-    http.expectOne('/api/deck/listening/preview').flush({
+    api.preview('listening', 'HSK4').subscribe((preview) => expect(preview.unseen).toBe(114));
+    http.expectOne('/api/deck/listening/preview?level=HSK4').flush({
       category: 'listening',
       total_questions: 135,
       answered: 21,

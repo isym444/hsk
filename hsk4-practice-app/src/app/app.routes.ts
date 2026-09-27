@@ -25,15 +25,24 @@ export const routes: Routes = [
     path: '',
     canActivate: [authGuard],
     children: [
-      { path: '', component: HomeComponent },
+      /*
+       * The two banks are separate, so every page carries a level. Landing on
+       * HSK4 keeps the old entry point working; the level switcher on the page
+       * moves between them.
+       */
+      { path: '', pathMatch: 'full', redirectTo: 'HSK4' },
+      { path: ':level', component: HomeComponent },
 
-      /* Aggregated decks: every paper's questions for one skill, in one queue. */
-      { path: 'deck/:category', component: DeckRunComponent },
-      { path: 'deck/:category/summary/:sessionId', component: DeckSummaryComponent },
+      /*
+       * Aggregated decks, scoped to one level: every paper's questions of that
+       * level for one skill, in one queue.
+       */
+      { path: ':level/deck/:category', component: DeckRunComponent },
+      { path: ':level/deck/:category/summary/:sessionId', component: DeckSummaryComponent },
 
-      /* Review statistics. */
-      { path: 'stats', component: StatsIndexComponent },
-      { path: 'stats/:category', component: CategoryStatsComponent },
+      /* Review statistics, also per level. */
+      { path: ':level/stats', component: StatsIndexComponent },
+      { path: ':level/stats/:category', component: CategoryStatsComponent },
 
       /* Original per-paper practice, kept as the secondary flow. */
       { path: 'quiz/:testId/:section', component: QuizShellComponent },

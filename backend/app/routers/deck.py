@@ -8,7 +8,7 @@ from .. import scheduling, stats
 from ..auth import Principal, current_user
 from ..db import DbConnection
 from ..deps import get_db
-from ..schemas import Category, DeckResponse, Mode
+from ..schemas import Category, DeckResponse, Level, Mode
 
 router = APIRouter(prefix="/api", tags=["deck"], dependencies=[Depends(current_user)])
 
@@ -16,6 +16,11 @@ router = APIRouter(prefix="/api", tags=["deck"], dependencies=[Depends(current_u
 @router.get("/deck/{category}", response_model=DeckResponse)
 def get_deck(
     category: Category,
+    level: Level | None = Query(
+        default=None,
+        description="Exam level. Omitted means every level, which only the "
+        "combined views want; the app always sends one.",
+    ),
     mode: Mode = "random",
     limit: int | None = Query(default=None, ge=1, le=500),
     exclude: str | None = Query(
@@ -26,7 +31,7 @@ def get_deck(
     user: Principal = Depends(current_user),
     conn: DbConnection = Depends(get_db),
 ) -> DeckResponse:
-    rows = stats.per_question_rows(conn, category, user.user_id)
+    rows = stats.per_question_rows(conn, category, user.user_id, level)
 
     # The scheduler needs real datetimes; the response model only wants the ISO
     # strings, and Pydantic ignores the extra key.
@@ -50,7 +55,7 @@ def get_deck(
         mode=mode,
         count=len(ordered),
         total_questions=len(rows),
-        answered_questions=len(stats.question_history(conn, category, user.user_id)),
+        answered_questions=len(stats.question_history(conn, category, user.user_id, level)),
         generated_at=stats.iso(stats.utc_now()),
         questions=ordered,
     )
@@ -59,11 +64,16 @@ def get_deck(
 @router.get("/deck/{category}/preview")
 def deck_preview(
     category: Category,
+    level: Level | None = Query(
+        default=None,
+        description="Exam level. Omitted means every level, which only the "
+        "combined views want; the app always sends one.",
+    ),
     user: Principal = Depends(current_user),
     conn: DbConnection = Depends(get_db),
 ) -> dict:
     """Counts for the start panel, before a session exists."""
-    rows = stats.per_question_rows(conn, category, user.user_id)
+    rows = stats.per_question_rows(conn, category, user.user_id, level)
     now = stats.utc_now()
 
     unseen = 0
@@ -87,6 +97,7 @@ def deck_preview(
 
     return {
         "category": category,
+        "level": level,
         "total_questions": len(rows),
         "answered": len(rows) - unseen,
         "unseen": unseen,

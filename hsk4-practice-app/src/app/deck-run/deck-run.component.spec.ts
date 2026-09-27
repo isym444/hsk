@@ -8,7 +8,7 @@ import { DeckRunComponent } from './deck-run.component';
 import { DeckStateService } from '../core/deck-state.service';
 import { AudioService } from '../core/audio.service';
 import { TrueFalseQuestionComponent } from '../questions/true-false-question/true-false-question.component';
-import { categoryTotal } from '../data/question-inventory';
+import { categoryTotalForLevel } from '../data/question-inventory';
 import { SectionKey } from '../data/models';
 import { routeStub } from '../testing/route-stub';
 import {
@@ -155,13 +155,13 @@ describe('DeckRunComponent', () => {
   async function open(category = 'listening'): Promise<void> {
     create(category);
     http
-      .expectOne(`/api/deck/${category}/preview`)
+      .expectOne(`/api/deck/${category}/preview?level=HSK4`)
       .flush(
         deckPreviewFixture({
           category,
-          total_questions: categoryTotal(category as SectionKey),
+          total_questions: categoryTotalForLevel('HSK4', category as SectionKey),
           answered: 21,
-          unseen: categoryTotal(category as SectionKey) - 21,
+          unseen: categoryTotalForLevel('HSK4', category as SectionKey) - 21,
           weak: 2,
           due: 1,
         }),
@@ -231,10 +231,10 @@ describe('DeckRunComponent', () => {
 
     expect(text('.hero h1')).toBe('Listening · Combined practice');
     expect(text('.hero p')).toContain('H41001 · H41002 · H41003 · H41332');
-    expect(text('.hero p')).toContain(String(categoryTotal('listening')));
+    expect(text('.hero p')).toContain(String(categoryTotalForLevel('HSK4', 'listening')));
     expect(text('.deckcard-head')).toContain('Source papers: H41001 · H41002 · H41003 · H41332');
-    expect(flat('.statgrid')).toContain(`Questionsinbank${categoryTotal('listening')}`);
-    expect(flat('.statgrid')).toContain(`Notseenyet${categoryTotal('listening') - 21}`);
+    expect(flat('.statgrid')).toContain(`Questionsinbank${categoryTotalForLevel('HSK4', 'listening')}`);
+    expect(flat('.statgrid')).toContain(`Notseenyet${categoryTotalForLevel('HSK4', 'listening') - 21}`);
     expect(flat('.statgrid')).toContain('Dueforreview1');
   });
 
@@ -438,13 +438,13 @@ describe('DeckRunComponent', () => {
 
   it('explains how to start the backend when the preview fails, and can retry', async () => {
     create('writing');
-    http.expectOne('/api/deck/writing/preview').error(new ProgressEvent('error'));
+    http.expectOne('/api/deck/writing/preview?level=HSK4').error(new ProgressEvent('error'));
     await settle();
 
     expect(text('.errbar')).toContain('uvicorn');
 
     element().querySelector<HTMLButtonElement>('.errbar .smallbtn')?.click();
-    http.expectOne('/api/deck/writing/preview').flush(deckPreviewFixture({ category: 'writing' }));
+    http.expectOne('/api/deck/writing/preview?level=HSK4').flush(deckPreviewFixture({ category: 'writing' }));
     await settle();
 
     expect(element().querySelector('.errbar')).toBeNull();

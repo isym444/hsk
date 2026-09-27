@@ -3,12 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { SECTION_META, SectionMeta } from '../data/section-meta';
-import { isSectionKey, isTestId } from '../data/tests.data';
+import { LEVEL_OF_PAPER, isSectionKey, isTestId } from '../data/tests.data';
 import { SectionKey, TestId } from '../data/models';
 import { AnswerEvent } from '../questions/answer-event';
 import { AudioService } from '../core/audio.service';
 import { QuizStateService } from '../core/quiz-state.service';
 import { TrueFalseQuestionComponent } from '../questions/true-false-question/true-false-question.component';
+import { PictureChoiceQuestionComponent } from '../questions/picture-choice-question/picture-choice-question.component';
 import { MultipleChoiceQuestionComponent } from '../questions/multiple-choice-question/multiple-choice-question.component';
 import { FillBlankQuestionComponent } from '../questions/fill-blank-question/fill-blank-question.component';
 import { SentenceOrderQuestionComponent } from '../questions/sentence-order-question/sentence-order-question.component';
@@ -25,6 +26,7 @@ import { OpenWritingQuestionComponent } from '../questions/open-writing-question
   standalone: true,
   imports: [
     TrueFalseQuestionComponent,
+    PictureChoiceQuestionComponent,
     MultipleChoiceQuestionComponent,
     FillBlankQuestionComponent,
     SentenceOrderQuestionComponent,
@@ -113,7 +115,7 @@ export class QuizShellComponent {
 
   back(): void {
     this.audio.stop();
-    void this.router.navigate(['/']);
+    void this.router.navigate(['/', LEVEL_OF_PAPER[this.paper()]]);
   }
 
   /** Called by a question component once it has judged the user's answer. */

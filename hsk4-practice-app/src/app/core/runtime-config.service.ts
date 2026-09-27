@@ -24,12 +24,20 @@ export interface RuntimeConfig {
   supabaseUrl: string;
   /** Supabase publishable (or legacy anon) key. Public by design. */
   supabaseAnonKey: string;
+  /**
+   * Local-development switch: treat the visitor as signed in without Supabase.
+   * Only ever true in a config.json written for local development, and matched
+   * by `HSK_DEV_NO_AUTH` on the API, which refuses to honour it whenever a real
+   * Supabase project is configured.
+   */
+  devNoAuth?: boolean;
 }
 
 export const DEFAULT_RUNTIME_CONFIG: RuntimeConfig = {
   apiBase: '/api',
   supabaseUrl: '',
   supabaseAnonKey: '',
+  devNoAuth: false,
 };
 
 @Injectable({ providedIn: 'root' })
@@ -54,6 +62,17 @@ export class RuntimeConfigService {
   }
 
   /**
+   * True when this build runs without sign-in for local development.
+   *
+   * Requires that no Supabase project is attached, mirroring the API's own
+   * refusal: a deployment cannot work without a project, so a `devNoAuth` flag
+   * that leaked into a production config is ignored rather than opening the UI.
+   */
+  get devNoAuth(): boolean {
+    return this.config.devNoAuth === true && !this.hasSupabase;
+  }
+
+  /**
    * Fetches `config.json` and applies it. Never rejects: a missing or broken
    * file just leaves the defaults in place, because an app that cannot boot is
    * worse than one pointed at the wrong API.
@@ -75,6 +94,10 @@ export class RuntimeConfigService {
           '',
         ),
         supabaseAnonKey: this.read(loaded?.supabaseAnonKey, DEFAULT_RUNTIME_CONFIG.supabaseAnonKey),
+        // Copy every field explicitly: `config.json` is loaded at runtime and
+        // anything not named here is silently dropped, which looks exactly like
+        // the file not being read at all.
+        devNoAuth: loaded?.devNoAuth === true,
       };
     } catch {
       // Offline or malformed config: keep the defaults.

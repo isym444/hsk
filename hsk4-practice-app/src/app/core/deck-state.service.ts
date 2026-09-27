@@ -21,7 +21,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { SectionKey, Unit } from '../data/models';
+import { Level, SectionKey, Unit } from '../data/models';
 import { unitForQuestionKey } from '../data/question-inventory';
 import { localIsoWithOffset } from './format';
 import { QuestionRow, questionRows } from './question-row';
@@ -72,6 +72,7 @@ export class DeckStateService {
   private readonly doc = inject(DOCUMENT);
 
   readonly category = signal<SectionKey | null>(null);
+  readonly level = signal<Level | null>(null);
   readonly mode = signal<DeckMode>('smart');
   readonly phase = signal<DeckPhase>('idle');
   readonly preview = signal<DeckPreview | null>(null);
@@ -131,11 +132,12 @@ export class DeckStateService {
   }
 
   /** Loads the start-panel counts (unseen / weak / due / total) for a category. */
-  async loadPreview(category: SectionKey): Promise<void> {
+  async loadPreview(category: SectionKey, level: Level): Promise<void> {
     this.category.set(category);
+    this.level.set(level);
     this.error.set(null);
     try {
-      this.preview.set(await firstValueFrom(this.api.preview(category)));
+      this.preview.set(await firstValueFrom(this.api.preview(category, level)));
     } catch {
       this.fail(
         `Cannot reach the review service. Start the backend first: cd backend && ./.venv/bin/uvicorn app.main:app --port 8000`,
@@ -144,9 +146,10 @@ export class DeckStateService {
   }
 
   /** Starts a fresh session and pulls the first queue for its mode. */
-  async start(category: SectionKey, mode: DeckMode): Promise<void> {
+  async start(category: SectionKey, level: Level, mode: DeckMode): Promise<void> {
     this.reset();
     this.category.set(category);
+    this.level.set(level);
     this.mode.set(mode);
     this.phase.set('loading');
     try {
@@ -274,9 +277,13 @@ export class DeckStateService {
     if (!category) {
       return;
     }
+    const level = this.level();
+    if (!level) {
+      return;
+    }
     const exclude = fresh ? [] : this.recentKeys();
     const deck = await firstValueFrom(
-      this.api.deck(category, this.mode(), { exclude: exclude.length ? exclude : undefined }),
+      this.api.deck(category, level, this.mode(), { exclude: exclude.length ? exclude : undefined }),
     );
 
     const playable = deck.questions.filter((question) => unitForQuestionKey(question.question_key));

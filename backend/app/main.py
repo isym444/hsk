@@ -24,7 +24,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import Response
 
-from .auth import Principal, build_verifier, current_user
+from .auth import Principal, build_verifier, current_user, dev_principal
 from .catalogue import CatalogueError, load_catalogue
 from .config import (
     CATALOGUE_PATH,
@@ -104,6 +104,14 @@ def create_app(
     )
     app.state.db = database
     app.state.catalogue_path = catalogue_file
+
+    app.state.dev_principal = dev_principal()
+    if app.state.dev_principal is not None:
+        logger.warning(
+            "HSK_DEV_NO_AUTH is on: every request is treated as %s. "
+            "This is for local development only.",
+            app.state.dev_principal.email,
+        )
 
     verifier = build_verifier()
     app.state.verifier = verifier

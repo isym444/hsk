@@ -15,8 +15,8 @@ import {
   questionKeyOf,
 } from './build-units';
 import { SECTION_META } from './section-meta';
-import { TEST_IDS } from './tests.data';
-import { SectionKey, Unit } from './models';
+import { TEST_IDS, papersForLevel } from './tests.data';
+import { Level, SectionKey, Unit } from './models';
 
 export type { QuestionInventoryEntry } from './build-units';
 export { CATEGORY_ORDER } from './build-units';
@@ -42,9 +42,44 @@ export function inventoryForCategory(category: SectionKey): QuestionInventoryEnt
   return QUESTION_INVENTORY.filter((q) => q.category === category);
 }
 
-/** Total questions in a category across all three papers. */
+/** Total questions in a category across every paper. */
 export function categoryTotal(category: SectionKey): number {
   return inventoryForCategory(category).length;
+}
+
+/* ---------- level-scoped views ----------
+ * The app ships one bank per exam level and never pools across them, so most
+ * of the UI wants these rather than the unscoped helpers above.
+ */
+
+/** Inventory rows for one level and category, in paper order. */
+export function inventoryForLevel(level: Level, category: SectionKey): QuestionInventoryEntry[] {
+  return QUESTION_INVENTORY.filter((q) => q.level === level && q.category === category);
+}
+
+/** Questions in one category of one level. */
+export function categoryTotalForLevel(level: Level, category: SectionKey): number {
+  return inventoryForLevel(level, category).length;
+}
+
+/** Questions in one level across its three categories. */
+export function levelTotal(level: Level): number {
+  return QUESTION_INVENTORY.filter((q) => q.level === level).length;
+}
+
+/** Per-paper counts inside one level and category, for the deck start panel. */
+export function perPaperForLevel(level: Level, category: SectionKey): Record<string, number> {
+  return inventoryForLevel(level, category).reduce<Record<string, number>>((counts, question) => {
+    counts[question.paper] = (counts[question.paper] ?? 0) + 1;
+    return counts;
+  }, {});
+}
+
+/** The papers of one level that actually contribute to a category. */
+export function papersForLevelCategory(level: Level, category: SectionKey): string[] {
+  return Object.keys(perPaperForLevel(level, category)).filter((paper) =>
+    papersForLevel(level).includes(paper as never),
+  );
 }
 
 /** The unit to render for a deck key, or null if the key is unknown. */
@@ -65,6 +100,7 @@ export const KIND_LABELS: Record<string, string | undefined> = {
   order: 'Sentence order',
   build: 'Sentence building',
   open: 'Guided writing',
+  picture: 'Picture choice',
 };
 
 /** Paper metadata for stats tables. */

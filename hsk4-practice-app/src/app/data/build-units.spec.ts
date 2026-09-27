@@ -13,7 +13,7 @@ import {
   categoryTotal,
   unitForQuestionKey,
 } from './question-inventory';
-import { TEST_IDS } from './tests.data';
+import { LEVEL_OF_PAPER, TEST_IDS } from './tests.data';
 import { SectionKey, TestId, Unit } from './models';
 
 /**
@@ -22,17 +22,36 @@ import { SectionKey, TestId, Unit } from './models';
  * inventory counts the backend seeds from, so a change to the walker can
  * never silently desynchronise stored review history.
  */
-describe('question inventory (deck identity)', () => {
-  const KINDS = ['tf', 'mc', 'fill', 'order', 'build', 'open'];
+const LEVEL_TOTALS = {
+  HSK3: { listening: 40, reading: 30, writing: 10 },
+  HSK4: { listening: 45, reading: 40, writing: 15 },
+} as const;
 
-  it('covers every paper × three categories = 400 questions', () => {
-    expect(QUESTION_INVENTORY.length).toBe(400);
+describe('question inventory (deck identity)', () => {
+  const KINDS = ['tf', 'picture', 'mc', 'fill', 'order', 'build', 'open'];
+
+  it('covers every paper × three categories', () => {
+    // Derived from the papers the app ships, so adding one updates the
+    // expectation instead of breaking the suite.
+    const expected = TEST_IDS.reduce(
+      (n, paper) =>
+        n +
+        CATEGORY_ORDER.reduce((m, category) => m + buildUnits(paper, category).length, 0),
+      0,
+    );
+    expect(QUESTION_INVENTORY.length).toBe(expected);
+    expect(QUESTION_INVENTORY.length).toBeGreaterThan(0);
   });
 
-  it('counts 180 listening, 160 reading and 60 writing questions', () => {
-    expect(categoryTotal('listening')).toBe(180);
-    expect(categoryTotal('reading')).toBe(160);
-    expect(categoryTotal('writing')).toBe(60);
+  it('counts every question of each category', () => {
+    for (const category of CATEGORY_ORDER) {
+      const expected = TEST_IDS.reduce(
+        (n, paper) => n + buildUnits(paper, category).length,
+        0,
+      );
+      expect(categoryTotal(category)).withContext(category).toBe(expected);
+      expect(categoryTotal(category)).toBeGreaterThan(0);
+    }
   });
 
   it('gives every question a unique key', () => {
@@ -42,24 +61,30 @@ describe('question inventory (deck identity)', () => {
 
   it('formats every key as paper:category:kind:number', () => {
     for (const q of QUESTION_INVENTORY) {
-      expect(q.key).toMatch(/^H41(?:00[123]|332):(listening|reading|writing):[a-z]+:\d+$/);
+      expect(q.key).toMatch(/^[A-Z]\d{5}:(listening|reading|writing):[a-z]+:\d+$/);
       expect(q.key).toBe(`${q.paper}:${q.category}:${q.kind}:${q.number}`);
       expect(KINDS).toContain(q.kind);
     }
   });
 
-  it('numbers each paper 1..100 across its categories', () => {
+  it('numbers each paper through its own question range without gaps', () => {
     for (const paper of TEST_IDS) {
+      const expected = LEVEL_TOTALS[LEVEL_OF_PAPER[paper]];
+      const size = expected.listening + expected.reading + expected.writing;
       const numbers = QUESTION_INVENTORY.filter((q) => q.paper === paper)
         .map((q) => q.number)
         .sort((a, b) => a - b);
-      expect(numbers).toEqual(Array.from({ length: 100 }, (_, i) => i + 1));
+      expect(numbers).withContext(paper).toEqual(Array.from({ length: size }, (_, i) => i + 1));
     }
   });
 
   it('marks only the open writing items as self-assessed', () => {
     const unscoreable = QUESTION_INVENTORY.filter((q) => !q.scoreable);
-    expect(unscoreable.length).toBe(20);
+    const openUnits = TEST_IDS.reduce(
+      (n, paper) => n + buildUnits(paper, 'writing').filter((u) => u.kind === 'open').length,
+      0,
+    );
+    expect(unscoreable.length).toBe(openUnits);
     expect(unscoreable.every((q) => q.kind === 'open' && q.category === 'writing')).toBeTrue();
   });
 
@@ -74,9 +99,11 @@ describe('question inventory (deck identity)', () => {
       return byKind;
     };
 
-    expect([...(partsFor('listening').get('tf') ?? [])]).toEqual([1]);
-    expect([...(partsFor('listening').get('mc') ?? [])].sort()).toEqual([2, 3]);
-    expect([...(partsFor('reading').get('fill') ?? [])]).toEqual([1]);
+    // HSK4: tf=1, mc=2-3, fill=1, order=2. HSK3 adds tf at 2, mc at 3-4, and
+    // a second fill bank at part 2.
+    expect([...(partsFor('listening').get('tf') ?? [])].sort()).toEqual([1, 2]);
+    expect([...(partsFor('listening').get('mc') ?? [])].sort()).toEqual([2, 3, 4]);
+    expect([...(partsFor('reading').get('fill') ?? [])].sort()).toEqual([1, 2]);
     expect([...(partsFor('reading').get('order') ?? [])]).toEqual([2]);
     expect([...(partsFor('reading').get('mc') ?? [])]).toEqual([3]);
     expect([...(partsFor('writing').get('build') ?? [])]).toEqual([1]);
@@ -84,7 +111,7 @@ describe('question inventory (deck identity)', () => {
   });
 
   it('resolves every inventory key back to the unit the components render', () => {
-    expect(UNIT_BY_QUESTION_KEY.size).toBe(400);
+    expect(UNIT_BY_QUESTION_KEY.size).toBe(QUESTION_INVENTORY.length);
     for (const entry of QUESTION_INVENTORY) {
       const unit = unitForQuestionKey(entry.key);
       expect(unit).withContext(entry.key).not.toBeNull();
@@ -113,13 +140,14 @@ describe('question inventory (deck identity)', () => {
   it('builds a catalogue whose totals match the inventory', () => {
     const catalogue = buildCatalogue();
     expect(catalogue.schema_version).toBe(1);
-    expect(catalogue.questions.length).toBe(400);
-    expect(catalogue.categories.map((c) => [c.key, c.total])).toEqual([
-      ['listening', 180],
-      ['reading', 160],
-      ['writing', 60],
-    ]);
-    expect(catalogue.categories.find((c) => c.key === 'writing')?.scoreable).toBe(40);
+    expect(catalogue.questions.length).toBe(QUESTION_INVENTORY.length);
+    expect(catalogue.categories.map((c) => [c.key, c.total])).toEqual(
+      CATEGORY_ORDER.map((key) => [key, categoryTotal(key)]),
+    );
+    const writingScoreable = QUESTION_INVENTORY.filter(
+      (q) => q.category === 'writing' && q.scoreable,
+    ).length;
+    expect(catalogue.categories.find((c) => c.key === 'writing')?.scoreable).toBe(writingScoreable);
     expect(catalogue.categories.find((c) => c.key === 'listening')?.label).toBe('Listening');
   });
 

@@ -2,6 +2,8 @@
   "schema_version": 1,
   "source": "hsk4-practice-app/src/app/data",
   "papers": [
+    "H31330",
+    "H31332",
     "H41001",
     "H41002",
     "H41003",
@@ -11,26 +13,1787 @@
     {
       "key": "listening",
       "label": "Listening",
-      "total": 180,
-      "scoreable": 180
+      "total": 260,
+      "scoreable": 260
     },
     {
       "key": "reading",
       "label": "Reading",
-      "total": 160,
-      "scoreable": 160
+      "total": 220,
+      "scoreable": 220
     },
     {
       "key": "writing",
       "label": "Writing",
-      "total": 60,
-      "scoreable": 40
+      "total": 80,
+      "scoreable": 50
     }
   ],
   "questions": [
     {
+      "key": "H31330:listening:picture:1",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 1,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (6 张图片)"
+    },
+    {
+      "key": "H31330:listening:picture:2",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 2,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (6 张图片)"
+    },
+    {
+      "key": "H31330:listening:picture:3",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 3,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (6 张图片)"
+    },
+    {
+      "key": "H31330:listening:picture:4",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 4,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (6 张图片)"
+    },
+    {
+      "key": "H31330:listening:picture:5",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 5,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (6 张图片)"
+    },
+    {
+      "key": "H31330:listening:picture:6",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 6,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (5 张图片)"
+    },
+    {
+      "key": "H31330:listening:picture:7",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 7,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (5 张图片)"
+    },
+    {
+      "key": "H31330:listening:picture:8",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 8,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (5 张图片)"
+    },
+    {
+      "key": "H31330:listening:picture:9",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 9,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (5 张图片)"
+    },
+    {
+      "key": "H31330:listening:picture:10",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 10,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (5 张图片)"
+    },
+    {
+      "key": "H31330:listening:tf:11",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 11,
+      "part": 2,
+      "scoreable": true,
+      "label": "他打算去图书馆学习。"
+    },
+    {
+      "key": "H31330:listening:tf:12",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 12,
+      "part": 2,
+      "scoreable": true,
+      "label": "他要准备考试。"
+    },
+    {
+      "key": "H31330:listening:tf:13",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 13,
+      "part": 2,
+      "scoreable": true,
+      "label": "那条裤子太长了。"
+    },
+    {
+      "key": "H31330:listening:tf:14",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 14,
+      "part": 2,
+      "scoreable": true,
+      "label": "他希望小雪声音大点儿。"
+    },
+    {
+      "key": "H31330:listening:tf:15",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 15,
+      "part": 2,
+      "scoreable": true,
+      "label": "他请小王去他家玩儿。"
+    },
+    {
+      "key": "H31330:listening:tf:16",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 16,
+      "part": 2,
+      "scoreable": true,
+      "label": "他觉得电影很一般。"
+    },
+    {
+      "key": "H31330:listening:tf:17",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 17,
+      "part": 2,
+      "scoreable": true,
+      "label": "他不想离开那儿。"
+    },
+    {
+      "key": "H31330:listening:tf:18",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 18,
+      "part": 2,
+      "scoreable": true,
+      "label": "那双鞋很便宜。"
+    },
+    {
+      "key": "H31330:listening:tf:19",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 19,
+      "part": 2,
+      "scoreable": true,
+      "label": "小李没接到客人。"
+    },
+    {
+      "key": "H31330:listening:tf:20",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 20,
+      "part": 2,
+      "scoreable": true,
+      "label": "他要出国旅游了。"
+    },
+    {
+      "key": "H31330:listening:mc:21",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 21,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：关于女的，可以知道什么？"
+    },
+    {
+      "key": "H31330:listening:mc:22",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 22,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：男的让女的怎么做？"
+    },
+    {
+      "key": "H31330:listening:mc:23",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 23,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：小张为什么不去唱歌？"
+    },
+    {
+      "key": "H31330:listening:mc:24",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 24,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：女的认为中国人喝茶和什么有关系？"
+    },
+    {
+      "key": "H31330:listening:mc:25",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 25,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：男的觉得他家小猫怎么样？"
+    },
+    {
+      "key": "H31330:listening:mc:26",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 26,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：女的是怎么来这儿的？"
+    },
+    {
+      "key": "H31330:listening:mc:27",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 27,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：女的为什么借笔记？"
+    },
+    {
+      "key": "H31330:listening:mc:28",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 28,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：他们在说什么？"
+    },
+    {
+      "key": "H31330:listening:mc:29",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 29,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：外面天气怎么样？"
+    },
+    {
+      "key": "H31330:listening:mc:30",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 30,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：他们星期天下午最可能去哪儿？"
+    },
+    {
+      "key": "H31330:listening:mc:31",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 31,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：他们在看什么？"
+    },
+    {
+      "key": "H31330:listening:mc:32",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 32,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：他们最可能在哪儿？"
+    },
+    {
+      "key": "H31330:listening:mc:33",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 33,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：关于男的，可以知道什么？"
+    },
+    {
+      "key": "H31330:listening:mc:34",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 34,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：男的怎么了？"
+    },
+    {
+      "key": "H31330:listening:mc:35",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 35,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：校长要求大家几点到？"
+    },
+    {
+      "key": "H31330:listening:mc:36",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 36,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：男的为什么这么久才回来？"
+    },
+    {
+      "key": "H31330:listening:mc:37",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 37,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：关于女的，可以知道什么？"
+    },
+    {
+      "key": "H31330:listening:mc:38",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 38,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：男的想试哪种颜色的衬衫？"
+    },
+    {
+      "key": "H31330:listening:mc:39",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 39,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：那家饭馆什么很有名？"
+    },
+    {
+      "key": "H31330:listening:mc:40",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 40,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：女的想让男的做什么？"
+    },
+    {
+      "key": "H31330:reading:fill:41",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 41,
+      "part": 1,
+      "scoreable": true,
+      "label": "我跟你一起，家里没鸡蛋了。（　）"
+    },
+    {
+      "key": "H31330:reading:fill:42",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 42,
+      "part": 1,
+      "scoreable": true,
+      "label": "奶奶，还有多久才能吃饭啊？（　）"
+    },
+    {
+      "key": "H31330:reading:fill:43",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 43,
+      "part": 1,
+      "scoreable": true,
+      "label": "现在呢？干净了吗？（　）"
+    },
+    {
+      "key": "H31330:reading:fill:44",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 44,
+      "part": 1,
+      "scoreable": true,
+      "label": "是用铅笔画出来的这些吗？我看看。（　）"
+    },
+    {
+      "key": "H31330:reading:fill:45",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 45,
+      "part": 1,
+      "scoreable": true,
+      "label": "没有，我早上出门的时候还是晴天呢。（　）"
+    },
+    {
+      "key": "H31330:reading:fill:46",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 46,
+      "part": 1,
+      "scoreable": true,
+      "label": "你几乎没什么变化，还跟以前一样年轻。（　）"
+    },
+    {
+      "key": "H31330:reading:fill:47",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 47,
+      "part": 1,
+      "scoreable": true,
+      "label": "我不饿，就是有点儿渴。（　）"
+    },
+    {
+      "key": "H31330:reading:fill:48",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 48,
+      "part": 1,
+      "scoreable": true,
+      "label": "我最近在学习打篮球。（　）"
+    },
+    {
+      "key": "H31330:reading:fill:49",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 49,
+      "part": 1,
+      "scoreable": true,
+      "label": "被小高借走了，你问他要吧。（　）"
+    },
+    {
+      "key": "H31330:reading:fill:50",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 50,
+      "part": 1,
+      "scoreable": true,
+      "label": "不客气，你喜欢就好。（　）"
+    },
+    {
+      "key": "H31330:reading:fill:51",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 51,
+      "part": 2,
+      "scoreable": true,
+      "label": "从地图上看，黄河很（　）一个“几”字。"
+    },
+    {
+      "key": "H31330:reading:fill:52",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 52,
+      "part": 2,
+      "scoreable": true,
+      "label": "我相信在她的帮助下，你的汉语水平一定会（　）的。"
+    },
+    {
+      "key": "H31330:reading:fill:53",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 53,
+      "part": 2,
+      "scoreable": true,
+      "label": "谁能（　）黑板上的这个问题？"
+    },
+    {
+      "key": "H31330:reading:fill:54",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 54,
+      "part": 2,
+      "scoreable": true,
+      "label": "（　）到会议结束，大家也没想出办法来。"
+    },
+    {
+      "key": "H31330:reading:fill:55",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 55,
+      "part": 2,
+      "scoreable": true,
+      "label": "你是不是忘记把牛奶放冰箱里了？两包都（　）了。"
+    },
+    {
+      "key": "H31330:reading:fill:56",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 56,
+      "part": 2,
+      "scoreable": true,
+      "label": "A：我们在哪儿（　）？\nB：国家体育馆北门吧，那儿离你家和我家都近。"
+    },
+    {
+      "key": "H31330:reading:fill:57",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 57,
+      "part": 2,
+      "scoreable": true,
+      "label": "A：昨天我生日，儿子送给我一（　）他画的画儿。\nB：那你一定很高兴吧？"
+    },
+    {
+      "key": "H31330:reading:fill:58",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 58,
+      "part": 2,
+      "scoreable": true,
+      "label": "A：对不起，李经理，我迟到了。\nB：没关系，先坐下开会吧，以后（　）点儿。"
+    },
+    {
+      "key": "H31330:reading:fill:59",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 59,
+      "part": 2,
+      "scoreable": true,
+      "label": "A：明天 30 号了，记得还（　）。\nB：放心，我今天中午就去银行。"
+    },
+    {
+      "key": "H31330:reading:fill:60",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 60,
+      "part": 2,
+      "scoreable": true,
+      "label": "A：桌子上有蛋糕，你吃不吃？\nB：不吃了，我在爷爷家吃（　）了才回来的。"
+    },
+    {
+      "key": "H31330:reading:mc:61",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 61,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 说话人是什么意思？"
+    },
+    {
+      "key": "H31330:reading:mc:62",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 62,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 他最可能是做什么的？"
+    },
+    {
+      "key": "H31330:reading:mc:63",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 63,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 关于那个城市，可以知道："
+    },
+    {
+      "key": "H31330:reading:mc:64",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 64,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 他现在："
+    },
+    {
+      "key": "H31330:reading:mc:65",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 65,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 根据爱好来选择工作，会："
+    },
+    {
+      "key": "H31330:reading:mc:66",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 66,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 他接下来要做什么？"
+    },
+    {
+      "key": "H31330:reading:mc:67",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 67,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 怎样才不会错过机会？"
+    },
+    {
+      "key": "H31330:reading:mc:68",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 68,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 关于那只狗，可以知道："
+    },
+    {
+      "key": "H31330:reading:mc:69",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 69,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 儿子眼中的世界是什么样的？"
+    },
+    {
+      "key": "H31330:reading:mc:70",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 70,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 根据这段话，现在的手机："
+    },
+    {
+      "key": "H31330:writing:build:71",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "build",
+      "number": 71,
+      "part": 1,
+      "scoreable": true,
+      "label": "一万 这次旅游 花了 元"
+    },
+    {
+      "key": "H31330:writing:build:72",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "build",
+      "number": 72,
+      "part": 1,
+      "scoreable": true,
+      "label": "她丈夫 中文 在大学教"
+    },
+    {
+      "key": "H31330:writing:build:73",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "build",
+      "number": 73,
+      "part": 1,
+      "scoreable": true,
+      "label": "害怕得 妹妹 起来 哭了"
+    },
+    {
+      "key": "H31330:writing:build:74",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "build",
+      "number": 74,
+      "part": 1,
+      "scoreable": true,
+      "label": "飞机 起飞 马上 就要 了"
+    },
+    {
+      "key": "H31330:writing:build:75",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "build",
+      "number": 75,
+      "part": 1,
+      "scoreable": true,
+      "label": "月亮 今晚的 真 啊 大"
+    },
+    {
+      "key": "H31330:writing:open:76",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "open",
+      "number": 76,
+      "part": 2,
+      "scoreable": false,
+      "label": "今天的作业很简单，我一（　）儿就做完了。"
+    },
+    {
+      "key": "H31330:writing:open:77",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "open",
+      "number": 77,
+      "part": 2,
+      "scoreable": false,
+      "label": "有时候，做对的事情比把事情做对（　）重要。"
+    },
+    {
+      "key": "H31330:writing:open:78",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "open",
+      "number": 78,
+      "part": 2,
+      "scoreable": false,
+      "label": "北京西站是中国最大的火（　）站。"
+    },
+    {
+      "key": "H31330:writing:open:79",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "open",
+      "number": 79,
+      "part": 2,
+      "scoreable": false,
+      "label": "他告诉我，他姓周，今（　）20岁。"
+    },
+    {
+      "key": "H31330:writing:open:80",
+      "paper": "H31330",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "open",
+      "number": 80,
+      "part": 2,
+      "scoreable": false,
+      "label": "姐姐今天结婚，真（　）她高兴。"
+    },
+    {
+      "key": "H31332:listening:picture:1",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 1,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (6 张图片)"
+    },
+    {
+      "key": "H31332:listening:picture:2",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 2,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (6 张图片)"
+    },
+    {
+      "key": "H31332:listening:picture:3",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 3,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (6 张图片)"
+    },
+    {
+      "key": "H31332:listening:picture:4",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 4,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (6 张图片)"
+    },
+    {
+      "key": "H31332:listening:picture:5",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 5,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (6 张图片)"
+    },
+    {
+      "key": "H31332:listening:picture:6",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 6,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (5 张图片)"
+    },
+    {
+      "key": "H31332:listening:picture:7",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 7,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (5 张图片)"
+    },
+    {
+      "key": "H31332:listening:picture:8",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 8,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (5 张图片)"
+    },
+    {
+      "key": "H31332:listening:picture:9",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 9,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (5 张图片)"
+    },
+    {
+      "key": "H31332:listening:picture:10",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "picture",
+      "number": 10,
+      "part": 1,
+      "scoreable": true,
+      "label": "图片选择 (5 张图片)"
+    },
+    {
+      "key": "H31332:listening:tf:11",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 11,
+      "part": 2,
+      "scoreable": true,
+      "label": "他是司机。"
+    },
+    {
+      "key": "H31332:listening:tf:12",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 12,
+      "part": 2,
+      "scoreable": true,
+      "label": "小天在玩儿游戏。"
+    },
+    {
+      "key": "H31332:listening:tf:13",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 13,
+      "part": 2,
+      "scoreable": true,
+      "label": "出门时下雨了。"
+    },
+    {
+      "key": "H31332:listening:tf:14",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 14,
+      "part": 2,
+      "scoreable": true,
+      "label": "他不认识那种鸟。"
+    },
+    {
+      "key": "H31332:listening:tf:15",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 15,
+      "part": 2,
+      "scoreable": true,
+      "label": "他想坐右边。"
+    },
+    {
+      "key": "H31332:listening:tf:16",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 16,
+      "part": 2,
+      "scoreable": true,
+      "label": "小王的女儿是短发。"
+    },
+    {
+      "key": "H31332:listening:tf:17",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 17,
+      "part": 2,
+      "scoreable": true,
+      "label": "那家店不能刷信用卡。"
+    },
+    {
+      "key": "H31332:listening:tf:18",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 18,
+      "part": 2,
+      "scoreable": true,
+      "label": "人很难做到让每个人都满意。"
+    },
+    {
+      "key": "H31332:listening:tf:19",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 19,
+      "part": 2,
+      "scoreable": true,
+      "label": "他以前走路上班。"
+    },
+    {
+      "key": "H31332:listening:tf:20",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "tf",
+      "number": 20,
+      "part": 2,
+      "scoreable": true,
+      "label": "很多留学生对中国文化感兴趣。"
+    },
+    {
+      "key": "H31332:listening:mc:21",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 21,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：关于那个女孩，可以知道什么？"
+    },
+    {
+      "key": "H31332:listening:mc:22",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 22,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：女的是什么意思？"
+    },
+    {
+      "key": "H31332:listening:mc:23",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 23,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：女的觉得那个西瓜怎么样？"
+    },
+    {
+      "key": "H31332:listening:mc:24",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 24,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：书是在哪儿找到的？"
+    },
+    {
+      "key": "H31332:listening:mc:25",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 25,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：男的为什么走楼梯？"
+    },
+    {
+      "key": "H31332:listening:mc:26",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 26,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：圆圆和谁出去了？"
+    },
+    {
+      "key": "H31332:listening:mc:27",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 27,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：关于弟弟，可以知道什么？"
+    },
+    {
+      "key": "H31332:listening:mc:28",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 28,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：男的为什么要请假？"
+    },
+    {
+      "key": "H31332:listening:mc:29",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 29,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：女的希望男的帮忙做什么？"
+    },
+    {
+      "key": "H31332:listening:mc:30",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 30,
+      "part": 3,
+      "scoreable": true,
+      "label": "问：男的觉得应该怎么走？"
+    },
+    {
+      "key": "H31332:listening:mc:31",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 31,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：男的想喝什么？"
+    },
+    {
+      "key": "H31332:listening:mc:32",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 32,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：小冬为什么还没来？"
+    },
+    {
+      "key": "H31332:listening:mc:33",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 33,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：他们最可能在哪儿？"
+    },
+    {
+      "key": "H31332:listening:mc:34",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 34,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：女的怎么了？"
+    },
+    {
+      "key": "H31332:listening:mc:35",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 35,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：女的为什么打电话？"
+    },
+    {
+      "key": "H31332:listening:mc:36",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 36,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：他们打算周末做什么？"
+    },
+    {
+      "key": "H31332:listening:mc:37",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 37,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：关于黄老师，可以知道什么？"
+    },
+    {
+      "key": "H31332:listening:mc:38",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 38,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：关于男的，可以知道什么？"
+    },
+    {
+      "key": "H31332:listening:mc:39",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 39,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：男的几点踢球？"
+    },
+    {
+      "key": "H31332:listening:mc:40",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "listening",
+      "kind": "mc",
+      "number": 40,
+      "part": 4,
+      "scoreable": true,
+      "label": "问：男的觉得自己的电脑怎么样？"
+    },
+    {
+      "key": "H31332:reading:fill:41",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 41,
+      "part": 1,
+      "scoreable": true,
+      "label": "给你帽子，外面风刮得很大，别感冒了。（　）"
+    },
+    {
+      "key": "H31332:reading:fill:42",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 42,
+      "part": 1,
+      "scoreable": true,
+      "label": "我在网上查了一下，只有国家图书馆有这本词典。（　）"
+    },
+    {
+      "key": "H31332:reading:fill:43",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 43,
+      "part": 1,
+      "scoreable": true,
+      "label": "所以很多年轻人选择离开家去那儿工作。（　）"
+    },
+    {
+      "key": "H31332:reading:fill:44",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 44,
+      "part": 1,
+      "scoreable": true,
+      "label": "我给你洗了，你先穿别的衣服吧。（　）"
+    },
+    {
+      "key": "H31332:reading:fill:45",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 45,
+      "part": 1,
+      "scoreable": true,
+      "label": "还不到三点呢，是天阴了。（　）"
+    },
+    {
+      "key": "H31332:reading:fill:46",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 46,
+      "part": 1,
+      "scoreable": true,
+      "label": "香蕉，对不对？（　）"
+    },
+    {
+      "key": "H31332:reading:fill:47",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 47,
+      "part": 1,
+      "scoreable": true,
+      "label": "我这就去洗脸刷牙，马上睡。（　）"
+    },
+    {
+      "key": "H31332:reading:fill:48",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 48,
+      "part": 1,
+      "scoreable": true,
+      "label": "把相机给我，我看看照得怎么样。（　）"
+    },
+    {
+      "key": "H31332:reading:fill:49",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 49,
+      "part": 1,
+      "scoreable": true,
+      "label": "我最喜欢这个季节了。（　）"
+    },
+    {
+      "key": "H31332:reading:fill:50",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 50,
+      "part": 1,
+      "scoreable": true,
+      "label": "后来因为我妈换工作，才搬到这里。（　）"
+    },
+    {
+      "key": "H31332:reading:fill:51",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 51,
+      "part": 2,
+      "scoreable": true,
+      "label": "老师，这次考试（　）用铅笔答题吗？"
+    },
+    {
+      "key": "H31332:reading:fill:52",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 52,
+      "part": 2,
+      "scoreable": true,
+      "label": "鱼（　）是有耳朵的，只是很多人都没注意到。"
+    },
+    {
+      "key": "H31332:reading:fill:53",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 53,
+      "part": 2,
+      "scoreable": true,
+      "label": "再想想，看能不能找到更简单的解决（　）。"
+    },
+    {
+      "key": "H31332:reading:fill:54",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 54,
+      "part": 2,
+      "scoreable": true,
+      "label": "这件事情太（　）了，让人很难相信。"
+    },
+    {
+      "key": "H31332:reading:fill:55",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 55,
+      "part": 2,
+      "scoreable": true,
+      "label": "13 号桌少了一双（　）和一个碗，你快送过去。"
+    },
+    {
+      "key": "H31332:reading:fill:56",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 56,
+      "part": 2,
+      "scoreable": true,
+      "label": "A：张阿姨请我们去她家过节，带什么礼物好呢？\nB：带（　）红酒或者买些水果都可以。"
+    },
+    {
+      "key": "H31332:reading:fill:57",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 57,
+      "part": 2,
+      "scoreable": true,
+      "label": "A：你试着慢慢地站起来，怎么样？\nB：脚还是有点儿（　）。"
+    },
+    {
+      "key": "H31332:reading:fill:58",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 58,
+      "part": 2,
+      "scoreable": true,
+      "label": "A：经理，李先生来了，正在会议室等您。\nB：好，我（　）过去。"
+    },
+    {
+      "key": "H31332:reading:fill:59",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 59,
+      "part": 2,
+      "scoreable": true,
+      "label": "A：您好，（　）是 99 元 7 角 5 分。\nB：这是 100，不用找了。"
+    },
+    {
+      "key": "H31332:reading:fill:60",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "fill",
+      "number": 60,
+      "part": 2,
+      "scoreable": true,
+      "label": "A：你的汉语水平怎么提高得这么快？\nB：我每天都看（　）报纸，而且还会听半个小时的新闻。"
+    },
+    {
+      "key": "H31332:reading:mc:61",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 61,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 根据这段话，他更愿意："
+    },
+    {
+      "key": "H31332:reading:mc:62",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 62,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 这段话主要想告诉我们："
+    },
+    {
+      "key": "H31332:reading:mc:63",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 63,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 王校长认为，想年轻就应该："
+    },
+    {
+      "key": "H31332:reading:mc:64",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 64,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 为了记住学过的东西，应该："
+    },
+    {
+      "key": "H31332:reading:mc:65",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 65,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 他今天早上："
+    },
+    {
+      "key": "H31332:reading:mc:66",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 66,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 小李："
+    },
+    {
+      "key": "H31332:reading:mc:67",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 67,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 他出门时："
+    },
+    {
+      "key": "H31332:reading:mc:68",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 68,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 王雨："
+    },
+    {
+      "key": "H31332:reading:mc:69",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 69,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 他女儿："
+    },
+    {
+      "key": "H31332:reading:mc:70",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "reading",
+      "kind": "mc",
+      "number": 70,
+      "part": 3,
+      "scoreable": true,
+      "label": "★ 哥哥认为怎样才能做出成绩？"
+    },
+    {
+      "key": "H31332:writing:build:71",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "build",
+      "number": 71,
+      "part": 1,
+      "scoreable": true,
+      "label": "害怕 弟弟 极了"
+    },
+    {
+      "key": "H31332:writing:build:72",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "build",
+      "number": 72,
+      "part": 1,
+      "scoreable": true,
+      "label": "大熊猫 这 只 可爱 很"
+    },
+    {
+      "key": "H31332:writing:build:73",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "build",
+      "number": 73,
+      "part": 1,
+      "scoreable": true,
+      "label": "历史是 忘记的 被 不应该"
+    },
+    {
+      "key": "H31332:writing:build:74",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "build",
+      "number": 74,
+      "part": 1,
+      "scoreable": true,
+      "label": "比去年 我 10 公斤 瘦了"
+    },
+    {
+      "key": "H31332:writing:build:75",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "build",
+      "number": 75,
+      "part": 1,
+      "scoreable": true,
+      "label": "把 房子 她最后 卖了 决定"
+    },
+    {
+      "key": "H31332:writing:open:76",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "open",
+      "number": 76,
+      "part": 2,
+      "scoreable": false,
+      "label": "（　）阳出来了，新的一天开始了。"
+    },
+    {
+      "key": "H31332:writing:open:77",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "open",
+      "number": 77,
+      "part": 2,
+      "scoreable": false,
+      "label": "电影院在 8 层，（　）可以坐旁边那个电梯。"
+    },
+    {
+      "key": "H31332:writing:open:78",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "open",
+      "number": 78,
+      "part": 2,
+      "scoreable": false,
+      "label": "冰箱（　）还有饮料吗？我有点儿渴了。"
+    },
+    {
+      "key": "H31332:writing:open:79",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "open",
+      "number": 79,
+      "part": 2,
+      "scoreable": false,
+      "label": "我和妹妹一样，都有睡觉前（　）音乐的习惯。"
+    },
+    {
+      "key": "H31332:writing:open:80",
+      "paper": "H31332",
+      "level": "HSK3",
+      "category": "writing",
+      "kind": "open",
+      "number": 80,
+      "part": 2,
+      "scoreable": false,
+      "label": "下一个（　）目就是我们班的了，大家准备下。"
+    },
+    {
       "key": "H41001:listening:tf:1",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 1,
@@ -41,6 +1804,7 @@
     {
       "key": "H41001:listening:tf:2",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 2,
@@ -51,6 +1815,7 @@
     {
       "key": "H41001:listening:tf:3",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 3,
@@ -61,6 +1826,7 @@
     {
       "key": "H41001:listening:tf:4",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 4,
@@ -71,6 +1837,7 @@
     {
       "key": "H41001:listening:tf:5",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 5,
@@ -81,6 +1848,7 @@
     {
       "key": "H41001:listening:tf:6",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 6,
@@ -91,6 +1859,7 @@
     {
       "key": "H41001:listening:tf:7",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 7,
@@ -101,6 +1870,7 @@
     {
       "key": "H41001:listening:tf:8",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 8,
@@ -111,6 +1881,7 @@
     {
       "key": "H41001:listening:tf:9",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 9,
@@ -121,6 +1892,7 @@
     {
       "key": "H41001:listening:tf:10",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 10,
@@ -131,6 +1903,7 @@
     {
       "key": "H41001:listening:mc:11",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 11,
@@ -141,6 +1914,7 @@
     {
       "key": "H41001:listening:mc:12",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 12,
@@ -151,6 +1925,7 @@
     {
       "key": "H41001:listening:mc:13",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 13,
@@ -161,6 +1936,7 @@
     {
       "key": "H41001:listening:mc:14",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 14,
@@ -171,6 +1947,7 @@
     {
       "key": "H41001:listening:mc:15",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 15,
@@ -181,6 +1958,7 @@
     {
       "key": "H41001:listening:mc:16",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 16,
@@ -191,6 +1969,7 @@
     {
       "key": "H41001:listening:mc:17",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 17,
@@ -201,6 +1980,7 @@
     {
       "key": "H41001:listening:mc:18",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 18,
@@ -211,6 +1991,7 @@
     {
       "key": "H41001:listening:mc:19",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 19,
@@ -221,6 +2002,7 @@
     {
       "key": "H41001:listening:mc:20",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 20,
@@ -231,6 +2013,7 @@
     {
       "key": "H41001:listening:mc:21",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 21,
@@ -241,6 +2024,7 @@
     {
       "key": "H41001:listening:mc:22",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 22,
@@ -251,6 +2035,7 @@
     {
       "key": "H41001:listening:mc:23",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 23,
@@ -261,6 +2046,7 @@
     {
       "key": "H41001:listening:mc:24",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 24,
@@ -271,6 +2057,7 @@
     {
       "key": "H41001:listening:mc:25",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 25,
@@ -281,6 +2068,7 @@
     {
       "key": "H41001:listening:mc:26",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 26,
@@ -291,6 +2079,7 @@
     {
       "key": "H41001:listening:mc:27",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 27,
@@ -301,6 +2090,7 @@
     {
       "key": "H41001:listening:mc:28",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 28,
@@ -311,6 +2101,7 @@
     {
       "key": "H41001:listening:mc:29",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 29,
@@ -321,6 +2112,7 @@
     {
       "key": "H41001:listening:mc:30",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 30,
@@ -331,6 +2123,7 @@
     {
       "key": "H41001:listening:mc:31",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 31,
@@ -341,6 +2134,7 @@
     {
       "key": "H41001:listening:mc:32",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 32,
@@ -351,6 +2145,7 @@
     {
       "key": "H41001:listening:mc:33",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 33,
@@ -361,6 +2156,7 @@
     {
       "key": "H41001:listening:mc:34",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 34,
@@ -371,6 +2167,7 @@
     {
       "key": "H41001:listening:mc:35",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 35,
@@ -381,6 +2178,7 @@
     {
       "key": "H41001:listening:mc:36",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 36,
@@ -391,6 +2189,7 @@
     {
       "key": "H41001:listening:mc:37",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 37,
@@ -401,6 +2200,7 @@
     {
       "key": "H41001:listening:mc:38",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 38,
@@ -411,6 +2211,7 @@
     {
       "key": "H41001:listening:mc:39",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 39,
@@ -421,6 +2222,7 @@
     {
       "key": "H41001:listening:mc:40",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 40,
@@ -431,6 +2233,7 @@
     {
       "key": "H41001:listening:mc:41",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 41,
@@ -441,6 +2244,7 @@
     {
       "key": "H41001:listening:mc:42",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 42,
@@ -451,6 +2255,7 @@
     {
       "key": "H41001:listening:mc:43",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 43,
@@ -461,6 +2266,7 @@
     {
       "key": "H41001:listening:mc:44",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 44,
@@ -471,6 +2277,7 @@
     {
       "key": "H41001:listening:mc:45",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 45,
@@ -481,6 +2288,7 @@
     {
       "key": "H41001:reading:fill:46",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 46,
@@ -491,6 +2299,7 @@
     {
       "key": "H41001:reading:fill:47",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 47,
@@ -501,6 +2310,7 @@
     {
       "key": "H41001:reading:fill:48",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 48,
@@ -511,6 +2321,7 @@
     {
       "key": "H41001:reading:fill:49",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 49,
@@ -521,6 +2332,7 @@
     {
       "key": "H41001:reading:fill:50",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 50,
@@ -531,6 +2343,7 @@
     {
       "key": "H41001:reading:fill:51",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 51,
@@ -541,6 +2354,7 @@
     {
       "key": "H41001:reading:fill:52",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 52,
@@ -551,6 +2365,7 @@
     {
       "key": "H41001:reading:fill:53",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 53,
@@ -561,6 +2376,7 @@
     {
       "key": "H41001:reading:fill:54",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 54,
@@ -571,6 +2387,7 @@
     {
       "key": "H41001:reading:fill:55",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 55,
@@ -581,6 +2398,7 @@
     {
       "key": "H41001:reading:order:56",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 56,
@@ -591,6 +2409,7 @@
     {
       "key": "H41001:reading:order:57",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 57,
@@ -601,6 +2420,7 @@
     {
       "key": "H41001:reading:order:58",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 58,
@@ -611,6 +2431,7 @@
     {
       "key": "H41001:reading:order:59",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 59,
@@ -621,6 +2442,7 @@
     {
       "key": "H41001:reading:order:60",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 60,
@@ -631,6 +2453,7 @@
     {
       "key": "H41001:reading:order:61",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 61,
@@ -641,6 +2464,7 @@
     {
       "key": "H41001:reading:order:62",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 62,
@@ -651,6 +2475,7 @@
     {
       "key": "H41001:reading:order:63",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 63,
@@ -661,6 +2486,7 @@
     {
       "key": "H41001:reading:order:64",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 64,
@@ -671,6 +2497,7 @@
     {
       "key": "H41001:reading:order:65",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 65,
@@ -681,6 +2508,7 @@
     {
       "key": "H41001:reading:mc:66",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 66,
@@ -691,6 +2519,7 @@
     {
       "key": "H41001:reading:mc:67",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 67,
@@ -701,6 +2530,7 @@
     {
       "key": "H41001:reading:mc:68",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 68,
@@ -711,6 +2541,7 @@
     {
       "key": "H41001:reading:mc:69",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 69,
@@ -721,6 +2552,7 @@
     {
       "key": "H41001:reading:mc:70",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 70,
@@ -731,6 +2563,7 @@
     {
       "key": "H41001:reading:mc:71",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 71,
@@ -741,6 +2574,7 @@
     {
       "key": "H41001:reading:mc:72",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 72,
@@ -751,6 +2585,7 @@
     {
       "key": "H41001:reading:mc:73",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 73,
@@ -761,6 +2596,7 @@
     {
       "key": "H41001:reading:mc:74",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 74,
@@ -771,6 +2607,7 @@
     {
       "key": "H41001:reading:mc:75",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 75,
@@ -781,6 +2618,7 @@
     {
       "key": "H41001:reading:mc:76",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 76,
@@ -791,6 +2629,7 @@
     {
       "key": "H41001:reading:mc:77",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 77,
@@ -801,6 +2640,7 @@
     {
       "key": "H41001:reading:mc:78",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 78,
@@ -811,6 +2651,7 @@
     {
       "key": "H41001:reading:mc:79",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 79,
@@ -821,6 +2662,7 @@
     {
       "key": "H41001:reading:mc:80",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 80,
@@ -831,6 +2673,7 @@
     {
       "key": "H41001:reading:mc:81",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 81,
@@ -841,6 +2684,7 @@
     {
       "key": "H41001:reading:mc:82",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 82,
@@ -851,6 +2695,7 @@
     {
       "key": "H41001:reading:mc:83",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 83,
@@ -861,6 +2706,7 @@
     {
       "key": "H41001:reading:mc:84",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 84,
@@ -871,6 +2717,7 @@
     {
       "key": "H41001:reading:mc:85",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 85,
@@ -881,6 +2728,7 @@
     {
       "key": "H41001:writing:build:86",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 86,
@@ -891,6 +2739,7 @@
     {
       "key": "H41001:writing:build:87",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 87,
@@ -901,6 +2750,7 @@
     {
       "key": "H41001:writing:build:88",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 88,
@@ -911,6 +2761,7 @@
     {
       "key": "H41001:writing:build:89",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 89,
@@ -921,6 +2772,7 @@
     {
       "key": "H41001:writing:build:90",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 90,
@@ -931,6 +2783,7 @@
     {
       "key": "H41001:writing:build:91",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 91,
@@ -941,6 +2794,7 @@
     {
       "key": "H41001:writing:build:92",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 92,
@@ -951,6 +2805,7 @@
     {
       "key": "H41001:writing:build:93",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 93,
@@ -961,6 +2816,7 @@
     {
       "key": "H41001:writing:build:94",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 94,
@@ -971,6 +2827,7 @@
     {
       "key": "H41001:writing:build:95",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 95,
@@ -981,6 +2838,7 @@
     {
       "key": "H41001:writing:open:96",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 96,
@@ -991,6 +2849,7 @@
     {
       "key": "H41001:writing:open:97",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 97,
@@ -1001,6 +2860,7 @@
     {
       "key": "H41001:writing:open:98",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 98,
@@ -1011,6 +2871,7 @@
     {
       "key": "H41001:writing:open:99",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 99,
@@ -1021,6 +2882,7 @@
     {
       "key": "H41001:writing:open:100",
       "paper": "H41001",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 100,
@@ -1031,6 +2893,7 @@
     {
       "key": "H41002:listening:tf:1",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 1,
@@ -1041,6 +2904,7 @@
     {
       "key": "H41002:listening:tf:2",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 2,
@@ -1051,6 +2915,7 @@
     {
       "key": "H41002:listening:tf:3",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 3,
@@ -1061,6 +2926,7 @@
     {
       "key": "H41002:listening:tf:4",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 4,
@@ -1071,6 +2937,7 @@
     {
       "key": "H41002:listening:tf:5",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 5,
@@ -1081,6 +2948,7 @@
     {
       "key": "H41002:listening:tf:6",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 6,
@@ -1091,6 +2959,7 @@
     {
       "key": "H41002:listening:tf:7",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 7,
@@ -1101,6 +2970,7 @@
     {
       "key": "H41002:listening:tf:8",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 8,
@@ -1111,6 +2981,7 @@
     {
       "key": "H41002:listening:tf:9",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 9,
@@ -1121,6 +2992,7 @@
     {
       "key": "H41002:listening:tf:10",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 10,
@@ -1131,6 +3003,7 @@
     {
       "key": "H41002:listening:mc:11",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 11,
@@ -1141,6 +3014,7 @@
     {
       "key": "H41002:listening:mc:12",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 12,
@@ -1151,6 +3025,7 @@
     {
       "key": "H41002:listening:mc:13",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 13,
@@ -1161,6 +3036,7 @@
     {
       "key": "H41002:listening:mc:14",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 14,
@@ -1171,6 +3047,7 @@
     {
       "key": "H41002:listening:mc:15",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 15,
@@ -1181,6 +3058,7 @@
     {
       "key": "H41002:listening:mc:16",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 16,
@@ -1191,6 +3069,7 @@
     {
       "key": "H41002:listening:mc:17",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 17,
@@ -1201,6 +3080,7 @@
     {
       "key": "H41002:listening:mc:18",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 18,
@@ -1211,6 +3091,7 @@
     {
       "key": "H41002:listening:mc:19",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 19,
@@ -1221,6 +3102,7 @@
     {
       "key": "H41002:listening:mc:20",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 20,
@@ -1231,6 +3113,7 @@
     {
       "key": "H41002:listening:mc:21",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 21,
@@ -1241,6 +3124,7 @@
     {
       "key": "H41002:listening:mc:22",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 22,
@@ -1251,6 +3135,7 @@
     {
       "key": "H41002:listening:mc:23",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 23,
@@ -1261,6 +3146,7 @@
     {
       "key": "H41002:listening:mc:24",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 24,
@@ -1271,6 +3157,7 @@
     {
       "key": "H41002:listening:mc:25",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 25,
@@ -1281,6 +3168,7 @@
     {
       "key": "H41002:listening:mc:26",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 26,
@@ -1291,6 +3179,7 @@
     {
       "key": "H41002:listening:mc:27",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 27,
@@ -1301,6 +3190,7 @@
     {
       "key": "H41002:listening:mc:28",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 28,
@@ -1311,6 +3201,7 @@
     {
       "key": "H41002:listening:mc:29",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 29,
@@ -1321,6 +3212,7 @@
     {
       "key": "H41002:listening:mc:30",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 30,
@@ -1331,6 +3223,7 @@
     {
       "key": "H41002:listening:mc:31",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 31,
@@ -1341,6 +3234,7 @@
     {
       "key": "H41002:listening:mc:32",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 32,
@@ -1351,6 +3245,7 @@
     {
       "key": "H41002:listening:mc:33",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 33,
@@ -1361,6 +3256,7 @@
     {
       "key": "H41002:listening:mc:34",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 34,
@@ -1371,6 +3267,7 @@
     {
       "key": "H41002:listening:mc:35",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 35,
@@ -1381,6 +3278,7 @@
     {
       "key": "H41002:listening:mc:36",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 36,
@@ -1391,6 +3289,7 @@
     {
       "key": "H41002:listening:mc:37",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 37,
@@ -1401,6 +3300,7 @@
     {
       "key": "H41002:listening:mc:38",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 38,
@@ -1411,6 +3311,7 @@
     {
       "key": "H41002:listening:mc:39",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 39,
@@ -1421,6 +3322,7 @@
     {
       "key": "H41002:listening:mc:40",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 40,
@@ -1431,6 +3333,7 @@
     {
       "key": "H41002:listening:mc:41",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 41,
@@ -1441,6 +3344,7 @@
     {
       "key": "H41002:listening:mc:42",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 42,
@@ -1451,6 +3355,7 @@
     {
       "key": "H41002:listening:mc:43",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 43,
@@ -1461,6 +3366,7 @@
     {
       "key": "H41002:listening:mc:44",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 44,
@@ -1471,6 +3377,7 @@
     {
       "key": "H41002:listening:mc:45",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 45,
@@ -1481,6 +3388,7 @@
     {
       "key": "H41002:reading:fill:46",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 46,
@@ -1491,6 +3399,7 @@
     {
       "key": "H41002:reading:fill:47",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 47,
@@ -1501,6 +3410,7 @@
     {
       "key": "H41002:reading:fill:48",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 48,
@@ -1511,6 +3421,7 @@
     {
       "key": "H41002:reading:fill:49",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 49,
@@ -1521,6 +3432,7 @@
     {
       "key": "H41002:reading:fill:50",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 50,
@@ -1531,6 +3443,7 @@
     {
       "key": "H41002:reading:fill:51",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 51,
@@ -1541,6 +3454,7 @@
     {
       "key": "H41002:reading:fill:52",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 52,
@@ -1551,6 +3465,7 @@
     {
       "key": "H41002:reading:fill:53",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 53,
@@ -1561,6 +3476,7 @@
     {
       "key": "H41002:reading:fill:54",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 54,
@@ -1571,6 +3487,7 @@
     {
       "key": "H41002:reading:fill:55",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 55,
@@ -1581,6 +3498,7 @@
     {
       "key": "H41002:reading:order:56",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 56,
@@ -1591,6 +3509,7 @@
     {
       "key": "H41002:reading:order:57",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 57,
@@ -1601,6 +3520,7 @@
     {
       "key": "H41002:reading:order:58",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 58,
@@ -1611,6 +3531,7 @@
     {
       "key": "H41002:reading:order:59",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 59,
@@ -1621,6 +3542,7 @@
     {
       "key": "H41002:reading:order:60",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 60,
@@ -1631,6 +3553,7 @@
     {
       "key": "H41002:reading:order:61",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 61,
@@ -1641,6 +3564,7 @@
     {
       "key": "H41002:reading:order:62",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 62,
@@ -1651,6 +3575,7 @@
     {
       "key": "H41002:reading:order:63",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 63,
@@ -1661,6 +3586,7 @@
     {
       "key": "H41002:reading:order:64",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 64,
@@ -1671,6 +3597,7 @@
     {
       "key": "H41002:reading:order:65",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 65,
@@ -1681,6 +3608,7 @@
     {
       "key": "H41002:reading:mc:66",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 66,
@@ -1691,6 +3619,7 @@
     {
       "key": "H41002:reading:mc:67",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 67,
@@ -1701,6 +3630,7 @@
     {
       "key": "H41002:reading:mc:68",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 68,
@@ -1711,6 +3641,7 @@
     {
       "key": "H41002:reading:mc:69",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 69,
@@ -1721,6 +3652,7 @@
     {
       "key": "H41002:reading:mc:70",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 70,
@@ -1731,6 +3663,7 @@
     {
       "key": "H41002:reading:mc:71",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 71,
@@ -1741,6 +3674,7 @@
     {
       "key": "H41002:reading:mc:72",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 72,
@@ -1751,6 +3685,7 @@
     {
       "key": "H41002:reading:mc:73",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 73,
@@ -1761,6 +3696,7 @@
     {
       "key": "H41002:reading:mc:74",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 74,
@@ -1771,6 +3707,7 @@
     {
       "key": "H41002:reading:mc:75",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 75,
@@ -1781,6 +3718,7 @@
     {
       "key": "H41002:reading:mc:76",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 76,
@@ -1791,6 +3729,7 @@
     {
       "key": "H41002:reading:mc:77",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 77,
@@ -1801,6 +3740,7 @@
     {
       "key": "H41002:reading:mc:78",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 78,
@@ -1811,6 +3751,7 @@
     {
       "key": "H41002:reading:mc:79",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 79,
@@ -1821,6 +3762,7 @@
     {
       "key": "H41002:reading:mc:80",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 80,
@@ -1831,6 +3773,7 @@
     {
       "key": "H41002:reading:mc:81",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 81,
@@ -1841,6 +3784,7 @@
     {
       "key": "H41002:reading:mc:82",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 82,
@@ -1851,6 +3795,7 @@
     {
       "key": "H41002:reading:mc:83",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 83,
@@ -1861,6 +3806,7 @@
     {
       "key": "H41002:reading:mc:84",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 84,
@@ -1871,6 +3817,7 @@
     {
       "key": "H41002:reading:mc:85",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 85,
@@ -1881,6 +3828,7 @@
     {
       "key": "H41002:writing:build:86",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 86,
@@ -1891,6 +3839,7 @@
     {
       "key": "H41002:writing:build:87",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 87,
@@ -1901,6 +3850,7 @@
     {
       "key": "H41002:writing:build:88",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 88,
@@ -1911,6 +3861,7 @@
     {
       "key": "H41002:writing:build:89",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 89,
@@ -1921,6 +3872,7 @@
     {
       "key": "H41002:writing:build:90",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 90,
@@ -1931,6 +3883,7 @@
     {
       "key": "H41002:writing:build:91",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 91,
@@ -1941,6 +3894,7 @@
     {
       "key": "H41002:writing:build:92",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 92,
@@ -1951,6 +3905,7 @@
     {
       "key": "H41002:writing:build:93",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 93,
@@ -1961,6 +3916,7 @@
     {
       "key": "H41002:writing:build:94",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 94,
@@ -1971,6 +3927,7 @@
     {
       "key": "H41002:writing:build:95",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 95,
@@ -1981,6 +3938,7 @@
     {
       "key": "H41002:writing:open:96",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 96,
@@ -1991,6 +3949,7 @@
     {
       "key": "H41002:writing:open:97",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 97,
@@ -2001,6 +3960,7 @@
     {
       "key": "H41002:writing:open:98",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 98,
@@ -2011,6 +3971,7 @@
     {
       "key": "H41002:writing:open:99",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 99,
@@ -2021,6 +3982,7 @@
     {
       "key": "H41002:writing:open:100",
       "paper": "H41002",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 100,
@@ -2031,6 +3993,7 @@
     {
       "key": "H41003:listening:tf:1",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 1,
@@ -2041,6 +4004,7 @@
     {
       "key": "H41003:listening:tf:2",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 2,
@@ -2051,6 +4015,7 @@
     {
       "key": "H41003:listening:tf:3",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 3,
@@ -2061,6 +4026,7 @@
     {
       "key": "H41003:listening:tf:4",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 4,
@@ -2071,6 +4037,7 @@
     {
       "key": "H41003:listening:tf:5",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 5,
@@ -2081,6 +4048,7 @@
     {
       "key": "H41003:listening:tf:6",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 6,
@@ -2091,6 +4059,7 @@
     {
       "key": "H41003:listening:tf:7",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 7,
@@ -2101,6 +4070,7 @@
     {
       "key": "H41003:listening:tf:8",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 8,
@@ -2111,6 +4081,7 @@
     {
       "key": "H41003:listening:tf:9",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 9,
@@ -2121,6 +4092,7 @@
     {
       "key": "H41003:listening:tf:10",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 10,
@@ -2131,6 +4103,7 @@
     {
       "key": "H41003:listening:mc:11",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 11,
@@ -2141,6 +4114,7 @@
     {
       "key": "H41003:listening:mc:12",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 12,
@@ -2151,6 +4125,7 @@
     {
       "key": "H41003:listening:mc:13",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 13,
@@ -2161,6 +4136,7 @@
     {
       "key": "H41003:listening:mc:14",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 14,
@@ -2171,6 +4147,7 @@
     {
       "key": "H41003:listening:mc:15",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 15,
@@ -2181,6 +4158,7 @@
     {
       "key": "H41003:listening:mc:16",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 16,
@@ -2191,6 +4169,7 @@
     {
       "key": "H41003:listening:mc:17",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 17,
@@ -2201,6 +4180,7 @@
     {
       "key": "H41003:listening:mc:18",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 18,
@@ -2211,6 +4191,7 @@
     {
       "key": "H41003:listening:mc:19",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 19,
@@ -2221,6 +4202,7 @@
     {
       "key": "H41003:listening:mc:20",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 20,
@@ -2231,6 +4213,7 @@
     {
       "key": "H41003:listening:mc:21",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 21,
@@ -2241,6 +4224,7 @@
     {
       "key": "H41003:listening:mc:22",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 22,
@@ -2251,6 +4235,7 @@
     {
       "key": "H41003:listening:mc:23",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 23,
@@ -2261,6 +4246,7 @@
     {
       "key": "H41003:listening:mc:24",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 24,
@@ -2271,6 +4257,7 @@
     {
       "key": "H41003:listening:mc:25",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 25,
@@ -2281,6 +4268,7 @@
     {
       "key": "H41003:listening:mc:26",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 26,
@@ -2291,6 +4279,7 @@
     {
       "key": "H41003:listening:mc:27",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 27,
@@ -2301,6 +4290,7 @@
     {
       "key": "H41003:listening:mc:28",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 28,
@@ -2311,6 +4301,7 @@
     {
       "key": "H41003:listening:mc:29",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 29,
@@ -2321,6 +4312,7 @@
     {
       "key": "H41003:listening:mc:30",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 30,
@@ -2331,6 +4323,7 @@
     {
       "key": "H41003:listening:mc:31",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 31,
@@ -2341,6 +4334,7 @@
     {
       "key": "H41003:listening:mc:32",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 32,
@@ -2351,6 +4345,7 @@
     {
       "key": "H41003:listening:mc:33",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 33,
@@ -2361,6 +4356,7 @@
     {
       "key": "H41003:listening:mc:34",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 34,
@@ -2371,6 +4367,7 @@
     {
       "key": "H41003:listening:mc:35",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 35,
@@ -2381,6 +4378,7 @@
     {
       "key": "H41003:listening:mc:36",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 36,
@@ -2391,6 +4389,7 @@
     {
       "key": "H41003:listening:mc:37",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 37,
@@ -2401,6 +4400,7 @@
     {
       "key": "H41003:listening:mc:38",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 38,
@@ -2411,6 +4411,7 @@
     {
       "key": "H41003:listening:mc:39",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 39,
@@ -2421,6 +4422,7 @@
     {
       "key": "H41003:listening:mc:40",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 40,
@@ -2431,6 +4433,7 @@
     {
       "key": "H41003:listening:mc:41",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 41,
@@ -2441,6 +4444,7 @@
     {
       "key": "H41003:listening:mc:42",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 42,
@@ -2451,6 +4455,7 @@
     {
       "key": "H41003:listening:mc:43",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 43,
@@ -2461,6 +4466,7 @@
     {
       "key": "H41003:listening:mc:44",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 44,
@@ -2471,6 +4477,7 @@
     {
       "key": "H41003:listening:mc:45",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 45,
@@ -2481,6 +4488,7 @@
     {
       "key": "H41003:reading:fill:46",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 46,
@@ -2491,6 +4499,7 @@
     {
       "key": "H41003:reading:fill:47",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 47,
@@ -2501,6 +4510,7 @@
     {
       "key": "H41003:reading:fill:48",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 48,
@@ -2511,6 +4521,7 @@
     {
       "key": "H41003:reading:fill:49",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 49,
@@ -2521,6 +4532,7 @@
     {
       "key": "H41003:reading:fill:50",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 50,
@@ -2531,6 +4543,7 @@
     {
       "key": "H41003:reading:fill:51",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 51,
@@ -2541,6 +4554,7 @@
     {
       "key": "H41003:reading:fill:52",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 52,
@@ -2551,6 +4565,7 @@
     {
       "key": "H41003:reading:fill:53",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 53,
@@ -2561,6 +4576,7 @@
     {
       "key": "H41003:reading:fill:54",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 54,
@@ -2571,6 +4587,7 @@
     {
       "key": "H41003:reading:fill:55",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 55,
@@ -2581,6 +4598,7 @@
     {
       "key": "H41003:reading:order:56",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 56,
@@ -2591,6 +4609,7 @@
     {
       "key": "H41003:reading:order:57",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 57,
@@ -2601,6 +4620,7 @@
     {
       "key": "H41003:reading:order:58",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 58,
@@ -2611,6 +4631,7 @@
     {
       "key": "H41003:reading:order:59",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 59,
@@ -2621,6 +4642,7 @@
     {
       "key": "H41003:reading:order:60",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 60,
@@ -2631,6 +4653,7 @@
     {
       "key": "H41003:reading:order:61",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 61,
@@ -2641,6 +4664,7 @@
     {
       "key": "H41003:reading:order:62",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 62,
@@ -2651,6 +4675,7 @@
     {
       "key": "H41003:reading:order:63",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 63,
@@ -2661,6 +4686,7 @@
     {
       "key": "H41003:reading:order:64",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 64,
@@ -2671,6 +4697,7 @@
     {
       "key": "H41003:reading:order:65",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 65,
@@ -2681,6 +4708,7 @@
     {
       "key": "H41003:reading:mc:66",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 66,
@@ -2691,6 +4719,7 @@
     {
       "key": "H41003:reading:mc:67",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 67,
@@ -2701,6 +4730,7 @@
     {
       "key": "H41003:reading:mc:68",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 68,
@@ -2711,6 +4741,7 @@
     {
       "key": "H41003:reading:mc:69",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 69,
@@ -2721,6 +4752,7 @@
     {
       "key": "H41003:reading:mc:70",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 70,
@@ -2731,6 +4763,7 @@
     {
       "key": "H41003:reading:mc:71",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 71,
@@ -2741,6 +4774,7 @@
     {
       "key": "H41003:reading:mc:72",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 72,
@@ -2751,6 +4785,7 @@
     {
       "key": "H41003:reading:mc:73",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 73,
@@ -2761,6 +4796,7 @@
     {
       "key": "H41003:reading:mc:74",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 74,
@@ -2771,6 +4807,7 @@
     {
       "key": "H41003:reading:mc:75",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 75,
@@ -2781,6 +4818,7 @@
     {
       "key": "H41003:reading:mc:76",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 76,
@@ -2791,6 +4829,7 @@
     {
       "key": "H41003:reading:mc:77",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 77,
@@ -2801,6 +4840,7 @@
     {
       "key": "H41003:reading:mc:78",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 78,
@@ -2811,6 +4851,7 @@
     {
       "key": "H41003:reading:mc:79",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 79,
@@ -2821,6 +4862,7 @@
     {
       "key": "H41003:reading:mc:80",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 80,
@@ -2831,6 +4873,7 @@
     {
       "key": "H41003:reading:mc:81",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 81,
@@ -2841,6 +4884,7 @@
     {
       "key": "H41003:reading:mc:82",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 82,
@@ -2851,6 +4895,7 @@
     {
       "key": "H41003:reading:mc:83",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 83,
@@ -2861,6 +4906,7 @@
     {
       "key": "H41003:reading:mc:84",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 84,
@@ -2871,6 +4917,7 @@
     {
       "key": "H41003:reading:mc:85",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 85,
@@ -2881,6 +4928,7 @@
     {
       "key": "H41003:writing:build:86",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 86,
@@ -2891,6 +4939,7 @@
     {
       "key": "H41003:writing:build:87",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 87,
@@ -2901,6 +4950,7 @@
     {
       "key": "H41003:writing:build:88",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 88,
@@ -2911,6 +4961,7 @@
     {
       "key": "H41003:writing:build:89",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 89,
@@ -2921,6 +4972,7 @@
     {
       "key": "H41003:writing:build:90",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 90,
@@ -2931,6 +4983,7 @@
     {
       "key": "H41003:writing:build:91",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 91,
@@ -2941,6 +4994,7 @@
     {
       "key": "H41003:writing:build:92",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 92,
@@ -2951,6 +5005,7 @@
     {
       "key": "H41003:writing:build:93",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 93,
@@ -2961,6 +5016,7 @@
     {
       "key": "H41003:writing:build:94",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 94,
@@ -2971,6 +5027,7 @@
     {
       "key": "H41003:writing:build:95",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 95,
@@ -2981,6 +5038,7 @@
     {
       "key": "H41003:writing:open:96",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 96,
@@ -2991,6 +5049,7 @@
     {
       "key": "H41003:writing:open:97",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 97,
@@ -3001,6 +5060,7 @@
     {
       "key": "H41003:writing:open:98",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 98,
@@ -3011,6 +5071,7 @@
     {
       "key": "H41003:writing:open:99",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 99,
@@ -3021,6 +5082,7 @@
     {
       "key": "H41003:writing:open:100",
       "paper": "H41003",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 100,
@@ -3031,6 +5093,7 @@
     {
       "key": "H41332:listening:tf:1",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 1,
@@ -3041,6 +5104,7 @@
     {
       "key": "H41332:listening:tf:2",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 2,
@@ -3051,6 +5115,7 @@
     {
       "key": "H41332:listening:tf:3",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 3,
@@ -3061,6 +5126,7 @@
     {
       "key": "H41332:listening:tf:4",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 4,
@@ -3071,6 +5137,7 @@
     {
       "key": "H41332:listening:tf:5",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 5,
@@ -3081,6 +5148,7 @@
     {
       "key": "H41332:listening:tf:6",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 6,
@@ -3091,6 +5159,7 @@
     {
       "key": "H41332:listening:tf:7",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 7,
@@ -3101,6 +5170,7 @@
     {
       "key": "H41332:listening:tf:8",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 8,
@@ -3111,6 +5181,7 @@
     {
       "key": "H41332:listening:tf:9",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 9,
@@ -3121,6 +5192,7 @@
     {
       "key": "H41332:listening:tf:10",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "tf",
       "number": 10,
@@ -3131,6 +5203,7 @@
     {
       "key": "H41332:listening:mc:11",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 11,
@@ -3141,6 +5214,7 @@
     {
       "key": "H41332:listening:mc:12",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 12,
@@ -3151,6 +5225,7 @@
     {
       "key": "H41332:listening:mc:13",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 13,
@@ -3161,6 +5236,7 @@
     {
       "key": "H41332:listening:mc:14",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 14,
@@ -3171,6 +5247,7 @@
     {
       "key": "H41332:listening:mc:15",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 15,
@@ -3181,6 +5258,7 @@
     {
       "key": "H41332:listening:mc:16",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 16,
@@ -3191,6 +5269,7 @@
     {
       "key": "H41332:listening:mc:17",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 17,
@@ -3201,6 +5280,7 @@
     {
       "key": "H41332:listening:mc:18",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 18,
@@ -3211,6 +5291,7 @@
     {
       "key": "H41332:listening:mc:19",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 19,
@@ -3221,6 +5302,7 @@
     {
       "key": "H41332:listening:mc:20",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 20,
@@ -3231,6 +5313,7 @@
     {
       "key": "H41332:listening:mc:21",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 21,
@@ -3241,6 +5324,7 @@
     {
       "key": "H41332:listening:mc:22",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 22,
@@ -3251,6 +5335,7 @@
     {
       "key": "H41332:listening:mc:23",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 23,
@@ -3261,6 +5346,7 @@
     {
       "key": "H41332:listening:mc:24",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 24,
@@ -3271,6 +5357,7 @@
     {
       "key": "H41332:listening:mc:25",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 25,
@@ -3281,6 +5368,7 @@
     {
       "key": "H41332:listening:mc:26",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 26,
@@ -3291,6 +5379,7 @@
     {
       "key": "H41332:listening:mc:27",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 27,
@@ -3301,6 +5390,7 @@
     {
       "key": "H41332:listening:mc:28",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 28,
@@ -3311,6 +5401,7 @@
     {
       "key": "H41332:listening:mc:29",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 29,
@@ -3321,6 +5412,7 @@
     {
       "key": "H41332:listening:mc:30",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 30,
@@ -3331,6 +5423,7 @@
     {
       "key": "H41332:listening:mc:31",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 31,
@@ -3341,6 +5434,7 @@
     {
       "key": "H41332:listening:mc:32",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 32,
@@ -3351,6 +5445,7 @@
     {
       "key": "H41332:listening:mc:33",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 33,
@@ -3361,6 +5456,7 @@
     {
       "key": "H41332:listening:mc:34",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 34,
@@ -3371,6 +5467,7 @@
     {
       "key": "H41332:listening:mc:35",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 35,
@@ -3381,6 +5478,7 @@
     {
       "key": "H41332:listening:mc:36",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 36,
@@ -3391,6 +5489,7 @@
     {
       "key": "H41332:listening:mc:37",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 37,
@@ -3401,6 +5500,7 @@
     {
       "key": "H41332:listening:mc:38",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 38,
@@ -3411,6 +5511,7 @@
     {
       "key": "H41332:listening:mc:39",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 39,
@@ -3421,6 +5522,7 @@
     {
       "key": "H41332:listening:mc:40",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 40,
@@ -3431,6 +5533,7 @@
     {
       "key": "H41332:listening:mc:41",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 41,
@@ -3441,6 +5544,7 @@
     {
       "key": "H41332:listening:mc:42",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 42,
@@ -3451,6 +5555,7 @@
     {
       "key": "H41332:listening:mc:43",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 43,
@@ -3461,6 +5566,7 @@
     {
       "key": "H41332:listening:mc:44",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 44,
@@ -3471,6 +5577,7 @@
     {
       "key": "H41332:listening:mc:45",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "listening",
       "kind": "mc",
       "number": 45,
@@ -3481,6 +5588,7 @@
     {
       "key": "H41332:reading:fill:46",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 46,
@@ -3491,6 +5599,7 @@
     {
       "key": "H41332:reading:fill:47",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 47,
@@ -3501,6 +5610,7 @@
     {
       "key": "H41332:reading:fill:48",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 48,
@@ -3511,6 +5621,7 @@
     {
       "key": "H41332:reading:fill:49",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 49,
@@ -3521,6 +5632,7 @@
     {
       "key": "H41332:reading:fill:50",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 50,
@@ -3531,6 +5643,7 @@
     {
       "key": "H41332:reading:fill:51",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 51,
@@ -3541,6 +5654,7 @@
     {
       "key": "H41332:reading:fill:52",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 52,
@@ -3551,6 +5665,7 @@
     {
       "key": "H41332:reading:fill:53",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 53,
@@ -3561,6 +5676,7 @@
     {
       "key": "H41332:reading:fill:54",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 54,
@@ -3571,6 +5687,7 @@
     {
       "key": "H41332:reading:fill:55",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "fill",
       "number": 55,
@@ -3581,6 +5698,7 @@
     {
       "key": "H41332:reading:order:56",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 56,
@@ -3591,6 +5709,7 @@
     {
       "key": "H41332:reading:order:57",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 57,
@@ -3601,6 +5720,7 @@
     {
       "key": "H41332:reading:order:58",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 58,
@@ -3611,6 +5731,7 @@
     {
       "key": "H41332:reading:order:59",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 59,
@@ -3621,6 +5742,7 @@
     {
       "key": "H41332:reading:order:60",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 60,
@@ -3631,6 +5753,7 @@
     {
       "key": "H41332:reading:order:61",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 61,
@@ -3641,6 +5764,7 @@
     {
       "key": "H41332:reading:order:62",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 62,
@@ -3651,6 +5775,7 @@
     {
       "key": "H41332:reading:order:63",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 63,
@@ -3661,6 +5786,7 @@
     {
       "key": "H41332:reading:order:64",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 64,
@@ -3671,6 +5797,7 @@
     {
       "key": "H41332:reading:order:65",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "order",
       "number": 65,
@@ -3681,6 +5808,7 @@
     {
       "key": "H41332:reading:mc:66",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 66,
@@ -3691,6 +5819,7 @@
     {
       "key": "H41332:reading:mc:67",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 67,
@@ -3701,6 +5830,7 @@
     {
       "key": "H41332:reading:mc:68",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 68,
@@ -3711,6 +5841,7 @@
     {
       "key": "H41332:reading:mc:69",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 69,
@@ -3721,6 +5852,7 @@
     {
       "key": "H41332:reading:mc:70",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 70,
@@ -3731,6 +5863,7 @@
     {
       "key": "H41332:reading:mc:71",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 71,
@@ -3741,6 +5874,7 @@
     {
       "key": "H41332:reading:mc:72",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 72,
@@ -3751,6 +5885,7 @@
     {
       "key": "H41332:reading:mc:73",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 73,
@@ -3761,6 +5896,7 @@
     {
       "key": "H41332:reading:mc:74",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 74,
@@ -3771,6 +5907,7 @@
     {
       "key": "H41332:reading:mc:75",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 75,
@@ -3781,6 +5918,7 @@
     {
       "key": "H41332:reading:mc:76",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 76,
@@ -3791,6 +5929,7 @@
     {
       "key": "H41332:reading:mc:77",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 77,
@@ -3801,6 +5940,7 @@
     {
       "key": "H41332:reading:mc:78",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 78,
@@ -3811,6 +5951,7 @@
     {
       "key": "H41332:reading:mc:79",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 79,
@@ -3821,6 +5962,7 @@
     {
       "key": "H41332:reading:mc:80",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 80,
@@ -3831,6 +5973,7 @@
     {
       "key": "H41332:reading:mc:81",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 81,
@@ -3841,6 +5984,7 @@
     {
       "key": "H41332:reading:mc:82",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 82,
@@ -3851,6 +5995,7 @@
     {
       "key": "H41332:reading:mc:83",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 83,
@@ -3861,6 +6006,7 @@
     {
       "key": "H41332:reading:mc:84",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 84,
@@ -3871,6 +6017,7 @@
     {
       "key": "H41332:reading:mc:85",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "reading",
       "kind": "mc",
       "number": 85,
@@ -3881,6 +6028,7 @@
     {
       "key": "H41332:writing:build:86",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 86,
@@ -3891,6 +6039,7 @@
     {
       "key": "H41332:writing:build:87",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 87,
@@ -3901,6 +6050,7 @@
     {
       "key": "H41332:writing:build:88",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 88,
@@ -3911,6 +6061,7 @@
     {
       "key": "H41332:writing:build:89",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 89,
@@ -3921,6 +6072,7 @@
     {
       "key": "H41332:writing:build:90",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 90,
@@ -3931,6 +6083,7 @@
     {
       "key": "H41332:writing:build:91",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 91,
@@ -3941,6 +6094,7 @@
     {
       "key": "H41332:writing:build:92",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 92,
@@ -3951,6 +6105,7 @@
     {
       "key": "H41332:writing:build:93",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 93,
@@ -3961,6 +6116,7 @@
     {
       "key": "H41332:writing:build:94",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 94,
@@ -3971,6 +6127,7 @@
     {
       "key": "H41332:writing:build:95",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "build",
       "number": 95,
@@ -3981,6 +6138,7 @@
     {
       "key": "H41332:writing:open:96",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 96,
@@ -3991,6 +6149,7 @@
     {
       "key": "H41332:writing:open:97",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 97,
@@ -4001,6 +6160,7 @@
     {
       "key": "H41332:writing:open:98",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 98,
@@ -4011,6 +6171,7 @@
     {
       "key": "H41332:writing:open:99",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 99,
@@ -4021,6 +6182,7 @@
     {
       "key": "H41332:writing:open:100",
       "paper": "H41332",
+      "level": "HSK4",
       "category": "writing",
       "kind": "open",
       "number": 100,
@@ -4029,5 +6191,5 @@
       "label": "长城"
     }
   ],
-  "generated_at": "2026-09-25T18:29:40.149Z"
+  "generated_at": "2026-09-26T23:41:54.015Z"
 }

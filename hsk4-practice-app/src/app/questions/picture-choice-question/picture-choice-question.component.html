@@ -1,0 +1,47 @@
+@if (audio.failed()) {
+  <div class="audiowarn">The recording for this question could not be played.</div>
+}
+
+<button class="playbtn" type="button" (click)="play()" [class.playing]="isPlaying()">
+  {{ isPlaying() ? '🔊 Playing…' : '🔊 Play audio' }}
+  @if (clip(); as recording) {
+    <span class="clipmeta">· real voice {{ recording.duration }}s · read twice, as in the exam</span>
+  }
+</button>
+
+<p class="picprompt">听录音，从 {{ optionCount() }} 张图片中选出与内容相符的一张 —— pick the picture that matches.</p>
+
+<div class="picgrid">
+  @for (option of options(); track option.file) {
+    <button
+      type="button"
+      [class]="optionClass($index)"
+      [disabled]="review() || choice() !== null"
+      (click)="pick($index)"
+      [attr.aria-label]="'Option ' + option.letter"
+    >
+      <span class="lt">{{ option.letter }}</span>
+      <img [src]="option.url" [alt]="'Option ' + option.letter" loading="lazy" />
+    </button>
+  }
+</div>
+
+@if (review() || choice() !== null) {
+  <div class="feedback">
+    @if (review()) {
+      <div class="fbline good">Correct answer: {{ solutionLetter() }}</div>
+    } @else {
+      <div class="fbline" [class.good]="isCorrect()" [class.bad]="!isCorrect()">
+        @if (isCorrect()) {
+          ✓ Correct
+        } @else {
+          ✗ Incorrect · answer: {{ solutionLetter() }}
+        }
+      </div>
+    }
+    @if (unit().audio) {
+      <div class="transcript-label">Transcript</div>
+      <div class="transcript">{{ unit().audio }}</div>
+    }
+  </div>
+}

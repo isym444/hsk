@@ -15,15 +15,26 @@
  * instead of the learner.
  */
 
-import { QUESTION_INVENTORY, inventoryForCategory, unitForQuestionKey } from './question-inventory';
+import { LEVEL_OF_PAPER, papersForLevel } from './tests.data';
+import { QUESTION_INVENTORY, inventoryForCategory, unitForQuestionKey , categoryTotalForLevel} from './question-inventory';
 import { TEST_IDS } from './tests.data';
 import { Unit } from './models';
 
 /** A4 reading part 1 offers exactly six words to choose from. */
-const FILL_BANK_SIZE = 6;
+/**
+ * HSK4 banks hold six choices; HSK3's reading 46-50 prints only five (there is
+ * no F option in that paper), so the check is a range rather than a constant.
+ */
+const FILL_BANK_MIN = 5;
+const FILL_BANK_MAX = 6;
 
 /** A4 reading part 2 asks you to order three fragments. */
 const ORDER_FRAGMENTS = 3;
+
+const LEVEL_TOTALS = {
+  HSK3: { listening: 40, reading: 30, writing: 10 },
+  HSK4: { listening: 45, reading: 40, writing: 15 },
+} as const;
 
 describe('question bank integrity', () => {
   const keys = QUESTION_INVENTORY.map((entry) => entry.key);
@@ -37,18 +48,23 @@ describe('question bank integrity', () => {
     expect(new Set(keys).size).toBe(keys.length);
   });
 
-  it('holds 100 questions per paper: 45 listening, 40 reading, 15 writing', () => {
+  it('gives every paper the section sizes its level defines', () => {
     for (const paper of TEST_IDS) {
+      const expected = LEVEL_TOTALS[LEVEL_OF_PAPER[paper]];
       const forPaper = QUESTION_INVENTORY.filter((entry) => entry.paper === paper);
-      const count = (category: string) =>
-        forPaper.filter((entry) => entry.category === category).length;
-      expect(count('listening')).withContext(paper).toBe(45);
-      expect(count('reading')).withContext(paper).toBe(40);
-      expect(count('writing')).withContext(paper).toBe(15);
+      for (const category of ['listening', 'reading', 'writing'] as const) {
+        const count = forPaper.filter((entry) => entry.category === category).length;
+        expect(count).withContext(`${paper} ${category}`).toBe(expected[category]);
+      }
     }
-    expect(inventoryForCategory('listening').length).toBe(45 * TEST_IDS.length);
-    expect(inventoryForCategory('reading').length).toBe(40 * TEST_IDS.length);
-    expect(inventoryForCategory('writing').length).toBe(15 * TEST_IDS.length);
+    // The level totals are what the decks advertise, so check them too.
+    for (const level of ['HSK3', 'HSK4'] as const) {
+      for (const category of ['listening', 'reading', 'writing'] as const) {
+        expect(categoryTotalForLevel(level, category))
+          .withContext(`${level} ${category}`)
+          .toBe(LEVEL_TOTALS[level][category] * papersForLevel(level).length);
+      }
+    }
   });
 
   it('numbers every question inside its paper and section, exactly once', () => {
@@ -91,6 +107,27 @@ describe('question bank integrity', () => {
           break;
         }
 
+        case 'picture': {
+          // HSK3 listening part 1: the "options" are picture files, so the only
+          // thing to check is that the answer points at one that exists.
+          if (!Number.isInteger(unit.answer) || unit.answer < 0 || unit.answer >= unit.options.length) {
+            note(unit, entry.key, `answer index ${unit.answer} is outside the pictures`);
+          }
+          if (unit.options.length < 2) {
+            note(unit, entry.key, 'fewer than two pictures');
+          }
+          if (new Set(unit.options).size !== unit.options.length) {
+            note(unit, entry.key, 'duplicate picture files');
+          }
+          if (unit.options.some((option) => !option.trim())) {
+            note(unit, entry.key, 'blank picture file name');
+          }
+          if (!unit.audio?.trim()) {
+            note(unit, entry.key, 'no dialogue to listen to');
+          }
+          break;
+        }
+
         case 'mc': {
           if (!Number.isInteger(unit.answer) || unit.answer < 0 || unit.answer >= unit.options.length) {
             note(unit, entry.key, `answer index ${unit.answer} is outside options`);
@@ -111,8 +148,12 @@ describe('question bank integrity', () => {
         }
 
         case 'fill': {
-          if (unit.bank.length !== FILL_BANK_SIZE) {
-            note(unit, entry.key, `bank has ${unit.bank.length} words, expected ${FILL_BANK_SIZE}`);
+          if (unit.bank.length < FILL_BANK_MIN || unit.bank.length > FILL_BANK_MAX) {
+            note(
+              unit,
+              entry.key,
+              `bank has ${unit.bank.length} choices, expected ${FILL_BANK_MIN}-${FILL_BANK_MAX}`,
+            );
           }
           if (new Set(unit.bank).size !== unit.bank.length) {
             note(unit, entry.key, 'duplicate words in the bank');
@@ -173,7 +214,19 @@ describe('question bank integrity', () => {
           if (!unit.model?.trim()) {
             note(unit, entry.key, 'no model answer to self-assess against');
           }
-          if (!unit.model.includes(unit.word)) {
+          if (unit.instruction) {
+            // HSK3's 76-80 are a different task: the prompt is a gapped
+            // sentence and the model is the single character that fills it, so
+            // "the model uses the prompt" cannot hold. What must hold is that
+            // the blank is there and the model is short enough to be a
+            // character.
+            if (!unit.word.includes('（')) {
+              note(unit, entry.key, 'gap-fill prompt has no blank');
+            }
+            if (unit.model.length > 4) {
+              note(unit, entry.key, `expected a short character answer, got 「${unit.model}」`);
+            }
+          } else if (!unit.model.includes(unit.word)) {
             note(unit, entry.key, `model answer never uses 「${unit.word}」`);
           }
           break;

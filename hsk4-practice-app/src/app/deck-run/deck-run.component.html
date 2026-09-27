@@ -1,10 +1,12 @@
 <!-- ===================== Start panel ===================== -->
 @if (deck.phase() === 'idle' || deck.phase() === 'error') {
   <div class="wrap">
+    <app-level-switcher [level]="level()" />
+
     <div class="hero">
       <h1 class="heading">{{ meta().label }} · Combined practice</h1>
       <p>
-        All {{ meta().label }} questions from all {{ paperCountLabel() }} sample papers ({{ papers().join(' · ') }}) are merged into
+        All {{ meta().label }} questions from all {{ papers().length }} {{ level() }} sample papers ({{ papers().join(' · ') }}) are merged into
         one bank of <b>{{ total() }}</b> questions, shuffled or ordered by how well you know them.
         Practise as much as you like, and press “End session” at any time to see your score.
       </p>
@@ -156,6 +158,9 @@
           @switch (row.unit.kind) {
             @case ('tf') {
               <app-true-false-question [unit]="row.unit" [paper]="paperOf(row.unit)" (answered)="onAnswered($event)" />
+            }
+            @case ('picture') {
+              <app-picture-choice-question [unit]="row.unit" [paper]="paperOf(row.unit)" (answered)="onAnswered($event)" />
             }
             @case ('mc') {
               <app-multiple-choice-question [unit]="row.unit" [paper]="paperOf(row.unit)" (answered)="onAnswered($event)" />

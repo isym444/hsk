@@ -12,9 +12,12 @@ Three ways to work through the HSK4 sample papers, plus review statistics:
 
 ## What the app does
 
-- **Aggregated decks.** H41001, H41002, H41003 and H41332 are pooled per skill:
-  听力 (180 questions), 阅读 (160), 写作 (60). Practise a whole skill instead of
-  one paper at a time.
+- **Two levels, kept apart.** HSK3 (H31330, H31332) and HSK4 (H41001–H41003,
+  H41332) are separate question banks; the level is part of the URL and a
+  switcher moves between them. A deck never pools the two.
+- **Aggregated decks.** Within a level, every paper is pooled per skill: HSK4
+  听力 180 / 阅读 160 / 写作 60, HSK3 听力 80 / 阅读 60 / 写作 20. Practise a
+  whole skill instead of one paper at a time.
 - **Two ordering modes.** 随机练习 shuffles every time; 智能复习 weights by
   success rate and a spaced-repetition interval, so questions you get wrong and
   questions that are due come up sooner.
@@ -40,6 +43,31 @@ Three ways to work through the HSK4 sample papers, plus review statistics:
   created in the Supabase dashboard, and a forgotten password is reset by email.
 
 ## Running it
+
+### Locally, without sign-in
+
+Every page sits behind Supabase sign-in. To develop without a project, use the
+development bypass, which trusts each request as one fixed local identity:
+
+```bash
+# API on :8000
+cd backend && HSK_DEV_NO_AUTH=1 ./.venv/bin/uvicorn app.main:app --reload --port 8000
+
+# dev server on :4200
+cd hsk4-practice-app && npm run start:local
+```
+
+Or with Docker — note **`--build`**: `docker compose restart` reuses the existing
+image, so a configuration change never reaches the browser.
+
+```bash
+HSK_DEV_NO_AUTH=1 docker compose up --build      # http://localhost:8080
+```
+
+The bypass is refused whenever a Supabase project or JWT secret is configured,
+on both the API and the frontend, so it cannot be live in a deployment.
+
+### Against a real Supabase project
 
 The app needs a Supabase project (database *and* sign-in). Point both halves at
 it once:

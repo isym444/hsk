@@ -77,18 +77,35 @@ class QuestionHistory:
 
 
 def question_history(
-    conn: DbConnection, category: str, user_id: str
+    conn: DbConnection, category: str, user_id: str, level: str | None = None
 ) -> dict[str, QuestionHistory]:
-    """Rolls up one user's reviews in a category, keyed by question."""
-    rows = conn.execute(
-        """
-        SELECT question_key, outcome, elapsed_ms, answered_at
-        FROM reviews
-        WHERE user_id = ? AND category = ?
-        ORDER BY question_key, answered_at, id
-        """,
-        (user_id, category),
-    ).fetchall()
+    """Rolls up one user's reviews in a category, keyed by question.
+
+    ``level`` narrows the roll-up to one exam level by joining the questions
+    table, which is where the level lives; the reviews table itself is only
+    keyed by category.
+    """
+    if level is None:
+        rows = conn.execute(
+            """
+            SELECT question_key, outcome, elapsed_ms, answered_at
+            FROM reviews
+            WHERE user_id = ? AND category = ?
+            ORDER BY question_key, answered_at, id
+            """,
+            (user_id, category),
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            """
+            SELECT r.question_key, r.outcome, r.elapsed_ms, r.answered_at
+            FROM reviews r
+            JOIN questions q ON q.question_key = r.question_key
+            WHERE r.user_id = ? AND r.category = ? AND q.level = ?
+            ORDER BY r.question_key, r.answered_at, r.id
+            """,
+            (user_id, category, level),
+        ).fetchall()
 
     history: dict[str, QuestionHistory] = {}
     for row in rows:
@@ -122,20 +139,27 @@ def question_history(
     return history
 
 
-def _question_totals(conn: DbConnection, category: str | None = None) -> dict[str, int]:
+def _question_totals(
+    conn: DbConnection, category: str | None = None, level: str | None = None
+) -> dict[str, int]:
     sql = "SELECT COUNT(*) AS total, COALESCE(SUM(scoreable), 0) AS scoreable FROM questions WHERE active = 1"
-    params: tuple[Any, ...] = ()
+    params: list[Any] = []
     if category is not None:
         sql += " AND category = ?"
-        params = (category,)
-    row = conn.execute(sql, params).fetchone()
+        params.append(category)
+    if level is not None:
+        sql += " AND level = ?"
+        params.append(level)
+    row = conn.execute(sql, tuple(params)).fetchone()
     return {"total": row["total"], "scoreable": row["scoreable"]}
 
 
-def category_stats(conn: DbConnection, category: str, user_id: str) -> dict[str, Any]:
+def category_stats(
+    conn: DbConnection, category: str, user_id: str, level: str | None = None
+) -> dict[str, Any]:
     """Everything the per-category stats page header needs, for one user."""
-    totals = _question_totals(conn, category)
-    history = question_history(conn, category, user_id)
+    totals = _question_totals(conn, category, level)
+    history = question_history(conn, category, user_id, level)
 
     answered = len(history)
     answered_scoreable = sum(1 for h in history.values() if h.scored > 0)
@@ -179,27 +203,47 @@ def category_stats(conn: DbConnection, category: str, user_id: str) -> dict[str,
     }
 
 
-def all_category_stats(conn: DbConnection, user_id: str) -> list[dict[str, Any]]:
-    return [
-        category_stats(conn, row["category"], user_id)
-        for row in conn.execute(
+def all_category_stats(
+    conn: DbConnection, user_id: str, level: str | None = None
+) -> list[dict[str, Any]]:
+    if level is None:
+        rows = conn.execute(
             "SELECT DISTINCT category FROM questions WHERE active = 1 ORDER BY category"
         ).fetchall()
-    ]
+    else:
+        rows = conn.execute(
+            "SELECT DISTINCT category FROM questions WHERE active = 1 AND level = ?"
+            " ORDER BY category",
+            (level,),
+        ).fetchall()
+    return [category_stats(conn, row["category"], user_id, level) for row in rows]
 
 
-def per_question_rows(conn: DbConnection, category: str, user_id: str) -> list[dict[str, Any]]:
+def per_question_rows(
+    conn: DbConnection, category: str, user_id: str, level: str | None = None
+) -> list[dict[str, Any]]:
     """One row per question in the category, reviewed or not, for one user."""
-    questions = conn.execute(
-        """
-        SELECT question_key, paper, category, kind, number, part, scoreable, label
-        FROM questions
-        WHERE category = ? AND active = 1
-        ORDER BY number, paper
-        """,
-        (category,),
-    ).fetchall()
-    history = question_history(conn, category, user_id)
+    if level is None:
+        questions = conn.execute(
+            """
+            SELECT question_key, paper, category, kind, number, part, scoreable, label
+            FROM questions
+            WHERE category = ? AND active = 1
+            ORDER BY number, paper
+            """,
+            (category,),
+        ).fetchall()
+    else:
+        questions = conn.execute(
+            """
+            SELECT question_key, paper, category, kind, number, part, scoreable, label
+            FROM questions
+            WHERE category = ? AND active = 1 AND level = ?
+            ORDER BY number, paper
+            """,
+            (category, level),
+        ).fetchall()
+    history = question_history(conn, category, user_id, level)
 
     rows: list[dict[str, Any]] = []
     for question in questions:
@@ -306,9 +350,9 @@ def recent_sessions(
     return [session_row_to_dict(row) for row in conn.execute(sql, params).fetchall()]
 
 
-def overview(conn: DbConnection, user_id: str) -> dict[str, Any]:
-    """Per-category stats plus a combined total, for the home page."""
-    categories = all_category_stats(conn, user_id)
+def overview(conn: DbConnection, user_id: str, level: str | None = None) -> dict[str, Any]:
+    """Per-category stats plus a combined total, for one level's home page."""
+    categories = all_category_stats(conn, user_id, level)
 
     scored = sum(c["correct"] + c["incorrect"] for c in categories)
     scored_ms = sum(c["total_review_ms"] for c in categories)

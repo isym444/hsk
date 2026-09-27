@@ -1,5 +1,5 @@
 import { SECTION_META } from '../data/section-meta';
-import { TESTS, TEST_IDS } from '../data/tests.data';
+import { LEVEL_OF_PAPER, TESTS, TEST_IDS, papersForLevel } from '../data/tests.data';
 import { SECTION_ORDER } from '../data/section-meta';
 import { FIXTURE_TESTS } from '../testing/fixtures/fixtures';
 
@@ -13,8 +13,9 @@ import { FIXTURE_TESTS } from '../testing/fixtures/fixtures';
 describe('data layer parity with hsk4-practice.html', () => {
   const ORIGINAL_PAPERS = ['H41001', 'H41002', 'H41003'] as const;
 
-  it('keeps the original papers first, in their original order', () => {
-    expect(TEST_IDS.slice(0, 3)).toEqual([...ORIGINAL_PAPERS]);
+  it('keeps every original paper registered, in their original order', () => {
+    const ported = TEST_IDS.filter((id) => (ORIGINAL_PAPERS as readonly string[]).includes(id));
+    expect(ported).toEqual([...ORIGINAL_PAPERS]);
   });
 
   it('deep-equals the original TESTS object for the ported papers', () => {
@@ -23,8 +24,21 @@ describe('data layer parity with hsk4-practice.html', () => {
     }
   });
 
-  it('registers every paper in TEST_IDS', () => {
-    expect(TEST_IDS).toEqual(['H41001', 'H41002', 'H41003', 'H41332']);
+  it('registers every shipped paper', () => {
+    expect([...TEST_IDS].sort()).toEqual(
+      ['H31330', 'H31332', 'H41001', 'H41002', 'H41003', 'H41332'],
+    );
+    // Every shipped paper must resolve to a level, or it vanishes from the app.
+    for (const id of TEST_IDS) {
+      expect(['HSK3', 'HSK4']).withContext(id).toContain(LEVEL_OF_PAPER[id]);
+    }
+  });
+
+  it('splits the papers into the two levels without overlap', () => {
+    const hsk3 = papersForLevel('HSK3');
+    const hsk4 = papersForLevel('HSK4');
+    expect(hsk3.length + hsk4.length).toBe(TEST_IDS.length);
+    expect(hsk3.filter((id) => hsk4.includes(id))).toEqual([]);
   });
 
   it('keeps the section meta map, with English UI labels', () => {
@@ -36,23 +50,35 @@ describe('data layer parity with hsk4-practice.html', () => {
     expect(SECTION_ORDER).toEqual(['listening', 'reading', 'writing']);
   });
 
-  it('counts 100 questions per paper', () => {
+  it('gives every paper the question counts its level defines', () => {
+    // HSK4 is 45 listening / 40 reading / 15 writing; HSK3 is 40 / 30 / 10.
+    const perLevel = {
+      HSK4: { listening: 45, reading: 40, writing: 15 },
+      HSK3: { listening: 40, reading: 30, writing: 10 },
+    };
     for (const id of TEST_IDS) {
       const test = TESTS[id];
+      // Parts are unions across levels, so count whatever shape each holds.
+      const count = (parts: { qs?: unknown[] }[]) =>
+        parts.reduce((n, b) => n + (b.qs ? b.qs.length : 1), 0);
       const listening =
-        test.listening.part1.length +
-        test.listening.part2.reduce((n, b) => n + b.qs.length, 0) +
-        test.listening.part3.reduce((n, b) => n + b.qs.length, 0);
+        count(test.listening.part1 as never) +
+        count(test.listening.part2 as never) +
+        count(test.listening.part3) +
+        count((test.listening.part4 ?? []) as never);
       const reading =
         test.reading.part1.length +
-        test.reading.part2.length +
-        test.reading.part3.reduce((n, b) => n + b.qs.length, 0);
+        count(test.reading.part2 as never) +
+        count(test.reading.part3);
       const writing = test.writing.part1.length + test.writing.part2.length;
 
-      expect(listening).toBe(45);
-      expect(reading).toBe(40);
-      expect(writing).toBe(15);
-      expect(listening + reading + writing).toBe(100);
+      const expected = perLevel[LEVEL_OF_PAPER[id]];
+      expect(listening).withContext(`${id} listening`).toBe(expected.listening);
+      expect(reading).withContext(`${id} reading`).toBe(expected.reading);
+      expect(writing).withContext(`${id} writing`).toBe(expected.writing);
+      expect(listening + reading + writing).toBe(
+        expected.listening + expected.reading + expected.writing,
+      );
     }
   });
 });

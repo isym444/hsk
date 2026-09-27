@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { provideZoneChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { categoryTotal } from '../data/question-inventory';
+import { categoryTotalForLevel } from '../data/question-inventory';
 import { DeckSummaryComponent } from './deck-summary.component';
 import { routeStub } from '../testing/route-stub';
 import { sessionSummaryFixture } from '../testing/fixtures/stats';
@@ -119,7 +119,7 @@ describe('DeckSummaryComponent', () => {
     await open();
 
     const stats = allFlat('.statgrid');
-    expect(stats).toContain(`Questionspractised8/${categoryTotal('reading')}`);
+    expect(stats).toContain(`Questionspractised8/${categoryTotalForLevel('HSK4', 'reading')}`);
     expect(stats).toContain('Overallsuccessrate55%');
     expect(stats).toContain('Totalanswers11');
   });
@@ -155,7 +155,7 @@ describe('DeckSummaryComponent', () => {
       .find((button) => button.textContent?.includes('Keep practising'))
       ?.click();
 
-    expect(navigate).toHaveBeenCalledWith(['/deck', 'reading']);
+    expect(navigate).toHaveBeenCalledWith(['/', 'HSK4', 'deck', 'reading']);
   });
 
   it('links to the category stats page', async () => {
@@ -165,7 +165,7 @@ describe('DeckSummaryComponent', () => {
       .find((button) => button.textContent?.includes('View Reading stats'))
       ?.click();
 
-    expect(navigate).toHaveBeenCalledWith(['/stats', 'reading']);
+    expect(navigate).toHaveBeenCalledWith(['/', 'HSK4', 'stats', 'reading']);
   });
 
   it('explains a missing session instead of failing silently', async () => {

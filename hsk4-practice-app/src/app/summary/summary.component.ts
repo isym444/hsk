@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { SECTION_META } from '../data/section-meta';
 import { SectionKey, TestId } from '../data/models';
 import { QuizStateService } from '../core/quiz-state.service';
+import { LEVEL_OF_PAPER } from '../data/tests.data';
 
 /** Final tally screen — same numbers/markup as the original `showSummary()`. */
 @Component({
@@ -37,6 +38,7 @@ export class SummaryComponent {
   }
 
   home(): void {
-    void this.router.navigate(['/']);
+    const testId = this.quizState.testId() as TestId;
+    void this.router.navigate(['/', LEVEL_OF_PAPER[testId]]);
   }
 }

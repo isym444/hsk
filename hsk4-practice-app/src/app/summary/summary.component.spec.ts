@@ -98,7 +98,7 @@ describe('SummaryComponent', () => {
     el<HTMLButtonElement>(fixture.nativeElement, '.summary-actions .primarybtn').click();
     await fixture.whenStable();
 
-    expect(router.url).toBe('/');
+    expect(router.url).toBe('/HSK4');
   });
 
   it('tints the card and tag with the section colour', async () => {
