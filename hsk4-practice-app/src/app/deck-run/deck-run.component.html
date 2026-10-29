@@ -1,6 +1,7 @@
 <!-- ===================== Start panel ===================== -->
 @if (deck.phase() === 'idle' || deck.phase() === 'error') {
   <div class="wrap">
+    <button class="backbtn startback" type="button" (click)="home()">← Back to {{ level() }}</button>
     <app-level-switcher [level]="level()" />
 
     <div class="hero">
@@ -76,6 +77,11 @@
             <span class="md">
               @if (mode === 'smart') {
                 Ordered by success rate and forgetting curve — questions you get wrong, and ones you have not seen for a while, come first
+              } @else if (mode === 'unseen') {
+                Only questions you have never answered, shuffled — the session ends when none are left
+                @if (deck.preview(); as preview) {
+                  ({{ preview.unseen }} left)
+                }
               } @else {
                 Fully shuffled every time — good for exam simulation
               }
@@ -85,7 +91,7 @@
       </div>
 
       <div class="deckcard-actions">
-        <button class="primarybtn" type="button" [disabled]="starting()" (click)="start()">
+        <button class="primarybtn" type="button" [disabled]="starting() || !canStart()" (click)="start()">
           {{ starting() ? 'Starting…' : 'Start practice' }}
         </button>
         <button class="smallbtn" type="button" (click)="statsLink()">View stats</button>
@@ -149,6 +155,21 @@
         </button>
       </div>
 
+      @if (deck.exhausted()) {
+        <div class="card" [style.--c]="meta().color">
+          <div class="tag">{{ meta().label }} · New questions</div>
+          <p>
+            You have now answered every {{ level() }} {{ meta().label }} question at least once —
+            there is nothing new left in this bank. End the session to see your score, then use
+            Smart review or Random practice to go over them again.
+          </p>
+          <div class="nextrow">
+            <span></span>
+            <button class="primarybtn" type="button" (click)="endSession()">End session</button>
+          </div>
+        </div>
+      }
+
       @for (row of deck.currentRows(); track row.token) {
         <div class="card" [style.--c]="meta().color">
           <div class="tag">
@@ -202,7 +223,9 @@
           }
         </div>
       } @empty {
-        <div class="loading">Preparing questions…</div>
+        @if (!deck.exhausted()) {
+          <div class="loading">Preparing questions…</div>
+        }
       }
     </div>
   </div>

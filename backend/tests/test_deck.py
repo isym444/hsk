@@ -89,6 +89,25 @@ def test_smart_mode_carries_a_reason_for_every_question(client: TestClient) -> N
     assert all(q["priority"] > 0 for q in questions)
 
 
+def test_unseen_mode_serves_only_questions_not_yet_answered(client: TestClient, session_id: str) -> None:
+    answer(client, session_id, READING_FILL, "incorrect", 4000)
+    answer(client, session_id, READING_MC, "correct", 2000)
+
+    body = client.get("/api/deck/reading", params={**HSK4, "mode": "unseen"}).json()
+    keys = {q["question_key"] for q in body["questions"]}
+    assert READING_FILL not in keys and READING_MC not in keys
+    assert body["count"] == EXPECTED_TOTALS["reading"] - 2
+    assert {q["reason"] for q in body["questions"]} == {"new"}
+
+
+def test_unseen_mode_does_not_fall_back_when_nothing_is_left(client: TestClient) -> None:
+    keys = [q["question_key"] for q in client.get("/api/deck/writing", params=HSK4).json()["questions"]]
+    body = client.get(
+        "/api/deck/writing", params={**HSK4, "mode": "unseen", "exclude": ",".join(keys)}
+    ).json()
+    assert body["count"] == 0 and body["questions"] == []
+
+
 def test_preview_counts_unseen_questions_before_any_practice(client: TestClient) -> None:
     body = client.get("/api/deck/reading/preview", params=HSK4).json()
     total = EXPECTED_TOTALS["reading"]

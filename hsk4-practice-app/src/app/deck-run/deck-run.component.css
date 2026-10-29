@@ -1,5 +1,5 @@
 /* ---------- Deck start panel ---------- */
-.moderow{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:10px 0 4px;}
+.moderow{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; margin:10px 0 4px;}
 .modebtn{
   display:flex; flex-direction:column; gap:4px; text-align:left;
   border:1px solid var(--line); background:var(--surface); color:var(--ink);
@@ -34,3 +34,5 @@
 @media (max-width:480px){
   .moderow{grid-template-columns:1fr;}
 }
+
+.startback{display:block; margin-bottom:12px;}

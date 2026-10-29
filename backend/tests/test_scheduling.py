@@ -129,6 +129,14 @@ def test_smart_mode_keeps_every_question_eligible_and_honours_the_limit() -> Non
     assert [r["question_key"] for r in limited] == [r["question_key"] for r in full[:7]]
 
 
+def test_unseen_mode_keeps_only_never_answered_questions() -> None:
+    rows = [row("seen", attempts=3, success_rate=0.2, days_since=9)] + [row(f"new{i}") for i in range(20)]
+    deck = order_deck(rows, mode="unseen", rng=random.Random(1), now=NOW)
+    assert sorted(r["question_key"] for r in deck) == sorted(f"new{i}" for i in range(20))
+    assert all(r["reason"] == "new" and r["priority"] is None for r in deck)
+    assert order_deck([row("seen", attempts=1)], mode="unseen") == []
+
+
 def test_limit_of_zero_yields_an_empty_deck() -> None:
     rows = [row("k0")]
     assert order_deck(rows, mode="random", limit=0) == []

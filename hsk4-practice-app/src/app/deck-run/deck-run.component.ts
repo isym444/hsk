@@ -53,7 +53,7 @@ export class DeckRunComponent {
   /** The live timer is hidden unless the learner has opted into it. */
   private readonly prefs = inject(PreferencesService);
 
-  readonly modes: DeckMode[] = ['smart', 'random'];
+  readonly modes: DeckMode[] = ['smart', 'random', 'unseen'];
   readonly modeLabels = DECK_MODE_LABELS;
   readonly chosenMode = signal<DeckMode>('smart');
   readonly starting = signal(false);
@@ -189,7 +189,7 @@ export class DeckRunComponent {
     this.audio.stop();
     if (this.deck.tally().answered === 0) {
       await this.deck.discard();
-      void this.router.navigate(['/']);
+      void this.router.navigate(['/', this.level()]);
       return;
     }
     const summary = await this.deck.finish();
@@ -197,7 +197,7 @@ export class DeckRunComponent {
       return;
     }
     void this.router.navigate(
-      goToSummary ? ['/', this.level(), 'deck', summary.category, 'summary', summary.id] : ['/'],
+      goToSummary ? ['/', this.level(), 'deck', summary.category, 'summary', summary.id] : ['/', this.level()],
     );
   }
 
@@ -205,9 +205,15 @@ export class DeckRunComponent {
     void this.endSession(false);
   }
 
+  /** Back to the level's home screen, where the three skills are listed. */
   home(): void {
-    void this.router.navigate(['/']);
+    void this.router.navigate(['/', this.level()]);
   }
+
+  /** The unseen mode has nothing to serve when every question has been answered. */
+  readonly canStart = computed(
+    () => !(this.chosenMode() === 'unseen' && this.deck.preview()?.unseen === 0),
+  );
 
   statsLink(): void {
     void this.router.navigate(['/', this.level(), 'stats', this.category()]);

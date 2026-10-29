@@ -123,6 +123,7 @@ describe('format helpers', () => {
   it('labels every deck mode and review outcome', () => {
     expect(DECK_MODE_LABELS['random']).toBe('Random practice');
     expect(DECK_MODE_LABELS['smart']).toBe('Smart review');
+    expect(DECK_MODE_LABELS['unseen']).toBe('New questions');
     expect(OUTCOME_LABELS['correct']).toBe('Correct');
     expect(OUTCOME_LABELS['incorrect']).toBe('Wrong');
     expect(OUTCOME_LABELS['self_assessed']).toBe('Self-assessed');

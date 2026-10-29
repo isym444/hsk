@@ -40,9 +40,11 @@ def get_deck(
 
     excluded = {key.strip() for key in (exclude or "").split(",") if key.strip()}
     candidates = [row for row in rows if row["question_key"] not in excluded]
-    if not candidates:
+    if not candidates and mode != "unseen":
         # Excluding everything would hand back an empty deck; fall back to the
-        # full category so practice never dead-ends.
+        # full category so practice never dead-ends. Unseen mode is exempt: an
+        # empty deck there is the answer ("nothing new left"), and falling back
+        # would just filter down to the same unseen rows.
         candidates = rows
 
     ordered = scheduling.order_deck(candidates, mode=mode, limit=limit)

@@ -9,6 +9,7 @@ import { DeckStateService } from '../core/deck-state.service';
 import { AudioService } from '../core/audio.service';
 import { TrueFalseQuestionComponent } from '../questions/true-false-question/true-false-question.component';
 import { categoryTotalForLevel } from '../data/question-inventory';
+import { DECK_MODE_LABELS } from '../core/format';
 import { SectionKey } from '../data/models';
 import { routeStub } from '../testing/route-stub';
 import {
@@ -170,12 +171,12 @@ describe('DeckRunComponent', () => {
   }
 
   async function startSession(
-    mode: 'smart' | 'random' = 'smart',
+    mode: 'smart' | 'random' | 'unseen' = 'smart',
     category = 'listening',
     questions = QUESTIONS,
   ): Promise<void> {
     const modeButton = Array.from(element().querySelectorAll<HTMLButtonElement>('.modebtn')).find(
-      (candidate) => candidate.textContent?.includes(mode === 'smart' ? 'Smart review' : 'Random practice'),
+      (candidate) => candidate.textContent?.includes(DECK_MODE_LABELS[mode] ?? ''),
     );
     modeButton?.click();
     fixture.detectChanges();
@@ -431,7 +432,7 @@ describe('DeckRunComponent', () => {
     http.expectOne((request) => request.method === 'DELETE').flush(null);
     await settle();
 
-    expect(navigate).toHaveBeenCalledWith(['/']);
+    expect(navigate).toHaveBeenCalledWith(['/', 'HSK4']);
     expect(deck.hasSession()).toBeFalse();
   });
 
@@ -446,7 +447,7 @@ describe('DeckRunComponent', () => {
     await settle();
 
     expect(spoken).toContain('__stop__');
-    expect(navigate).toHaveBeenCalledWith(['/']);
+    expect(navigate).toHaveBeenCalledWith(['/', 'HSK4']);
   });
 
   it('explains how to start the backend when the preview fails, and can retry', async () => {
@@ -462,6 +463,46 @@ describe('DeckRunComponent', () => {
 
     expect(element().querySelector('.errbar')).toBeNull();
     expect(text('.hero h1')).toBe('Writing · Combined practice');
+  });
+
+  it('goes back to the level screen from the start panel', async () => {
+    await open();
+    element().querySelector<HTMLButtonElement>('.startback')?.click();
+
+    expect(text('.startback')).toBe('← Back to HSK4');
+    expect(navigate).toHaveBeenCalledWith(['/', 'HSK4']);
+  });
+
+  it('cannot start new-questions mode when every question has been seen', async () => {
+    await open();
+    http.match(() => true);
+    deck.preview.set(deckPreviewFixture({ category: 'listening', unseen: 0 }));
+    const modes = Array.from(element().querySelectorAll<HTMLButtonElement>('.modebtn'));
+    modes[2].click();
+    fixture.detectChanges();
+
+    expect(element().querySelector<HTMLButtonElement>('.deckcard-actions .primarybtn')?.disabled).toBeTrue();
+  });
+
+  it('stops on an all-covered card when new-questions mode runs out', async () => {
+    await open();
+    await startSession('unseen');
+
+    for (let i = 0; i < QUESTIONS.length; i += 1) {
+      await answer(true);
+      if (i < QUESTIONS.length - 1) {
+        await next();
+      }
+    }
+    await next();
+
+    http
+      .expectOne((request) => request.url === '/api/deck/listening')
+      .flush(deckResponseFixture([], 'listening', { mode: 'unseen' }));
+    await settle();
+
+    expect(text('.card')).toContain('nothing new left');
+    expect(element().querySelector('.loading')).toBeNull();
   });
 
   it('links to the category stats page', async () => {

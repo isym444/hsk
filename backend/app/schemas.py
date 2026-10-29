@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 Category = Literal["listening", "reading", "writing"]
 Level = Literal["HSK3", "HSK4"]
-Mode = Literal["random", "smart"]
+Mode = Literal["random", "smart", "unseen"]
 Outcome = Literal["correct", "incorrect", "self_assessed"]
 
 

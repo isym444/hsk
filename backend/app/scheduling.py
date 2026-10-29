@@ -16,6 +16,9 @@ Ordering is randomised *weighted sampling without replacement* (Efraimidis &
 Spirakis: key = random ** (1 / weight), take the highest), so two sessions
 with the same history do not present questions in the same order while the
 priority still dominates over many draws.
+
+The "unseen" mode is separate from both: a shuffled deck of only the questions
+that have never been answered, so it runs dry once the bank is covered.
 """
 
 from __future__ import annotations
@@ -31,7 +34,7 @@ WEIGHT_NEW = 3.0
 MAX_OVERDUE = 2.5
 MAX_INTERVAL_DAYS = 60.0
 
-MODES = ("random", "smart")
+MODES = ("random", "smart", "unseen")
 
 
 def review_interval_days(streak: int) -> float:
@@ -113,6 +116,11 @@ def order_deck(
         for row in ordered:
             row["priority"] = None
             row["reason"] = "random"
+    elif mode == "unseen":
+        ordered = shuffled_order((row for row in candidates if row["attempts"] == 0), rng)
+        for row in ordered:
+            row["priority"] = None
+            row["reason"] = "new"
     else:
         for row in candidates:
             row["priority"], row["reason"] = priority(

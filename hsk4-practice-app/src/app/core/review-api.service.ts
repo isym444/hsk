@@ -14,7 +14,7 @@ import { Observable } from 'rxjs';
 import { Level, SectionKey } from '../data/models';
 import { RuntimeConfigService } from './runtime-config.service';
 
-export type DeckMode = 'random' | 'smart';
+export type DeckMode = 'random' | 'smart' | 'unseen';
 export type Outcome = 'correct' | 'incorrect' | 'self_assessed';
 
 export interface CategoryStats {

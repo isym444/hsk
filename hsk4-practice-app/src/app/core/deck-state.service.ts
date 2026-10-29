@@ -86,6 +86,9 @@ export class DeckStateService {
   readonly error = signal<string | null>(null);
   readonly elapsedMs = signal(0);
 
+  /** True once an unseen-only session has served every question it had. */
+  readonly exhausted = signal(false);
+
   readonly current = computed<DeckQuestion | null>(() => this.queue()[this.index()] ?? null);
 
   /** The unit the question components render for the current queue entry. */
@@ -157,6 +160,10 @@ export class DeckStateService {
       this.sessionId.set(session.id);
       await this.loadQueue({ fresh: true });
       this.phase.set('running');
+      if (mode === 'unseen' && this.queue().length === 0) {
+        this.exhausted.set(true);
+        return;
+      }
       this.beginQuestion();
     } catch {
       this.fail('Cannot start practice: the review service is not responding. Check that the backend is running and try again.');
@@ -208,6 +215,12 @@ export class DeckStateService {
     if (this.index() >= this.queue().length) {
       await this.loadQueue({ fresh: false });
       if (this.index() >= this.queue().length) {
+        if (this.mode() === 'unseen') {
+          // Unseen mode runs dry by design: stop on the "all covered" card
+          // rather than looping the questions that are no longer new.
+          this.exhausted.set(true);
+          return;
+        }
         // Nothing playable came back (e.g. every key was filtered out); start
         // the current queue again rather than dead-ending the session.
         this.index.set(0);
@@ -264,6 +277,7 @@ export class DeckStateService {
     this.lastOutcome.set(null);
     this.tally.set(EMPTY_TALLY);
     this.elapsedMs.set(0);
+    this.exhausted.set(false);
     this.error.set(null);
     this.phase.set('idle');
   }

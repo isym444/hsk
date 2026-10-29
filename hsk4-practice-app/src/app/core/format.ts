@@ -132,6 +132,7 @@ export function intervalDaysForStreak(streak: number): number {
 export const DECK_MODE_LABELS: Record<string, string | undefined> = {
   random: 'Random practice',
   smart: 'Smart review',
+  unseen: 'New questions',
 };
 
 /** Review outcomes, with the labels used in lists. */
