@@ -262,6 +262,19 @@ describe('DeckRunComponent', () => {
     expect(element().querySelector('.nextrow')).toBeNull();
   });
 
+  it('plays the recording for an H41332 listening question', async () => {
+    // paperOf() once whitelisted H41001-H41003, so Play did nothing for H41332.
+    await open();
+    const playQuestion = spyOn(TestBed.inject(AudioService), 'playQuestion');
+    await startSession('random', 'listening', [
+      deckQuestion({ question_key: 'H41332:listening:tf:1', kind: 'tf', number: 1, paper: 'H41332' }),
+    ]);
+
+    element().querySelector<HTMLButtonElement>('.playbtn')?.click();
+
+    expect(playQuestion).toHaveBeenCalledOnceWith('H41332', 1);
+  });
+
   it('records the answer, shows the outcome and advances to the next question', async () => {
     await open();
     await startSession();

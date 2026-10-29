@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { SECTION_META, SectionMeta } from '../data/section-meta';
-import { isLevel, papersForLevel } from '../data/tests.data';
+import { isLevel, isTestId, papersForLevel } from '../data/tests.data';
 import { LevelSwitcherComponent } from '../home/level-switcher.component';
 import { Level, SectionKey, TestId, Unit } from '../data/models';
 import { CATEGORY_ORDER, categoryTotalForLevel, perPaperForLevel } from '../data/question-inventory';
@@ -154,12 +154,12 @@ export class DeckRunComponent {
 
   /**
    * The sample paper the current question came from, so a listening question
-   * can find its recording. The deck mixes all three papers into one queue, so
-   * this is read per question rather than from the page.
+   * can find its recording. The deck mixes every paper of the level into one
+   * queue, so this is read per question rather than from the page.
    */
   paperOf(unit: Unit): TestId | null {
     const paper = this.deck.current()?.paper;
-    return paper === 'H41001' || paper === 'H41002' || paper === 'H41003' ? paper : null;
+    return paper && isTestId(paper) ? paper : null;
   }
 
   next(): void {
